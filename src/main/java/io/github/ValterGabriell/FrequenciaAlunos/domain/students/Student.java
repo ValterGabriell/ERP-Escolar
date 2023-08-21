@@ -13,6 +13,10 @@ public class Student implements Comparable<Student> {
     @Column(name = "nome", nullable = false)
     private String username;
 
+    //data de ingresso
+    //data de saida
+    //
+
 
     public Student(String cpf, String username) {
         this.cpf = cpf;
