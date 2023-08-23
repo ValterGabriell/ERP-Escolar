@@ -1,5 +1,6 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode;
+package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.service.QRCodeService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,8 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.frequency;
+package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.dto.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.dto.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.sheet.SheetManipulation;

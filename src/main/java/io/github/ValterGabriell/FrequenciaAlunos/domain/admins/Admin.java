@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Roles;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.dto.GetAdmin;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -40,23 +41,32 @@ public class Admin {
         this.roles = roles;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmail() {
         return email;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public GetAdmin toDTOGet() {
+        return new GetAdmin(
+                getUsername(),
+                getEmail()
+        );
+    }
+
+
 }

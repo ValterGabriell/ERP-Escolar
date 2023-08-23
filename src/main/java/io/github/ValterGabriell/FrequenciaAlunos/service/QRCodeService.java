@@ -1,6 +1,7 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode;
+package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import com.google.zxing.WriterException;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode.QRCodeGenerate;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode.dto.QrCodeMessage;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;

@@ -1,5 +1,6 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.frequency;
+package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.service.FrequencyService;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.dto.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.dto.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.sheet.dto.ResponseSheet;

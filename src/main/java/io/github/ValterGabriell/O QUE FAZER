@@ -1,0 +1,6 @@
+1 -> por as validações para criar um admin
+2 -> criar o update admin
+3 -> criar o get admin sozinho
+4 -> criar entidade de notas
+5 -> criar relação com notas e os alunos
+6 -> login via jdbc spring security

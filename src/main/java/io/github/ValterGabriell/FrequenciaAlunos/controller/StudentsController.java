@@ -1,10 +1,11 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.students;
+package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.dto.InsertStudents;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
