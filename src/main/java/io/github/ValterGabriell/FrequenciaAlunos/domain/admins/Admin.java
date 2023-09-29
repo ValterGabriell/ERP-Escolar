@@ -61,10 +61,15 @@ public class Admin {
         this.email = email;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public GetAdmin toDTOGet() {
         return new GetAdmin(
                 getUsername(),
-                getEmail()
+                getEmail(),
+                getId()
         );
     }
 

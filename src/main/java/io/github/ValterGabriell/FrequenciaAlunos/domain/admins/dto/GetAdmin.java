@@ -1,12 +1,16 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins.dto;
 
+import java.util.UUID;
+
 public class GetAdmin{
+    private UUID id;
     private String username;
     private String email;
 
-    public GetAdmin(String username, String email) {
+    public GetAdmin(String username, String email, UUID id) {
         this.username = username;
         this.email = email;
+        this.id = id;
     }
 
     public GetAdmin() {
@@ -28,5 +32,13 @@ public class GetAdmin{
         return email;
     }
 
+    public UUID getId() {
+        return id;
+    }
 
+
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 }
