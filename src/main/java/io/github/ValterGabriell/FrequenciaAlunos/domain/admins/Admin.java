@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Roles;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.dto.GetAdmin;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,30 +19,31 @@ public class Admin {
     private String password;
     @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private String cpf;
+
     @Column(nullable = false)
     private List<Roles> roles;
 
-    public Admin(UUID id, String username, String password, String email, List<Roles> roles) {
+    public Admin(UUID id, String username, String password, String email, String cpf) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.roles = roles;
+        this.cpf = cpf;
+        this.roles = List.of(Roles.ADMIN);
     }
 
     public Admin() {
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setRoles(List<Roles> roles) {
-        this.roles = roles;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getUsername() {
@@ -53,6 +54,14 @@ public class Admin {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -61,11 +70,23 @@ public class Admin {
         this.email = email;
     }
 
-    public UUID getId() {
-        return id;
+    public List<Roles> getRoles() {
+        return roles;
     }
 
-    public GetAdmin toDTOGet() {
+    public void setRoles(List<Roles> roles) {
+        this.roles = roles;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public GetAdmin getAdminMapper() {
         return new GetAdmin(
                 getUsername(),
                 getEmail(),

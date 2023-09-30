@@ -1,8 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.dto.InsertStudents;
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +38,7 @@ class StudentsServiceTest {
     @Test
     @DisplayName("A username should have more than 2 characters and return true when it is")
     void isUsernameBiggerThan2Chars() {
-        Assertions.assertTrue(studentUsernameTest.usernameHasToBeMoreThan2Chars());
+        Assertions.assertTrue(studentUsernameTest.usernameHasToBeMoreThanTwoChars());
     }
 
     @Test

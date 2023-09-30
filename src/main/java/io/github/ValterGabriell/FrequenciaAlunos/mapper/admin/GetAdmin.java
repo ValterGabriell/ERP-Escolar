@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.admins.dto;
+package io.github.ValterGabriell.FrequenciaAlunos.mapper.admin;
 
 import java.util.UUID;
 

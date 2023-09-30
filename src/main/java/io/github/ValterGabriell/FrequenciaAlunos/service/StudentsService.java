@@ -4,7 +4,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.dto.InsertStudents;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.excpetion.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
@@ -43,7 +43,8 @@ public class StudentsService extends Validation {
         Student student = request.toModel();
         if (request.usernameIsNull()
                 && request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
-                && request.usernameHasToBeMoreThan2Chars()) {
+                && request.usernameHasToBeMoreThanTwoChars()) {
+
             Frequency frequency = new Frequency();
             frequency.setDaysList(new ArrayList<>());
             frequency.setId(request.getCpf());
@@ -66,7 +67,7 @@ public class StudentsService extends Validation {
         Student newStudent = new Student();
         if (request.usernameIsNull()
                 && request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
-                && request.usernameHasToBeMoreThan2Chars()
+                && request.usernameHasToBeMoreThanTwoChars()
                 && request.fieldContainsOnlyLetters(request.getUsername())) {
 
             /* get the frequency of student to be updated */

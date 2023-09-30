@@ -1,16 +1,15 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.dto.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.CreateNewAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AdmService;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.dto.GetAdmin;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,9 +23,9 @@ public class AdmController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> insertAdmin(@RequestBody Admin insertAdmin) {
+    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin) {
         var newAdmin = adminService.createNewAdmin(insertAdmin);
-        return new ResponseEntity<String>(newAdmin, HttpStatus.CREATED);
+        return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }
 
     @GetMapping(params = "adminId")
@@ -39,7 +38,7 @@ public class AdmController {
     @GetMapping()
     public ResponseEntity<List<GetAdmin>> getAllAdmins() {
         var listAdmins = adminService.getAllAdmins();
-        return new ResponseEntity<List<GetAdmin>>(listAdmins, HttpStatus.OK);
+        return new ResponseEntity<>(listAdmins, HttpStatus.OK);
     }
 
     @PutMapping(value = "update-username", params = {"adminId", "newUsername"})

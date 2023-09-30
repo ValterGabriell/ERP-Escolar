@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.sheet.dto;
+package io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets;
 
 public class ResponseSheet {
     private String sheetName;

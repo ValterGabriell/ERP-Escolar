@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode.dto;
+package io.github.ValterGabriell.FrequenciaAlunos.mapper.qrcode;
 
 public class QrCodeMessage {
     private String studentName;

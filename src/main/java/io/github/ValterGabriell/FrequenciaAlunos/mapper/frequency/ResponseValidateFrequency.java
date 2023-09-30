@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.dto;
+package io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency;
 
 public class ResponseValidateFrequency {
     private String message;

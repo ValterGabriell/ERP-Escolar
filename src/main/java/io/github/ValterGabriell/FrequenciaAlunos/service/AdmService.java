@@ -1,11 +1,13 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Roles;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.dto.GetAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.CreateNewAdmin;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,48 +21,52 @@ public class AdmService {
         this.adminRepository = adminRepository;
     }
 
-    private Admin findAdminById(UUID adminId) {
-        return adminRepository.findById(adminId).orElseThrow(() -> new RequestExceptions("Usuário não encontrado!"));
+    private Admin findAdminByIdOrThrowException(UUID adminId) {
+        return adminRepository.findById(adminId)
+                .orElseThrow(() -> new RequestExceptions("Usuário " + adminId + " não encontrado!"));
     }
 
-    public String createNewAdmin(Admin insertAdmin) {
-        insertAdmin.setId(UUID.randomUUID());
-        insertAdmin.setRoles(List.of(Roles.ADMIN));
-        adminRepository.save(insertAdmin);
-        return "Admin criado com sucesso!" + insertAdmin.getEmail();
+    public String createNewAdmin(CreateNewAdmin newAdmin) {
+        boolean adminIsPresentOnDatabase = adminRepository.findByEmail(newAdmin.getEmail()).isPresent();
+        if (!adminIsPresentOnDatabase) {
+            Admin admin = newAdmin.toAdmin();
+            adminRepository.save(admin);
+            return "Admin criado com sucesso!" + admin.getEmail();
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado!");
+        }
     }
 
     public List<GetAdmin> getAllAdmins() {
         List<Admin> adminList = adminRepository.findAll();
-        return adminList.stream().map(Admin::toDTOGet).collect(Collectors.toList());
+        return adminList.stream().map(Admin::getAdminMapper).collect(Collectors.toList());
     }
 
     public GetAdmin updateAdminUsername(UUID adminId, String newUsername) {
-        Admin admin = findAdminById(adminId);
+        Admin admin = findAdminByIdOrThrowException(adminId);
         admin.setUsername(newUsername);
         adminRepository.save(admin);
-        return admin.toDTOGet();
+        return admin.getAdminMapper();
     }
 
     public GetAdmin updateAdminPassword(UUID adminId, String newPassword) {
-        Admin admin = findAdminById(adminId);
+        Admin admin = findAdminByIdOrThrowException(adminId);
         admin.setPassword(newPassword);
         adminRepository.save(admin);
-        return admin.toDTOGet();
+        return admin.getAdminMapper();
     }
 
-    public GetAdmin getAdminById(UUID adminId){
-        Admin admin = findAdminById(adminId);
-        return admin.toDTOGet();
+    public GetAdmin getAdminById(UUID adminId) {
+        return findAdminByIdOrThrowException(adminId).getAdminMapper();
     }
 
-    public String deleteAdminById(UUID adminId){
-        Admin admin = findAdminById(adminId);
+    public String deleteAdminById(UUID adminId) {
+        Admin admin = findAdminByIdOrThrowException(adminId);
         String response;
-        if (admin != null){
+        if (admin != null) {
             adminRepository.deleteById(adminId);
             response = "Usuário " + adminId + " deletado com sucesso!";
-        }else{
+        } else {
             response = "Falha ao deletar o usuário " + adminId;
         }
         return response;

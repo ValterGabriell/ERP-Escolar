@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.days.dto;
+package io.github.ValterGabriell.FrequenciaAlunos.mapper.days;
 
 import java.io.Serializable;
 

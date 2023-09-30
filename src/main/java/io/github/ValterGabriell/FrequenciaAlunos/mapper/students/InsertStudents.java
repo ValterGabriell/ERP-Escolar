@@ -1,9 +1,8 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.students.dto;
+package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.excpetion.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
 
 public class InsertStudents extends Validation {
     private String cpf;
@@ -32,7 +31,7 @@ public class InsertStudents extends Validation {
         return validateIfIsEmpty(getCpf(), ExceptionsValues.CPF_NULL);
     }
 
-    public boolean usernameHasToBeMoreThan2Chars() {
+    public boolean usernameHasToBeMoreThanTwoChars() {
         return validateIfIsEmpty(getUsername(), ExceptionsValues.USERNAME_ILLEGAL_LENGHT);
     }
 
