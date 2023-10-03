@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.excpetion;
+package io.github.ValterGabriell.FrequenciaAlunos.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,8 @@ public class ApiExceptionsHandle {
         APIException exception = new APIException(
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST,
-                ZonedDateTime.now(ZoneId.of("Z"))
+                ZonedDateTime.now(ZoneId.of("Z")),
+                "Check the Documentation"
         );
         return new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST);
     }

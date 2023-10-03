@@ -1,10 +1,13 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.CreateNewAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,7 +24,7 @@ public class AdmService {
         this.adminRepository = adminRepository;
     }
 
-    private Admin findAdminByIdOrThrowException(UUID adminId) {
+    private Admin findAdminByIdOrThrowException(String adminId) {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new RequestExceptions("Usuário " + adminId + " não encontrado!"));
     }
@@ -37,30 +40,32 @@ public class AdmService {
         }
     }
 
-    public List<GetAdmin> getAllAdmins() {
-        List<Admin> adminList = adminRepository.findAll();
-        return adminList.stream().map(Admin::getAdminMapper).collect(Collectors.toList());
+    public Page<GetAdmin> getAllAdmins(Pageable pageable) {
+        Page<Admin> adminList = adminRepository.findAll(pageable);
+        List<GetAdmin> collect = adminList.stream().map(Admin::getAdminMapper).collect(Collectors.toList());
+        Page<GetAdmin> page = new PageImpl<>(collect);
+        return page;
     }
 
-    public GetAdmin updateAdminUsername(UUID adminId, String newUsername) {
+    public GetAdmin updateAdminUsername(String adminId, String newUsername) {
         Admin admin = findAdminByIdOrThrowException(adminId);
         admin.setUsername(newUsername);
         adminRepository.save(admin);
         return admin.getAdminMapper();
     }
 
-    public GetAdmin updateAdminPassword(UUID adminId, String newPassword) {
+    public GetAdmin updateAdminPassword(String adminId, String newPassword) {
         Admin admin = findAdminByIdOrThrowException(adminId);
         admin.setPassword(newPassword);
         adminRepository.save(admin);
         return admin.getAdminMapper();
     }
 
-    public GetAdmin getAdminById(UUID adminId) {
+    public GetAdmin getAdminById(String adminId) {
         return findAdminByIdOrThrowException(adminId).getAdminMapper();
     }
 
-    public String deleteAdminById(UUID adminId) {
+    public String deleteAdminById(String adminId) {
         Admin admin = findAdminByIdOrThrowException(adminId);
         String response;
         if (admin != null) {

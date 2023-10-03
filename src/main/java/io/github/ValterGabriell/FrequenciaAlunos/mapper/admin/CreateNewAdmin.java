@@ -9,15 +9,14 @@ public class CreateNewAdmin {
     private String username;
     private String password;
     private String email;
+    private String cnpj;
 
-    private String cpf;
 
-
-    public CreateNewAdmin(String username, String password, String email, String cpf) {
+    public CreateNewAdmin(String username, String password, String email, String cnpj) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.cpf = cpf;
+        this.cnpj = cnpj;
     }
 
     public String getUsername() {
@@ -45,20 +44,20 @@ public class CreateNewAdmin {
     }
 
     public String getCpf() {
-        return cpf;
+        return cnpj;
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        this.cnpj = cpf;
     }
 
     public Admin toAdmin() {
         return new Admin(
-                UUID.randomUUID(),
+                UUID.randomUUID().toString(),
                 this.username,
                 this.password,
                 this.email,
-                this.cpf
+                this.cnpj
         );
     }
 }

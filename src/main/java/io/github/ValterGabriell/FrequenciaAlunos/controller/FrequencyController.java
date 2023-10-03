@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;

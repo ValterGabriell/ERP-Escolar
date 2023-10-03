@@ -5,8 +5,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.FrequencyValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.StudentValidation;
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 
 import java.util.Optional;

@@ -17,8 +17,7 @@ public class Frequency {
     @JsonIgnore
     private List<Days> daysList;
 
-    public void setId(String id) {
-        this.id = id;
+    public Frequency() {
     }
 
     public List<Days> getDaysList() {
@@ -29,11 +28,12 @@ public class Frequency {
         this.daysList = daysList;
     }
 
-    public Frequency() {
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

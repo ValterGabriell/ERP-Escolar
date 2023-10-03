@@ -1,10 +1,9 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Roles;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Entity(name = "table_admin")
 public class Admin {
     @Id
-    private UUID id;
+    private String id;
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
@@ -21,28 +20,40 @@ public class Admin {
     private String email;
 
     @Column(nullable = false)
-    private String cpf;
+    private String cnpj;
 
     @Column(nullable = false)
     private List<Roles> roles;
 
-    public Admin(UUID id, String username, String password, String email, String cpf) {
+    @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
+    private List<Student> students;
+
+
+    public Admin(String id, String username, String password, String email, String cnpj) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.cpf = cpf;
+        this.cnpj = cnpj;
         this.roles = List.of(Roles.ADMIN);
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     public Admin() {
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -78,19 +89,21 @@ public class Admin {
         this.roles = roles;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getCnpj() {
+        return cnpj;
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        this.cnpj = cpf;
     }
 
     public GetAdmin getAdminMapper() {
         return new GetAdmin(
+                getId(),
                 getUsername(),
                 getEmail(),
-                getId()
+                getCnpj(),
+                getRoles()
         );
     }
 

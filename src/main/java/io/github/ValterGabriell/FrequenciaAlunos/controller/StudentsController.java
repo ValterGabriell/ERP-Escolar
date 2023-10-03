@@ -22,8 +22,10 @@ public class StudentsController {
 
 
     @PostMapping
-    public ResponseEntity<Student> insertStudentsIntoDatabase(@RequestBody InsertStudents request) throws Exception {
-        Student student = service.insertStudentIntoDatabase(request);
+    public ResponseEntity<InsertStudents> insertStudentsIntoDatabase(
+            @RequestBody InsertStudents request,
+            @RequestParam(required = true) String adminId) {
+        InsertStudents student = service.insertStudentIntoDatabase(request, adminId);
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
 

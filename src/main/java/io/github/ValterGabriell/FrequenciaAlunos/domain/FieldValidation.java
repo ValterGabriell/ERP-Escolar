@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 
 public interface FieldValidation{
     boolean fieldContainsOnlyLetters(String field);
