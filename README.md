@@ -1,4 +1,4 @@
-<h1 align="center">Sistema de frequência para o cursinho Logos da UFPA.</h1>
+<h1 align="center">Sistema de frequência de alunos.</h1>
 
 
 ## Indíce
