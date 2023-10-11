@@ -8,7 +8,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValida
 import io.github.ValterGabriell.FrequenciaAlunos.domain.sheet.SheetManipulation;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;

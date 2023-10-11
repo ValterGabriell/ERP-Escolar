@@ -1,8 +1,8 @@
-package io.github.ValterGabriell.FrequenciaAlunos.exceptions;
+package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
 public class ExceptionsValues {
-    public static final String ILLEGAL_CPF_LENGTH = "Tamanho do CPF inválido!";
-    public static final String ILLEGAL_CNPJ_LENGTH = "Tamanho do CNPJ inválido!";
+    public static final String ILLEGAL_CPF_LENGTH = "Tamanho do CPF inválido! Correto: 11";
+    public static final String ILLEGAL_CNPJ_LENGTH = "Tamanho do CNPJ inválido! Correto: 14";
     public static final String DONT_CONTAINS_ONLY_NUMBERS = "Campo não contem apenas numeros!";
     public static final String USERNAME_NULL = "O nome de usuário não pode ser nulo ou ter espaços em branco!";
     public static final String EMAIL_NULL = "O email de usuário não pode ser nulo!";

@@ -2,7 +2,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
 import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 
 import java.time.LocalDateTime;
 
