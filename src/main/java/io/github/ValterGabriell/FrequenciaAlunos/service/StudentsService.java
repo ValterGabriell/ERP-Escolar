@@ -63,6 +63,8 @@ public class StudentsService extends Validation {
                 frequency.setId(student.getCpf());
                 frequency.setDaysList(new ArrayList<>());
 
+                //inserir frequencia no estudante
+
                 frequencyRepository.save(frequency);
                 studentsRepository.save(student);
             }
