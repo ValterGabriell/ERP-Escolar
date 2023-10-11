@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.awt.image.BufferedImage;
 
 @RestController
-@RequestMapping("qrcode")
+@RequestMapping("/api/v1/qrcode")
 public class QRCodeController {
 
     private final QRCodeService qrCodeService;

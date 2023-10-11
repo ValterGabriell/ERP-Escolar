@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("frequency")
+@RequestMapping("/api/v1/frequency")
 public class FrequencyController {
     private final FrequencyService frequencyService;
 

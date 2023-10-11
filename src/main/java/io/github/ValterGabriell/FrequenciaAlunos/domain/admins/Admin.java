@@ -107,5 +107,16 @@ public class Admin {
         );
     }
 
-
+    @Override
+    public String toString() {
+        return "Admin{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", cnpj='" + cnpj + '\'' +
+                ", roles=" + roles +
+                ", students=" + students +
+                '}';
+    }
 }

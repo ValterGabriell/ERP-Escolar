@@ -15,8 +15,7 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenAPIConfig {
 
-    @Value("${valtergabriel.openapi.dev-url}")
-    private String devUrl;
+    private final String devUrl = "http://localhost:8080";
 
 
     @Bean
