@@ -1,5 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
+import io.github.ValterGabriell.FrequenciaAlunos.controller.AdmController;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.HateoasModel;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
@@ -9,10 +11,14 @@ import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Links;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class AdmService {
@@ -47,7 +53,18 @@ public class AdmService {
 
     public Page<GetAdmin> getAllAdmins(Pageable pageable) {
         Page<Admin> adminList = adminRepository.findAll(pageable);
-        List<GetAdmin> collect = adminList.stream().map(Admin::getAdminMapper).collect(Collectors.toList());
+
+
+        List<GetAdmin> collect =
+                adminList
+                        .stream()
+                        .map(item -> item
+                                .add(linkTo(methodOn(AdmController.class)
+                                        .getAdminById(item.getId())).withSelfRel())
+                                .getAdminMapper()
+                        )
+                        .toList();
+
         Page<GetAdmin> page = new PageImpl<>(collect);
         return page;
     }
@@ -67,7 +84,16 @@ public class AdmService {
     }
 
     public GetAdmin getAdminById(String adminId) {
-        return findAdminByIdOrThrowException(adminId).getAdminMapper();
+        Admin admin = findAdminByIdOrThrowException(adminId);
+
+        admin.add(linkTo(
+                methodOn(AdmController.class)
+                        .getAllAdmins(Pageable.unpaged())).withRel("Lista de Administradores"));
+
+        Links links = admin.getLinks();
+        GetAdmin adminMapper = admin.getAdminMapper();
+        adminMapper.setLinks(links);
+        return adminMapper;
     }
 
     public String deleteAdminById(String adminId) {

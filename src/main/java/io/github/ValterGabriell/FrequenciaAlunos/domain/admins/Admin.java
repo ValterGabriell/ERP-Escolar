@@ -3,11 +3,12 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
 @Entity(name = "table_admin")
-public class Admin {
+public class Admin extends RepresentationModel<Admin> {
     @Id
     private String id;
     @Column(nullable = false)
@@ -88,7 +89,8 @@ public class Admin {
                 getId(),
                 getUsername(),
                 getEmail(),
-                getCnpj()
+                getCnpj(),
+                getLinks()
         );
     }
 
