@@ -38,6 +38,7 @@ public class AdmService {
         if (isPresent) {
             throw new RequestExceptions("Cadastro com CNPJ encontrado!");
         } else {
+            validation.checkIfAdminCnpjIsCorrect(newAdmin.getCnpj());
             Admin admin = newAdmin.toAdmin();
             adminRepository.save(admin);
             return "Admin criado com sucesso!" + admin.getEmail();

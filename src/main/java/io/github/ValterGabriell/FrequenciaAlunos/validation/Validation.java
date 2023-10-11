@@ -27,8 +27,14 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
 
     @Override
     public void checkIfStudentCpfAreCorrect(String cpf) {
-        if (cpf.length() != 11) {
-            throw new RequestExceptions(ExceptionsValues.ILLEGAL_CPF_LENGTH);
+        String regex = "^[0-9]*$";
+        boolean matches = cpf.matches(regex);
+        if (matches) {
+            if (cpf.length() != 11) {
+                throw new RequestExceptions(ExceptionsValues.ILLEGAL_CPF_LENGTH);
+            }
+        } else {
+            throw new RequestExceptions(ExceptionsValues.DONT_CONTAINS_ONLY_NUMBERS);
         }
     }
 
@@ -77,5 +83,19 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     public Admin validateIfAdminExistsAndReturnIfExist_ById(AdminRepository adminRepository, String adminId) {
         Optional<Admin> admin = adminRepository.findById(adminId);
         return admin.orElse(null);
+    }
+
+    @Override
+    public void checkIfAdminCnpjIsCorrect(String cnpj) {
+        String regex = "^[0-9]*$";
+        boolean matches = cnpj.matches(regex);
+        if (matches) {
+            boolean fieldHasNumberExcatlyOfChars = isFieldHasNumberExcatlyOfChars(cnpj, 14);
+            if (!fieldHasNumberExcatlyOfChars) {
+                throw new RequestExceptions(ExceptionsValues.ILLEGAL_CNPJ_LENGTH);
+            }
+        } else {
+            throw new RequestExceptions(ExceptionsValues.DONT_CONTAINS_ONLY_NUMBERS);
+        }
     }
 }
