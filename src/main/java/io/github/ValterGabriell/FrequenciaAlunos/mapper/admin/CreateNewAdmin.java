@@ -43,12 +43,12 @@ public class CreateNewAdmin {
         this.email = email;
     }
 
-    public String getCpf() {
+    public String getCnpj() {
         return cnpj;
     }
 
-    public void setCpf(String cpf) {
-        this.cnpj = cpf;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public Admin toAdmin() {

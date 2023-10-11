@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;

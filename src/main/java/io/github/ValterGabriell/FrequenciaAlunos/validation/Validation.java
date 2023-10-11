@@ -1,5 +1,8 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain;
+package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.FieldValidation;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.AdminValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.FrequencyValidation;
@@ -7,11 +10,12 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.StudentValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 
 import java.util.Optional;
 
-public class Validation implements StudentValidation, FrequencyValidation, FieldValidation {
+public class Validation implements StudentValidation, FrequencyValidation, FieldValidation, AdminValidation {
     @Override
     public Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentId) {
         Optional<Student> student = studentsRepository.findById(studentId);
@@ -61,5 +65,17 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
         if (frequency.getDaysList().contains(day)) {
             throw new RequestExceptions(ExceptionsValues.STUDENT_ALREADY_VALIDATED);
         }
+    }
+
+    @Override
+    public boolean validateIfAdminExistsAndReturnIfExist_ByCnpj(AdminRepository adminRepository, String cnpj) {
+        Optional<Admin> admin = adminRepository.findByCnpj(cnpj);
+        return admin.isPresent();
+    }
+
+    @Override
+    public Admin validateIfAdminExistsAndReturnIfExist_ById(AdminRepository adminRepository, String adminId) {
+        Optional<Admin> admin = adminRepository.findById(adminId);
+        return admin.orElse(null);
     }
 }

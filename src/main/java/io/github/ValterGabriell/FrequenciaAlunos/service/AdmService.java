@@ -5,15 +5,13 @@ import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.CreateNewAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,18 +23,24 @@ public class AdmService {
     }
 
     private Admin findAdminByIdOrThrowException(String adminId) {
-        return adminRepository.findById(adminId)
-                .orElseThrow(() -> new RequestExceptions("Usuário " + adminId + " não encontrado!"));
+        Validation validation = new Validation();
+        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_ById(adminRepository, adminId);
+        if (admin == null) {
+            throw new RequestExceptions("Usuário " + adminId + " não encontrado!");
+        } else {
+            return admin;
+        }
     }
 
     public String createNewAdmin(CreateNewAdmin newAdmin) {
-        boolean adminIsPresentOnDatabase = adminRepository.findByEmail(newAdmin.getEmail()).isPresent();
-        if (!adminIsPresentOnDatabase) {
+        Validation validation = new Validation();
+        boolean isPresent = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, newAdmin.getCnpj());
+        if (isPresent) {
+            throw new RequestExceptions("Cadastro com CNPJ encontrado!");
+        } else {
             Admin admin = newAdmin.toAdmin();
             adminRepository.save(admin);
             return "Admin criado com sucesso!" + admin.getEmail();
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado!");
         }
     }
 

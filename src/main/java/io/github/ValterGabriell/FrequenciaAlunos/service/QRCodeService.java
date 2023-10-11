@@ -3,7 +3,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import com.google.zxing.WriterException;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode.QRCodeGenerate;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.qrcode.QrCodeMessage;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
