@@ -79,8 +79,8 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     }
 
     @Override
-    public Admin validateIfAdminExistsAndReturnIfExist_ById(AdminRepository adminRepository, String adminId) {
-        Optional<Admin> admin = adminRepository.findById(adminId);
+    public Admin validateIfAdminExistsAndReturnIfExist_BySkId(AdminRepository adminRepository, String skId) {
+        Optional<Admin> admin = adminRepository.findBySkid(skId);
         return admin.orElse(null);
     }
 

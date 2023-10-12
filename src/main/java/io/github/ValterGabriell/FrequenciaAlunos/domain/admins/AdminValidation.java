@@ -4,7 +4,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 
 public interface AdminValidation {
     boolean validateIfAdminExistsAndReturnIfExist_ByCnpj(AdminRepository adminRepository, String cnpj);
-    Admin validateIfAdminExistsAndReturnIfExist_ById(AdminRepository adminRepository, String adminId);
+    Admin validateIfAdminExistsAndReturnIfExist_BySkId(AdminRepository adminRepository, String skId);
 
     void checkIfAdminCnpjIsCorrect(String cnpj);
 }

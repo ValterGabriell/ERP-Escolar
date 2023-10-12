@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdmin;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -11,6 +11,9 @@ import java.util.List;
 public class Admin extends RepresentationModel<Admin> {
     @Id
     private String id;
+
+    @Column(nullable = false)
+    private String skid;
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
@@ -80,13 +83,21 @@ public class Admin extends RepresentationModel<Admin> {
         return cnpj;
     }
 
-    public void setCpf(String cpf) {
-        this.cnpj = cpf;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
-    public GetAdmin getAdminMapper() {
-        return new GetAdmin(
-                getId(),
+    public String getSkId() {
+        return skid;
+    }
+
+    public void setSkId(String skId) {
+        this.skid = skId;
+    }
+
+    public GetAdminMapper getAdminMapper() {
+        return new GetAdminMapper(
+                getSkId(),
                 getUsername(),
                 getEmail(),
                 getCnpj(),

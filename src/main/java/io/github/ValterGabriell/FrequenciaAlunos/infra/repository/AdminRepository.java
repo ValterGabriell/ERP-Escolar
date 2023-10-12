@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface AdminRepository extends JpaRepository<Admin, String> {
     Optional<Admin> findByEmail(String email);
     Optional<Admin> findByCnpj(String cnpj);
+    Optional<Admin> findBySkid(String skId);
 }
