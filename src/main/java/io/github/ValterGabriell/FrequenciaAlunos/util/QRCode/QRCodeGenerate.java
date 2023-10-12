@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.QRCode;
+package io.github.ValterGabriell.FrequenciaAlunos.util.QRCode;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;

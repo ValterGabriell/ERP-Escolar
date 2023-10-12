@@ -55,7 +55,7 @@ class AdminRepositoryTest {
         this.adminRepository.delete(savedAdmin);
 
         Optional<Admin> optionalAdmin =
-                this.adminRepository.findByEmail(savedAdmin.getEmail());
+                this.adminRepository.findByEmail(savedAdmin.getEmail(), savedAdmin.getTenant());
 
         Assertions.assertThat(optionalAdmin).isEmpty();
 
@@ -69,7 +69,7 @@ class AdminRepositoryTest {
         Admin savedAdmin = this.adminRepository.save(adminToBeUpdated);
 
         Optional<Admin> optionalAdmin =
-                this.adminRepository.findByEmail(savedAdmin.getEmail());
+                this.adminRepository.findByEmail(savedAdmin.getEmail(), savedAdmin.getTenant());
 
         Assertions.assertThat(optionalAdmin).isNotEmpty();
 

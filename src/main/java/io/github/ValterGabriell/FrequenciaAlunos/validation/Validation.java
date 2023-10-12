@@ -25,7 +25,7 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     }
 
     @Override
-    public void checkIfStudentCpfAreCorrect(String cpf) {
+    public void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf) {
         String regex = "^[0-9]*$";
         boolean matches = cpf.matches(regex);
         if (matches) {
@@ -57,7 +57,7 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     }
 
     @Override
-    public boolean validateIfIsEmpty(String field, String exceptionMessage) throws RequestExceptions {
+    public boolean validateIfIsNotEmpty(String field, String exceptionMessage) throws RequestExceptions {
         boolean isFieldNotNull = !field.isEmpty() || field.isBlank();
         if (!isFieldNotNull) {
             throw new RequestExceptions(exceptionMessage);
@@ -73,14 +73,20 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     }
 
     @Override
-    public boolean validateIfAdminExistsAndReturnIfExist_ByCnpj(AdminRepository adminRepository, String cnpj) {
-        Optional<Admin> admin = adminRepository.findByCnpj(cnpj);
+    public boolean validateIfAdminExistsAndReturnIfExist_ByCnpj(
+            AdminRepository adminRepository,
+            String cnpj,
+            Integer tenant) {
+        Optional<Admin> admin = adminRepository.findByCnpj(cnpj, tenant);
         return admin.isPresent();
     }
 
     @Override
-    public Admin validateIfAdminExistsAndReturnIfExist_BySkId(AdminRepository adminRepository, String skId) {
-        Optional<Admin> admin = adminRepository.findBySkid(skId);
+    public Admin validateIfAdminExistsAndReturnIfExist_BySkId(
+            AdminRepository adminRepository,
+            String skId,
+            Integer tenant) {
+        Optional<Admin> admin = adminRepository.findBySkid(skId, tenant);
         return admin.orElse(null);
     }
 

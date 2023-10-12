@@ -2,6 +2,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain.days;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -15,15 +16,23 @@ public class Days {
 
     @Id
     private String id;
+
+    @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = false)
     private boolean justified;
+
+    @Column(nullable = false)
+    private Integer tenant;
 
     public Days() {
     }
 
-    public Days(LocalDate date) {
+    public Days(LocalDate date, Integer tenant) {
         this.date = date;
         this.id = String.valueOf(System.currentTimeMillis());
+        this.tenant = tenant;
     }
 
     public Days(LocalDate date, boolean justified) {

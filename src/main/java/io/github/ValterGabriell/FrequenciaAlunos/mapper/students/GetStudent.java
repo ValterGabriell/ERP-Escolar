@@ -1,5 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
+import org.springframework.hateoas.Links;
+
 import java.time.LocalDateTime;
 
 public class GetStudent {
@@ -9,12 +11,15 @@ public class GetStudent {
     private LocalDateTime startDate;
     private String adminId;
 
-    public GetStudent(String cpf, String username, String email, LocalDateTime startDate, String adminId) {
+    private Links links;
+
+    public GetStudent(String cpf, String username, String email, LocalDateTime startDate, String adminId, Links links) {
         this.cpf = cpf;
         this.username = username;
         this.email = email;
         this.startDate = startDate;
         this.adminId = adminId;
+        this.links = links;
     }
 
     public String getCpf() {
@@ -35,5 +40,9 @@ public class GetStudent {
 
     public String getAdminId() {
         return adminId;
+    }
+
+    public Links getLinks() {
+        return links;
     }
 }

@@ -1,18 +1,18 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.sheet.SheetManipulation;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
+import io.github.ValterGabriell.FrequenciaAlunos.util.sheet.SheetManipulation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -42,13 +42,18 @@ public class FrequencyService extends Validation {
      * @return response with the student frequency validated or erro while validation frequency
      */
     public ResponseValidateFrequency validateFrequency(String studentId) throws RequestExceptions {
-        checkIfStudentCpfAreCorrect(studentId);
+        checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
+
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId);
+
         Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
-        Days currentDay = new Days(LocalDate.now());
+
+        Days currentDay = new Days(LocalDate.now(), frequency.getTenant());
+
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, currentDay);
 
         frequency.getDaysList().add(currentDay);
+
         frequencyRepository.save(frequency);
 
         ResponseValidateFrequency responseValidateFrequency = new ResponseValidateFrequency();
@@ -62,7 +67,7 @@ public class FrequencyService extends Validation {
      * @param studentId represent primary key of student table
      */
     public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId) throws RequestExceptions {
-        checkIfStudentCpfAreCorrect(studentId);
+        checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId);
         Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
         ResponseDaysThatStudentGoToClass responseDaysThatStudentGoToClass = new ResponseDaysThatStudentGoToClass();
@@ -114,7 +119,7 @@ public class FrequencyService extends Validation {
     public ResponseValidateFrequency justifyAbsence(LocalDate date, String studentId) {
         Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
         Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
-        Days day = new Days(date);
+        Days day = new Days(date, frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, day);
 
         day.setJustified(true);

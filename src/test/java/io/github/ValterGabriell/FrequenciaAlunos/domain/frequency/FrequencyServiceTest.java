@@ -29,8 +29,7 @@ class FrequencyServiceTest {
 
     private Days addNewDay(List<Days> days) {
         LocalDate date = LocalDate.now();
-
-        Days day = new Days(date);
+        Days day = new Days(date, 10);
 
         if (!days.contains(day)) {
             days.add(day);

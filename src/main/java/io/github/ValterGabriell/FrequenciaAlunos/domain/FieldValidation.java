@@ -7,5 +7,5 @@ public interface FieldValidation{
 
     boolean isFieldHasNumberExcatlyOfChars(String field, int charNumber);
 
-    boolean validateIfIsEmpty(String field, String exceptionMessage) throws RequestExceptions;
+    boolean validateIfIsNotEmpty(String field, String exceptionMessage) throws RequestExceptions;
 }

@@ -20,7 +20,7 @@ class StudentsServiceTest {
     @Test
     @DisplayName("A username should be not null and return true when it is")
     void isUsernameNotNull_ReturnTrue_WhenUsernameIsNotNull() {
-        Assertions.assertTrue(studentUsernameTest.usernameIsNull());
+        Assertions.assertTrue(studentUsernameTest.usernameIsNotNull());
     }
 
     @Test

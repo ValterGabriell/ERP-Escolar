@@ -5,5 +5,5 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsReposi
 public interface StudentValidation {
 
     Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentId);
-    void checkIfStudentCpfAreCorrect(String cpf);
+    void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf);
 }

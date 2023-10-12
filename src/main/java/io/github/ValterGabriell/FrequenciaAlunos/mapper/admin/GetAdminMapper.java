@@ -18,6 +18,7 @@ public class GetAdminMapper {
         this.links = links;
     }
 
+
     public GetAdminMapper() {
     }
 

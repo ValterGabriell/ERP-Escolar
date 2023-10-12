@@ -1,5 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
+import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
@@ -18,6 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED;
+import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class StudentsService extends Validation {
@@ -32,72 +37,107 @@ public class StudentsService extends Validation {
     }
 
     /**
-     * method to insert student on database
-     *
-     * @param request request with data to make the insertion
-     *                should be: cpf with formatt: XXXXXXXXXXX
-     *                cpf must contains 11 characters only with numbers
-     *                besides that, student username that is a simple string that must contains only letters
-     * @return student object created
+     * Método para inserir um estudante no banco de dados.
+     * @param request requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
+     * CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
+     * O nome de usuário deve conter apenas letras.
+     * @param adminSkId O identificador do administrador responsável pela inserção.
+     * @param tenant O inquilino associado ao estudante.
+     * @return O objeto do estudante criado.
      */
-    public InsertStudents insertStudentIntoDatabase(InsertStudents request, String adminId) {
+    public GetStudent insertStudentIntoDatabase(InsertStudents request,
+                                                String adminSkId,
+                                                Integer tenant) {
         boolean present = studentsRepository.findById(request.getCpf()).isPresent();
 
         if (present) {
             throw new RequestExceptions(STUDENT_ALREADY_SAVED);
         }
-        if (request.usernameIsNull()
-                && request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
-                && request.usernameHasToBeMoreThanTwoChars()
-                && request.emailIsNull()
-        ) {
-            Admin admin = checkIfStudentAlreadyInsertedToAdmin(adminId, request.getCpf());
-            if (admin == null) {
-                throw new RequestExceptions("Estudante já cadastrado para esse administrador!");
-            } else {
-                Student student;
-                student = request.toModel();
-                student.setAdmin(admin);
 
-                Frequency frequency = new Frequency();
-                frequency.setId(student.getCpf());
-                frequency.setDaysList(new ArrayList<>());
 
-                //inserir frequencia no estudante
+        if (!request.usernameIsNotNull()
+                && !request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
+                && !request.emailIsNotNull()
+        ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
 
-                frequencyRepository.save(frequency);
-                studentsRepository.save(student);
-            }
+        Admin admin =
+                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminSkId, request.getCpf(), tenant);
+        if (admin == null) {
+            throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
         }
-        return request;
+
+        Student student;
+        student = request.toModel(admin.getTenant());
+        student.setAdmin(admin);
+
+        Frequency frequency = new Frequency(student.getTenant());
+        frequency.setId(student.getCpf());
+        frequency.setDaysList(new ArrayList<>());
+
+        //inserir frequencia no estudante
+        frequencyRepository.save(frequency);
+
+        //gerar resposta para o cliente
+        Student studentSaved = studentsRepository.save(student);
+        studentSaved.add(linkTo(methodOn(StudentsController.class).getAllStudents()).withSelfRel());
+        return generateStudentResponse(studentSaved);
     }
 
-    private Admin checkIfStudentAlreadyInsertedToAdmin(String adminId, String studentId) {
-        Admin admin = adminRepository.findById(adminId).orElseThrow(() -> new RequestExceptions("Administrador não encontrado!"));
+    /**
+     * Método privado para gerar a resposta de um estudante (GetStudent) com base nos dados do estudante salvo.
+     * @param studentSaved O estudante recém-salvo cujos dados serão usados para criar a resposta.
+     * @return Uma instância de GetStudent com os dados do estudante salvo.
+     */
+    private static GetStudent generateStudentResponse(Student studentSaved) {
+        GetStudent getStudent;
+        getStudent = new GetStudent(
+                studentSaved.getCpf(),
+                studentSaved.getUsername(),
+                studentSaved.getEmail(),
+                studentSaved.getStartDate(),
+                studentSaved.getAdmin().getSkId(),
+                studentSaved.getLinks()
+        );
+        return getStudent;
+    }
+
+    /**
+     * Método privado para verificar se um estudante já foi associado a um administrador e retorna o administrador se não foi.
+     * @param adminSkId O identificador do administrador a ser verificado.
+     * @param studentId O ID do estudante a ser verificado.
+     * @param tenantId O inquilino associado ao administrador.
+     * @return O administrador se o estudante já estiver associado a ele; caso contrário, retorna null.
+     * @throws RequestExceptions Se o administrador com o `adminSkId` especificado não for encontrado.
+     */
+    private Admin checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(
+            String adminSkId,
+            String studentId,
+            Integer tenantId) {
+        Admin admin = adminRepository.findBySkid(adminSkId, tenantId)
+                .orElseThrow(() -> new RequestExceptions("Administrador " + adminSkId + " não encontrado!"));
         for (Student student : admin.getStudents()) {
             if (student.getCpf().equals(studentId)) {
                 return admin;
             }
         }
-        if (admin.getStudents().isEmpty()){
+        if (admin.getStudents().isEmpty()) {
             return admin;
         }
         return null;
     }
 
     /**
-     * update student data
-     *
-     * @param request   request with new data to make the insertion should be: cpf with formatt: XXXXXXXXXXX cpf must contains 11 characters only with numbers besides that, student username that is a simple string that must contains only letters
-     * @param studentId id of student that wanna update
-     * @return student updated
+     * Método para atualizar os dados de um estudante.
+     * @param request Requisição com os novos dados de inserção, incluindo CPF, nome de usuário, etc.
+     * @param studentId O ID do estudante a ser atualizado.
+     * @return O estudante atualizado.
      */
     public Student updateStudent(InsertStudents request, String studentId) {
         /* get student to be updated */
         Student oldStudent = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
         /* create new student object */
         Student newStudent = new Student();
-        if (request.usernameIsNull()
+        if (request.usernameIsNotNull()
                 && request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
                 && request.usernameHasToBeMoreThanTwoChars()
                 && request.fieldContainsOnlyLetters(request.getUsername())) {
@@ -127,12 +167,20 @@ public class StudentsService extends Validation {
         return newStudent;
     }
 
+    /**
+     * Método para obter todos os estudantes do banco de dados.
+     * @return Uma lista de todos os estudantes do banco de dados.
+     */
     public List<Student> getAllStudentsFromDatabase() {
         List<Student> allStudents = studentsRepository.findAll();
         Collections.sort(allStudents);
         return allStudents;
     }
 
+    /**
+     * Método para excluir um estudante do banco de dados.
+     * @param studentId O ID do estudante a ser excluído.
+     */
     public void deleteStudent(String studentId) {
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId);
         studentsRepository.delete(student);

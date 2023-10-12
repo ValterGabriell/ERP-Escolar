@@ -22,15 +22,17 @@ public class AdmController {
         this.adminService = adminService;
     }
 
-    @PostMapping()
-    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin) {
-        var newAdmin = adminService.createNewAdmin(insertAdmin);
+    @PostMapping(params = {"tenantId"})
+    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin, @RequestParam Integer tenantId) {
+        var newAdmin = adminService.createNewAdmin(insertAdmin, tenantId);
         return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }
 
-    @GetMapping(params = "adminId")
-    public ResponseEntity<GetAdminMapper> getAdminBySkId(@RequestParam  String adminId){
-        GetAdminMapper admin = adminService.getAdminBySkId(adminId);
+    @GetMapping(params = {"adminSkId", "tenantId"})
+    public ResponseEntity<GetAdminMapper> getAdminBySkId(
+            @RequestParam String adminSkId,
+            @RequestParam Integer tenantId) {
+        GetAdminMapper admin = adminService.getAdminBySkId(adminSkId, tenantId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
@@ -41,23 +43,27 @@ public class AdmController {
         return new ResponseEntity<>(listAdmins, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-username", params = {"adminId"})
-    public ResponseEntity<GetAdminMapper> updateUsername(@RequestParam String adminId, @RequestBody UpdateAdminUsername updateAdminUsername) throws RequestExceptions {
-        GetAdminMapper admin = adminService.updateAdminUsername(adminId, updateAdminUsername);
+    @PutMapping(value = "update-username", params = {"adminId", "tenantId"})
+    public ResponseEntity<GetAdminMapper> updateUsername(
+            @RequestParam String adminId,
+            @RequestBody UpdateAdminUsername updateAdminUsername,
+            @RequestParam Integer tenantId) throws RequestExceptions {
+        GetAdminMapper admin = adminService.updateAdminUsername(adminId, updateAdminUsername, tenantId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-password", params = {"adminId"})
-    public ResponseEntity<GetAdminMapper> updatePassword(@RequestParam String adminId, @RequestBody UpdateAdminPassword updateAdminPassword) throws RequestExceptions {
-        GetAdminMapper admin = adminService.updateAdminPassword(adminId, updateAdminPassword);
+    @PutMapping(value = "update-password", params = {"adminId", "tenantId"})
+    public ResponseEntity<GetAdminMapper> updatePassword(
+            @RequestParam String adminId,
+            @RequestBody UpdateAdminPassword updateAdminPassword,
+            @RequestParam Integer tenantId) throws RequestExceptions {
+        GetAdminMapper admin = adminService.updateAdminPassword(adminId, updateAdminPassword, tenantId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @DeleteMapping(params = "adminId")
-    public ResponseEntity<String> deleteAdminBySkId(@RequestParam String adminId){
-        String response = adminService.deleteAdminById(adminId);
+    @DeleteMapping(params = {"adminId", "tenantId"})
+    public ResponseEntity<String> deleteAdminBySkId(@RequestParam String adminId, @RequestParam Integer tenantId) {
+        String response = adminService.deleteAdminById(adminId, tenantId);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-
     }
-
 }

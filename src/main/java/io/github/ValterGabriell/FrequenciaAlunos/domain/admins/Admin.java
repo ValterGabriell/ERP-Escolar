@@ -24,6 +24,10 @@ public class Admin extends RepresentationModel<Admin> {
     @Column(nullable = false)
     private String cnpj;
 
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer tenant;
+
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
 
@@ -63,9 +67,6 @@ public class Admin extends RepresentationModel<Admin> {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -75,16 +76,12 @@ public class Admin extends RepresentationModel<Admin> {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getCnpj() {
         return cnpj;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+    public Integer getTenant() {
+        return tenant;
     }
 
     public String getSkId() {
@@ -93,6 +90,10 @@ public class Admin extends RepresentationModel<Admin> {
 
     public void setSkId(String skId) {
         this.skid = skId;
+    }
+
+    public void setTenant(Integer tenant) {
+        this.tenant = tenant;
     }
 
     public GetAdminMapper getAdminMapper() {
@@ -109,10 +110,12 @@ public class Admin extends RepresentationModel<Admin> {
     public String toString() {
         return "Admin{" +
                 "id='" + id + '\'' +
+                ", skid='" + skid + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", cnpj='" + cnpj + '\'' +
+                ", tenant=" + tenant +
                 ", students=" + students +
                 '}';
     }

@@ -3,11 +3,12 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain.students;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Student implements Comparable<Student> {
+public class Student extends RepresentationModel<Student> implements Comparable<Student> {
 
     @Id
     @Column(name = "cpf", nullable = false)
@@ -21,6 +22,9 @@ public class Student implements Comparable<Student> {
     @Column(name = "finishedDate", nullable = true)
     private LocalDateTime finishedDate;
 
+    @Column(name = "tenant", nullable = false)
+    private Integer tenant;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "frequency_id", referencedColumnName = "id")
     private Frequency frequency;
@@ -29,13 +33,25 @@ public class Student implements Comparable<Student> {
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
-    public Student(String cpf, String username, String email, LocalDateTime startDate, LocalDateTime finishedDate, Frequency frequency) {
+    public Student(
+            String cpf,
+            String username,
+            String email,
+            LocalDateTime startDate,
+            LocalDateTime finishedDate,
+            Frequency frequency,
+            Integer tenant) {
         this.cpf = cpf;
         this.username = username;
         this.email = email;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
         this.frequency = frequency;
+        this.tenant = tenant;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
     public void setAdmin(Admin admin) {
@@ -61,32 +77,12 @@ public class Student implements Comparable<Student> {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getFinishedDate() {
-        return finishedDate;
-    }
-
-    public void setFinishedDate(LocalDateTime finishedDate) {
-        this.finishedDate = finishedDate;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Frequency getFrequency() {
@@ -95,6 +91,10 @@ public class Student implements Comparable<Student> {
 
     public void setFrequency(Frequency frequency) {
         this.frequency = frequency;
+    }
+
+    public Integer getTenant() {
+        return tenant;
     }
 
     @Override

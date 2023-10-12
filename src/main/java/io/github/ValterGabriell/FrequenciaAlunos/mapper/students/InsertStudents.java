@@ -31,23 +31,23 @@ public class InsertStudents extends Validation {
         return username;
     }
 
-    public boolean usernameIsNull() {
-        return validateIfIsEmpty(getUsername(), ExceptionsValues.USERNAME_NULL);
+    public boolean usernameIsNotNull() {
+        return validateIfIsNotEmpty(getUsername(), ExceptionsValues.USERNAME_NULL);
     }
 
-    public boolean emailIsNull() {
-        return validateIfIsEmpty(getEmail(), ExceptionsValues.EMAIL_NULL);
+    public boolean emailIsNotNull() {
+        return validateIfIsNotEmpty(getEmail(), ExceptionsValues.EMAIL_NULL);
     }
 
     public boolean cpfIsNull() {
-        return validateIfIsEmpty(getCpf(), ExceptionsValues.CPF_NULL);
+        return validateIfIsNotEmpty(getCpf(), ExceptionsValues.CPF_NULL);
     }
 
     public boolean usernameHasToBeMoreThanTwoChars() {
-        return validateIfIsEmpty(getUsername(), ExceptionsValues.USERNAME_ILLEGAL_LENGHT);
+        return validateIfIsNotEmpty(getUsername(), ExceptionsValues.USERNAME_ILLEGAL_LENGHT);
     }
 
-    public Student toModel() {
-        return new Student(this.cpf, this.username, this.email, LocalDateTime.now(), null, null);
+    public Student toModel(Integer tenant) {
+        return new Student(this.cpf, this.username, this.email, LocalDateTime.now(), null, null, tenant );
     }
 }
