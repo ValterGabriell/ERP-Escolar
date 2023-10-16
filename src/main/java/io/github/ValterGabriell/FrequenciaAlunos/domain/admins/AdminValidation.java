@@ -13,4 +13,5 @@ public interface AdminValidation {
             Integer tenant);
 
     void checkIfAdminCnpjIsCorrect(String cnpj);
+    void checkIfAdminTenantIdAlreadyExists(AdminRepository adminRepository, int tenant);
 }

@@ -41,10 +41,10 @@ public class FrequencyService extends Validation {
      * @param studentId represent primary key of student table
      * @return response with the student frequency validated or erro while validation frequency
      */
-    public ResponseValidateFrequency validateFrequency(String studentId) throws RequestExceptions {
+    public ResponseValidateFrequency validateFrequency(String studentId, int tenantId) throws RequestExceptions {
         checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
 
-        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId);
+        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
 
         Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
 
@@ -66,9 +66,9 @@ public class FrequencyService extends Validation {
      *
      * @param studentId represent primary key of student table
      */
-    public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId) throws RequestExceptions {
+    public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId, int tenantId) throws RequestExceptions {
         checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
-        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId);
+        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
         Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
         ResponseDaysThatStudentGoToClass responseDaysThatStudentGoToClass = new ResponseDaysThatStudentGoToClass();
         responseDaysThatStudentGoToClass.setStudentId(student.getCpf());

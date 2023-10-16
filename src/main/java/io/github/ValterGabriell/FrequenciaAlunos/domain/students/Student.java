@@ -7,8 +7,8 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
-@Entity
-public class Student extends RepresentationModel<Student> implements Comparable<Student> {
+@Entity(name = "tbl_students")
+public class Student extends RepresentationModel<Student> {
 
     @Id
     @Column(name = "cpf", nullable = false)
@@ -97,8 +97,11 @@ public class Student extends RepresentationModel<Student> implements Comparable<
         return tenant;
     }
 
-    @Override
-    public int compareTo(Student o) {
-        return this.username.compareTo(o.getUsername());
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTenant(Integer tenant) {
+        this.tenant = tenant;
     }
 }

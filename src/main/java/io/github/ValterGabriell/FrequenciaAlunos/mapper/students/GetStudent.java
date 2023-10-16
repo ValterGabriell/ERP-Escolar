@@ -1,10 +1,11 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import org.springframework.hateoas.Links;
 
 import java.time.LocalDateTime;
 
-public class GetStudent {
+public class GetStudent implements Comparable<GetStudent>  {
     private String cpf;
     private String username;
     private String email;
@@ -44,5 +45,10 @@ public class GetStudent {
 
     public Links getLinks() {
         return links;
+    }
+
+    @Override
+    public int compareTo(GetStudent o) {
+        return this.username.compareTo(o.getUsername());
     }
 }

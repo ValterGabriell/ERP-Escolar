@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.Links;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -70,8 +71,11 @@ public class AdmService {
      * @return Uma representação em formato de string dos links do administrador recém-criado.
      * @throws RequestExceptions Se um cadastro com o mesmo CNPJ for encontrado.
      */
+    @Transactional
     public String createNewAdmin(CreateNewAdmin newAdmin, Integer tenant) {
         Validation validation = new Validation();
+        validation.checkIfAdminTenantIdAlreadyExists(adminRepository, tenant);
+
         boolean isPresent =
                 validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, newAdmin.getCnpj(), tenant);
 
@@ -180,19 +184,6 @@ public class AdmService {
         admin.add(linkTo(
                 methodOn(AdmController.class)
                         .getAllAdmins(Pageable.unpaged())).withRel("Lista de Administradores"));
-
-        admin.add(linkTo(methodOn(AdmController.class)
-                .updateUsername(admin.getSkId(), null, admin.getTenant()))
-                .withSelfRel());
-
-        admin.add(linkTo(methodOn(AdmController.class)
-                .updatePassword(admin.getSkId(), null, admin.getTenant()))
-                .withSelfRel());
-
-        admin.add(linkTo(methodOn(AdmController.class)
-                .deleteAdminBySkId(admin.getSkId().substring(0, 10).concat("..."), admin.getTenant()))
-                .withSelfRel());
-
 
         admin.add(linkTo(methodOn(StudentsController.class)
                 .insertStudentsIntoDatabase(null, admin.getSkId(), admin.getTenant()))

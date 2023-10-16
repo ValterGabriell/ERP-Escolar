@@ -23,9 +23,10 @@ public class FrequencyController {
         this.frequencyService = frequencyService;
     }
 
-    @PostMapping(params = {"studentId"})
-    public ResponseEntity<ResponseValidateFrequency> validateFrequency(@RequestParam String studentId) throws RequestExceptions {
-        ResponseValidateFrequency responseValidadeFrequency = frequencyService.validateFrequency(studentId);
+    @PostMapping(params = {"studentId", "tenantId"})
+    public ResponseEntity<ResponseValidateFrequency> validateFrequency(@RequestParam String studentId,
+                                                                       @RequestParam int tenantId) throws RequestExceptions {
+        ResponseValidateFrequency responseValidadeFrequency = frequencyService.validateFrequency(studentId, tenantId);
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
@@ -41,9 +42,10 @@ public class FrequencyController {
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
-    @GetMapping(params = {"studentId"})
-    public ResponseEntity<ResponseDaysThatStudentGoToClass> getListOfDays(@RequestParam String studentId) throws RequestExceptions {
-        ResponseDaysThatStudentGoToClass listOfDaysByFrequencyId = frequencyService.getListOfDaysByFrequencyId(studentId);
+    @GetMapping(params = {"studentId","tenantId"})
+    public ResponseEntity<ResponseDaysThatStudentGoToClass> getListOfDays(@RequestParam String studentId,
+                                                                          @RequestParam int tenantId) throws RequestExceptions {
+        ResponseDaysThatStudentGoToClass listOfDaysByFrequencyId = frequencyService.getListOfDaysByFrequencyId(studentId,tenantId);
         return new ResponseEntity<>(listOfDaysByFrequencyId, HttpStatus.OK);
     }
 

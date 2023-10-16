@@ -16,8 +16,11 @@ import java.util.Optional;
 
 public class Validation implements StudentValidation, FrequencyValidation, FieldValidation, AdminValidation {
     @Override
-    public Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentId) {
-        Optional<Student> student = studentsRepository.findById(studentId);
+    public Student validateIfStudentExistsAndReturnIfExist(
+            StudentsRepository studentsRepository,
+            String studentId,
+            int tenantId) {
+        Optional<Student> student = studentsRepository.findById(studentId, tenantId);
         if (student.isEmpty()) {
             throw new RequestExceptions(ExceptionsValues.USER_NOT_FOUND + " " + studentId);
         }
@@ -101,6 +104,14 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
             }
         } else {
             throw new RequestExceptions(ExceptionsValues.DONT_CONTAINS_ONLY_NUMBERS);
+        }
+    }
+
+    @Override
+    public void checkIfAdminTenantIdAlreadyExists(AdminRepository adminRepository, int tenant) {
+        boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();
+        if (adminWithTenantPresent){
+            throw new RequestExceptions("Tenant já existente!");
         }
     }
 }

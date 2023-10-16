@@ -1,23 +1,31 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED;
 import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR;
@@ -30,7 +38,10 @@ public class StudentsService extends Validation {
     private final FrequencyRepository frequencyRepository;
     private final AdminRepository adminRepository;
 
-    public StudentsService(StudentsRepository studentsRepository, FrequencyRepository frequencyRepository, AdminRepository adminRepository) {
+    public StudentsService(
+            StudentsRepository studentsRepository,
+            FrequencyRepository frequencyRepository,
+            AdminRepository adminRepository) {
         this.studentsRepository = studentsRepository;
         this.frequencyRepository = frequencyRepository;
         this.adminRepository = adminRepository;
@@ -38,11 +49,12 @@ public class StudentsService extends Validation {
 
     /**
      * Método para inserir um estudante no banco de dados.
-     * @param request requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
-     * CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
-     * O nome de usuário deve conter apenas letras.
+     *
+     * @param request   requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
+     *                  CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
+     *                  O nome de usuário deve conter apenas letras.
      * @param adminSkId O identificador do administrador responsável pela inserção.
-     * @param tenant O inquilino associado ao estudante.
+     * @param tenant    O inquilino associado ao estudante.
      * @return O objeto do estudante criado.
      */
     public GetStudent insertStudentIntoDatabase(InsertStudents request,
@@ -79,12 +91,14 @@ public class StudentsService extends Validation {
 
         //gerar resposta para o cliente
         Student studentSaved = studentsRepository.save(student);
-        studentSaved.add(linkTo(methodOn(StudentsController.class).getAllStudents()).withSelfRel());
+        studentSaved.add(linkTo(methodOn(StudentsController.class)
+                .getAllStudents(null, 0)).withSelfRel());
         return generateStudentResponse(studentSaved);
     }
 
     /**
      * Método privado para gerar a resposta de um estudante (GetStudent) com base nos dados do estudante salvo.
+     *
      * @param studentSaved O estudante recém-salvo cujos dados serão usados para criar a resposta.
      * @return Uma instância de GetStudent com os dados do estudante salvo.
      */
@@ -102,10 +116,12 @@ public class StudentsService extends Validation {
     }
 
     /**
-     * Método privado para verificar se um estudante já foi associado a um administrador e retorna o administrador se não foi.
+     * Método privado para verificar
+     * se um estudante já foi associado a um administrador e retorna o administrador se não foi.
+     *
      * @param adminSkId O identificador do administrador a ser verificado.
      * @param studentId O ID do estudante a ser verificado.
-     * @param tenantId O inquilino associado ao administrador.
+     * @param tenantId  O inquilino associado ao administrador.
      * @return O administrador se o estudante já estiver associado a ele; caso contrário, retorna null.
      * @throws RequestExceptions Se o administrador com o `adminSkId` especificado não for encontrado.
      */
@@ -126,63 +142,62 @@ public class StudentsService extends Validation {
         return null;
     }
 
-    /**
-     * Método para atualizar os dados de um estudante.
-     * @param request Requisição com os novos dados de inserção, incluindo CPF, nome de usuário, etc.
-     * @param studentId O ID do estudante a ser atualizado.
-     * @return O estudante atualizado.
-     */
-    public Student updateStudent(InsertStudents request, String studentId) {
-        /* get student to be updated */
-        Student oldStudent = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
-        /* create new student object */
-        Student newStudent = new Student();
-        if (request.usernameIsNotNull()
-                && request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
-                && request.usernameHasToBeMoreThanTwoChars()
-                && request.fieldContainsOnlyLetters(request.getUsername())) {
-
-            /* get the frequency of student to be updated */
-            Frequency frequency = frequencyRepository
-                    .findById(oldStudent.getCpf())
-                    .orElseThrow(() -> new RequestExceptions(ExceptionsValues.FREQUENCY_NOT_FOUND));
-            /* store the list of days from students in a variabel dayList */
-            List<Days> daysList = frequency.getDaysList();
-            /* delete the student frequency */
-            frequencyRepository.delete(frequency);
-
-            /* create a new frequency with the new id and old dayList */
-            Frequency newFrequency = new Frequency();
-            newFrequency.setId(request.getCpf());
-            newFrequency.setDaysList(daysList);
-            frequencyRepository.save(newFrequency);
-
-            /* delete old student and create a new student with new data.
-             * student id is matching frequency id */
-            studentsRepository.delete(oldStudent);
-            newStudent.setCpf(request.getCpf());
-            newStudent.setUsername(request.getUsername());
-            studentsRepository.save(newStudent);
-        }
-        return newStudent;
-    }
 
     /**
      * Método para obter todos os estudantes do banco de dados.
      * @return Uma lista de todos os estudantes do banco de dados.
      */
-    public List<Student> getAllStudentsFromDatabase() {
-        List<Student> allStudents = studentsRepository.findAll();
-        Collections.sort(allStudents);
-        return allStudents;
+    public Page<GetStudent> getAllStudentsFromDatabase(Pageable pageable, int tenantId) {
+        Page<Student> allStudents = studentsRepository.findAll(pageable);
+
+        Predicate<Student> filterByTenant = (student) -> {
+            return student.getTenant() == tenantId;
+        };
+
+        Function<Student, GetStudent> mapToGetStudent = (student) -> {
+            return new GetStudent(
+                    student.getCpf(),
+                    student.getUsername(),
+                    student.getEmail(),
+                    student.getStartDate(),
+                    student.getAdmin().getSkId(),
+                    student.getLinks());
+        };
+
+        List<GetStudent> studentsFilteredByTenantId =
+                allStudents.stream()
+                        .filter(filterByTenant)
+                        .map(mapToGetStudent).collect(Collectors.toList());
+
+        Collections.sort(studentsFilteredByTenantId);
+        Page<GetStudent> page = new PageImpl<>(studentsFilteredByTenantId);
+        return page;
+    }
+
+    /**
+     * Método para obter 1 estudante pelo cpf e tenant.
+     * @return Um estudante.
+     */
+    public GetStudent getStudentByCpf(String cpf, int tenantId) {
+        Validation validation = new Validation();
+        Student student = validation.validateIfStudentExistsAndReturnIfExist(studentsRepository, cpf, tenantId);
+        return new GetStudent(
+                student.getCpf(),
+                student.getUsername(),
+                student.getEmail(),
+                student.getStartDate(),
+                student.getAdmin().getSkId(),
+                student.getLinks()
+        );
     }
 
     /**
      * Método para excluir um estudante do banco de dados.
+     *
      * @param studentId O ID do estudante a ser excluído.
      */
-    public void deleteStudent(String studentId) {
-        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId);
+    public void deleteStudent(String studentId, int tenantId) {
+        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
         studentsRepository.delete(student);
     }
 }

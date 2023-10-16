@@ -19,4 +19,7 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
 
     @Query(value = "SELECT * FROM table_admin WHERE skId = :skId AND tenant =:tenant", nativeQuery = true)
     Optional<Admin> findBySkid(@Param("skId")String skId, @Param("tenant") Integer tenant);
+
+    Optional<Admin> findByTenant(int tenantId);
+
 }
