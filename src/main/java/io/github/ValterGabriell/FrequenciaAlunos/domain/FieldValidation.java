@@ -1,11 +1,11 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
-import io.github.ValterGabriell.FrequenciaAlunos.excpetion.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 
 public interface FieldValidation{
     boolean fieldContainsOnlyLetters(String field);
 
     boolean isFieldHasNumberExcatlyOfChars(String field, int charNumber);
 
-    boolean validateIfIsEmpty(String field, String exceptionMessage) throws RequestExceptions;
+    boolean validateIfIsNotEmpty(String field, String exceptionMessage) throws RequestExceptions;
 }
