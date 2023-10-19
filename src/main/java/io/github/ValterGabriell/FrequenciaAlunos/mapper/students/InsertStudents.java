@@ -1,8 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 
 import java.time.LocalDateTime;
 
@@ -48,6 +48,6 @@ public class InsertStudents extends Validation {
     }
 
     public Student toModel(Integer tenant) {
-        return new Student(this.cpf, this.username, this.email, LocalDateTime.now(), null, null, tenant );
+        return new Student(this.cpf, this.getUsername(), this.getEmail(), LocalDateTime.now(), null, tenant);
     }
 }

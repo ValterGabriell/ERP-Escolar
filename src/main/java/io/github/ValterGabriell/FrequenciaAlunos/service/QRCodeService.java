@@ -37,7 +37,7 @@ public class QRCodeService extends Validation {
             throw new RequestExceptions(ExceptionsValues.ILLEGAL_CPF_LENGTH);
         }
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
-        QrCodeMessage qrm = new QrCodeMessage(student.getUsername(), student.getCpf());
+        QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getId());
         BufferedImage bufferedImage = QRCodeGenerate.generateQRCodeImage(qrm, 400, 400);
         String imageAsBase64;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -55,7 +55,7 @@ public class QRCodeService extends Validation {
             throw new RequestExceptions(ExceptionsValues.ILLEGAL_CPF_LENGTH);
         }
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
-        QrCodeMessage qrm = new QrCodeMessage(student.getUsername(), student.getCpf());
+        QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getId());
         return QRCodeGenerate.generateQRCodeImage(qrm, 400, 400);
     }
 

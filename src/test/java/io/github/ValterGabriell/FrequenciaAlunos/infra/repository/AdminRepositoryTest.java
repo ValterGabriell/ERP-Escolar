@@ -36,7 +36,7 @@ class AdminRepositoryTest {
 
         Admin savedAdmin = this.adminRepository.save(adminToBeSaved);
 
-        savedAdmin.setUsername("NOME NOVO");
+        savedAdmin.setFirstName("NOME NOVO");
 
         Admin updatedAdmin = this.adminRepository.save(savedAdmin);
 
@@ -78,11 +78,11 @@ class AdminRepositoryTest {
 
     private Admin createAdmin() {
         return new Admin(
-                UUID.randomUUID().toString(),
-                "Jose Carlos",
+                "Jose",
                 "123",
                 "email@gmail.com",
-                "123456789"
+                "123456789",
+                "Carlos"
         );
     }
 

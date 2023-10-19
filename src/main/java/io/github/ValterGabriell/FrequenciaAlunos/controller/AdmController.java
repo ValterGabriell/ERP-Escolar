@@ -2,11 +2,8 @@ package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.CreateNewAdmin;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.UpdateAdminPassword;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.UpdateAdminUsername;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AdmService;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,11 +25,11 @@ public class AdmController {
         return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }
 
-    @GetMapping(params = {"adminSkId", "tenantId"})
+    @GetMapping(value = {"/{cnpj}"}, params = {"tenantId"})
     public ResponseEntity<GetAdminMapper> getAdminBySkId(
-            @RequestParam String adminSkId,
+            @PathVariable String cnpj,
             @RequestParam Integer tenantId) {
-        GetAdminMapper admin = adminService.getAdminBySkId(adminSkId, tenantId);
+        GetAdminMapper admin = adminService.getAdminByCnpj(cnpj, tenantId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
@@ -43,26 +40,35 @@ public class AdmController {
         return new ResponseEntity<>(listAdmins, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-username", params = {"adminId", "tenantId"})
-    public ResponseEntity<GetAdminMapper> updateUsername(
-            @RequestParam String adminId,
-            @RequestBody UpdateAdminUsername updateAdminUsername,
+    @PutMapping(value = "update-first-name/{cnpj}", params = {"tenantId"})
+    public ResponseEntity<GetAdminMapper> updateFirstUsername(
+            @PathVariable String cnpj,
+            @RequestBody UpdateAdminFirstName updateAdminFirstName,
             @RequestParam Integer tenantId) throws RequestExceptions {
-        GetAdminMapper admin = adminService.updateAdminUsername(adminId, updateAdminUsername, tenantId);
+        GetAdminMapper admin = adminService.updateAdminFirstName(cnpj, updateAdminFirstName, tenantId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-password", params = {"adminId", "tenantId"})
+    @PutMapping(value = "update-second-name/{cnpj}", params = {"tenantId"})
+    public ResponseEntity<GetAdminMapper> updateSecondUsername(
+            @PathVariable String cnpj,
+            @RequestBody UpdateAdminSecondName updateAdminSecondName,
+            @RequestParam Integer tenantId) throws RequestExceptions {
+        GetAdminMapper admin = adminService.updateAdminSecondName(cnpj, updateAdminSecondName, tenantId);
+        return new ResponseEntity<>(admin, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "update-password/{cnpj}", params = {"adminId", "tenantId"})
     public ResponseEntity<GetAdminMapper> updatePassword(
-            @RequestParam String adminId,
+            @PathVariable String cnpj,
             @RequestBody UpdateAdminPassword updateAdminPassword,
             @RequestParam Integer tenantId) throws RequestExceptions {
-        GetAdminMapper admin = adminService.updateAdminPassword(adminId, updateAdminPassword, tenantId);
+        GetAdminMapper admin = adminService.updateAdminPassword(cnpj, updateAdminPassword, tenantId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
     @DeleteMapping(params = {"adminId", "tenantId"})
-    public ResponseEntity<String> deleteAdminBySkId(@RequestParam String adminId, @RequestParam Integer tenantId) {
+    public ResponseEntity<String> deleteAdminByCnpj(@RequestParam String adminId, @RequestParam Integer tenantId) {
         String response = adminService.deleteAdminById(adminId, tenantId);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }

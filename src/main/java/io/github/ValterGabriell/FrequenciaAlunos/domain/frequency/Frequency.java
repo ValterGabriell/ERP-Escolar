@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-@Entity
+@Entity(name = "tbl_frequencia")
 public class Frequency {
     @Id
     private String id;
@@ -16,6 +16,9 @@ public class Frequency {
     @OneToMany(targetEntity = Days.class, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Days> daysList;
+
+    @Column(nullable = false)
+    private String skid;
 
     public Frequency() {
     }

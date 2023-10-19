@@ -1,20 +1,21 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "tbl_students")
+@Entity(name = "tbl_estudantes")
 public class Student extends RepresentationModel<Student> {
 
     @Id
-    @Column(name = "cpf", nullable = false)
-    private String cpf;
+    @Column(name = "id", nullable = false)
+    private String id;
     @Column(name = "nome", nullable = false)
-    private String username;
+    private String firstName;
+
+    @Column(name = "sobrenome", nullable = false)
+    private String secondName;
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "startDate", nullable = false)
@@ -24,29 +25,24 @@ public class Student extends RepresentationModel<Student> {
 
     @Column(name = "tenant", nullable = false)
     private Integer tenant;
+    @Column(name = "admin_cnpj", nullable = false)
+    private String admin;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "frequency_id", referencedColumnName = "id")
-    private Frequency frequency;
-
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    @Column(name = "school_class", nullable = false)
+    private String schoolClass;
 
     public Student(
-            String cpf,
-            String username,
+            String id,
+            String firstName,
             String email,
             LocalDateTime startDate,
             LocalDateTime finishedDate,
-            Frequency frequency,
             Integer tenant) {
-        this.cpf = cpf;
-        this.username = username;
+        this.id = id;
+        this.firstName = firstName;
         this.email = email;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
-        this.frequency = frequency;
         this.tenant = tenant;
     }
 
@@ -54,51 +50,40 @@ public class Student extends RepresentationModel<Student> {
         return startDate;
     }
 
-    public void setAdmin(Admin admin) {
+    public void setAdmin(String admin) {
         this.admin = admin;
     }
 
-    public Admin getAdmin() {
+    public String getAdmin() {
         return admin;
     }
 
     public Student() {
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getId() {
+        return id;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String username) {
+        this.firstName = username;
     }
 
-    public Frequency getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Frequency frequency) {
-        this.frequency = frequency;
-    }
 
     public Integer getTenant() {
         return tenant;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setTenant(Integer tenant) {

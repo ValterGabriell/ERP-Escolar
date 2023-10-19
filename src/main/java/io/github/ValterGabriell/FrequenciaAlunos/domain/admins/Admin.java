@@ -1,5 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
 import jakarta.persistence.*;
@@ -7,15 +9,17 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-@Entity(name = "table_admin")
+@Entity(name = "tbl_admin")
 public class Admin extends RepresentationModel<Admin> {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String skid;
     @Column(nullable = false)
-    private String username;
+    private String firstName;
+    @Column(nullable = false)
+    private String secondName;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -31,13 +35,19 @@ public class Admin extends RepresentationModel<Admin> {
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
 
+    @OneToMany(targetEntity = SchoolClass.class, cascade = CascadeType.ALL)
+    private List<SchoolClass> schoolClasses;
 
-    public Admin(String id, String username, String password, String email, String cnpj) {
-        this.id = id;
-        this.username = username;
+    @OneToMany(targetEntity = Contacts.class, cascade = CascadeType.ALL)
+    private List<Contacts> contacts;
+
+
+    public Admin(String firstName, String password, String email, String cnpj, String secondName) {
+        this.firstName = firstName;
         this.password = password;
         this.email = email;
         this.cnpj = cnpj;
+        this.secondName = secondName;
     }
 
     public List<Student> getStudents() {
@@ -59,12 +69,12 @@ public class Admin extends RepresentationModel<Admin> {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String username) {
+        this.firstName = username;
     }
 
 
@@ -96,27 +106,22 @@ public class Admin extends RepresentationModel<Admin> {
         this.tenant = tenant;
     }
 
-    public GetAdminMapper getAdminMapper() {
-        return new GetAdminMapper(
-                getSkId(),
-                getUsername(),
-                getEmail(),
-                getCnpj(),
-                getLinks()
-        );
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 
-    @Override
-    public String toString() {
-        return "Admin{" +
-                "id='" + id + '\'' +
-                ", skid='" + skid + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", cnpj='" + cnpj + '\'' +
-                ", tenant=" + tenant +
-                ", students=" + students +
-                '}';
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public GetAdminMapper getAdminMapper() {
+        return new GetAdminMapper(
+                getFirstName(),
+                getEmail(),
+                getCnpj(),
+                getLinks(),
+                getSecondName()
+        );
     }
 }

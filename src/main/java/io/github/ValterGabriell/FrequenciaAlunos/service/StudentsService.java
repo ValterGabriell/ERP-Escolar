@@ -2,7 +2,6 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
@@ -11,15 +10,12 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepos
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,10 +76,10 @@ public class StudentsService extends Validation {
 
         Student student;
         student = request.toModel(admin.getTenant());
-        student.setAdmin(admin);
+        student.setAdmin(admin.getCnpj());
 
         Frequency frequency = new Frequency(student.getTenant());
-        frequency.setId(student.getCpf());
+        frequency.setId(student.getId());
         frequency.setDaysList(new ArrayList<>());
 
         //inserir frequencia no estudante
@@ -105,11 +101,11 @@ public class StudentsService extends Validation {
     private static GetStudent generateStudentResponse(Student studentSaved) {
         GetStudent getStudent;
         getStudent = new GetStudent(
-                studentSaved.getCpf(),
-                studentSaved.getUsername(),
+                studentSaved.getId(),
+                studentSaved.getFirstName(),
                 studentSaved.getEmail(),
                 studentSaved.getStartDate(),
-                studentSaved.getAdmin().getSkId(),
+                studentSaved.getAdmin(),
                 studentSaved.getLinks()
         );
         return getStudent;
@@ -132,7 +128,7 @@ public class StudentsService extends Validation {
         Admin admin = adminRepository.findBySkid(adminSkId, tenantId)
                 .orElseThrow(() -> new RequestExceptions("Administrador " + adminSkId + " não encontrado!"));
         for (Student student : admin.getStudents()) {
-            if (student.getCpf().equals(studentId)) {
+            if (student.getId().equals(studentId)) {
                 return admin;
             }
         }
@@ -156,11 +152,11 @@ public class StudentsService extends Validation {
 
         Function<Student, GetStudent> mapToGetStudent = (student) -> {
             return new GetStudent(
-                    student.getCpf(),
-                    student.getUsername(),
+                    student.getId(),
+                    student.getFirstName(),
                     student.getEmail(),
                     student.getStartDate(),
-                    student.getAdmin().getSkId(),
+                    student.getAdmin(),
                     student.getLinks());
         };
 
@@ -182,11 +178,11 @@ public class StudentsService extends Validation {
         Validation validation = new Validation();
         Student student = validation.validateIfStudentExistsAndReturnIfExist(studentsRepository, cpf, tenantId);
         return new GetStudent(
-                student.getCpf(),
-                student.getUsername(),
+                student.getId(),
+                student.getFirstName(),
                 student.getEmail(),
                 student.getStartDate(),
-                student.getAdmin().getSkId(),
+                student.getAdmin(),
                 student.getLinks()
         );
     }

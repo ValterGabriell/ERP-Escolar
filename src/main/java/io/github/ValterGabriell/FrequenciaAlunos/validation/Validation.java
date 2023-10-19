@@ -76,12 +76,12 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     }
 
     @Override
-    public boolean validateIfAdminExistsAndReturnIfExist_ByCnpj(
+    public Admin validateIfAdminExistsAndReturnIfExist_ByCnpj(
             AdminRepository adminRepository,
             String cnpj,
             Integer tenant) {
         Optional<Admin> admin = adminRepository.findByCnpj(cnpj, tenant);
-        return admin.isPresent();
+        return admin.orElse(null);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
             AdminRepository adminRepository,
             String skId,
             Integer tenant) {
-        Optional<Admin> admin = adminRepository.findBySkid(skId, tenant);
+        Optional<Admin> admin = adminRepository.findByCnpj(skId, tenant);
         return admin.orElse(null);
     }
 
@@ -108,7 +108,7 @@ public class Validation implements StudentValidation, FrequencyValidation, Field
     }
 
     @Override
-    public void checkIfAdminTenantIdAlreadyExists(AdminRepository adminRepository, int tenant) {
+    public void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant) {
         boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();
         if (adminWithTenantPresent){
             throw new RequestExceptions("Tenant já existente!");

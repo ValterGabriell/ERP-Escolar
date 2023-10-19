@@ -11,11 +11,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "tbl_dias")
 public class Days {
 
     @Id
     private String id;
+
+    @Column(nullable = false)
+    private String skid;
 
     @Column(nullable = false)
     private LocalDate date;

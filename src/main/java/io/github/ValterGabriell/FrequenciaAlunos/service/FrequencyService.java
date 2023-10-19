@@ -46,7 +46,7 @@ public class FrequencyService extends Validation {
 
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
 
-        Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
+        Frequency frequency = frequencyRepository.findById(student.getId()).get();
 
         Days currentDay = new Days(LocalDate.now(), frequency.getTenant());
 
@@ -57,7 +57,7 @@ public class FrequencyService extends Validation {
         frequencyRepository.save(frequency);
 
         ResponseValidateFrequency responseValidateFrequency = new ResponseValidateFrequency();
-        responseValidateFrequency.setMessage("Frequência para " + student.getUsername() + " válidada! - Dia: " + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+        responseValidateFrequency.setMessage("Frequência para " + student.getFirstName() + " válidada! - Dia: " + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
         return responseValidateFrequency;
     }
 
@@ -69,9 +69,9 @@ public class FrequencyService extends Validation {
     public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId, int tenantId) throws RequestExceptions {
         checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
         Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
-        Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
+        Frequency frequency = frequencyRepository.findById(student.getId()).get();
         ResponseDaysThatStudentGoToClass responseDaysThatStudentGoToClass = new ResponseDaysThatStudentGoToClass();
-        responseDaysThatStudentGoToClass.setStudentId(student.getCpf());
+        responseDaysThatStudentGoToClass.setStudentId(student.getId());
 
         List<Days> daysList = frequency.getDaysList();
         responseDaysThatStudentGoToClass.setDaysListThatStudentGoToClass(daysList);
@@ -102,7 +102,7 @@ public class FrequencyService extends Validation {
         List<Student> students = studentsRepository
                 .findAll()
                 .stream()
-                .filter(student -> frequencyRepository.findById(student.getCpf()).get().getDaysList().stream().anyMatch(_day -> _day.getDate().equals(date)))
+                .filter(student -> frequencyRepository.findById(student.getId()).get().getDaysList().stream().anyMatch(_day -> _day.getDate().equals(date)))
                 .collect(Collectors.toList());
         responseSheet.setSheetName("Planilha do dia " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
         responseSheet.setSheetByteArray(sheetManipulation.createSheet(students, date));
@@ -118,7 +118,7 @@ public class FrequencyService extends Validation {
      */
     public ResponseValidateFrequency justifyAbsence(LocalDate date, String studentId) {
         Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
-        Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
+        Frequency frequency = frequencyRepository.findById(student.getId()).get();
         Days day = new Days(date, frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, day);
 
@@ -127,7 +127,7 @@ public class FrequencyService extends Validation {
         frequencyRepository.save(frequency);
 
         ResponseValidateFrequency responseValidateFrequency = new ResponseValidateFrequency();
-        responseValidateFrequency.setMessage("Frequência para " + student.getUsername() + " justificada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+        responseValidateFrequency.setMessage("Frequência para " + student.getFirstName() + " justificada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
         return responseValidateFrequency;
     }
 
@@ -140,7 +140,7 @@ public class FrequencyService extends Validation {
      */
     public ResponseValidateFrequency updateAbscence(LocalDate date, String studentId) {
         Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
-        Frequency frequency = frequencyRepository.findById(student.getCpf()).get();
+        Frequency frequency = frequencyRepository.findById(student.getId()).get();
         Days dayFounded = frequency.getDaysList()
                 .stream()
                 .filter(days -> days.getDate().equals(date))
@@ -151,7 +151,7 @@ public class FrequencyService extends Validation {
         daysRepository.save(dayFounded);
 
         ResponseValidateFrequency responseValidateFrequency = new ResponseValidateFrequency();
-        responseValidateFrequency.setMessage("Justificativa para " + student.getUsername() + " atualizada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+        responseValidateFrequency.setMessage("Justificativa para " + student.getFirstName() + " atualizada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
         return responseValidateFrequency;
     }
 }

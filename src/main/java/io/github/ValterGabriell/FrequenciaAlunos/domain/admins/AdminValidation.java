@@ -3,7 +3,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 
 public interface AdminValidation {
-    boolean validateIfAdminExistsAndReturnIfExist_ByCnpj(
+    Admin validateIfAdminExistsAndReturnIfExist_ByCnpj(
             AdminRepository adminRepository,
             String cnpj,
             Integer tenant);
@@ -13,5 +13,5 @@ public interface AdminValidation {
             Integer tenant);
 
     void checkIfAdminCnpjIsCorrect(String cnpj);
-    void checkIfAdminTenantIdAlreadyExists(AdminRepository adminRepository, int tenant);
+    void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant);
 }
