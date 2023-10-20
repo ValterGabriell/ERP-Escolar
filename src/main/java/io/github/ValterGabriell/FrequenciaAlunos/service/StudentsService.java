@@ -10,7 +10,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepos
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
-public class StudentsService extends Validation {
+public class StudentsService {
     private final StudentsRepository studentsRepository;
     private final FrequencyRepository frequencyRepository;
     private final AdminRepository adminRepository;
@@ -61,6 +62,7 @@ public class StudentsService extends Validation {
         if (present) {
             throw new RequestExceptions(STUDENT_ALREADY_SAVED);
         }
+
 
 
         if (!request.usernameIsNotNull()
@@ -170,13 +172,17 @@ public class StudentsService extends Validation {
         return page;
     }
 
+    private Student validateIfStudentExistsAndReturnIfExist(String studentId, int tenantId) {
+        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+    }
+
     /**
      * Método para obter 1 estudante pelo cpf e tenant.
      * @return Um estudante.
      */
     public GetStudent getStudentByCpf(String cpf, int tenantId) {
-        Validation validation = new Validation();
-        Student student = validation.validateIfStudentExistsAndReturnIfExist(studentsRepository, cpf, tenantId);
+        Student student = validateIfStudentExistsAndReturnIfExist(cpf, tenantId);
         return new GetStudent(
                 student.getId(),
                 student.getFirstName(),
@@ -193,7 +199,7 @@ public class StudentsService extends Validation {
      * @param studentId O ID do estudante a ser excluído.
      */
     public void deleteStudent(String studentId, int tenantId) {
-        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+        Student student = validateIfStudentExistsAndReturnIfExist(studentId, tenantId);
         studentsRepository.delete(student);
     }
 }

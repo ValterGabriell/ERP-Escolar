@@ -2,11 +2,11 @@ package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidationImpl;
 
 import java.time.LocalDateTime;
 
-public class InsertStudents extends Validation {
+public class InsertStudents extends FieldValidationImpl {
     private String cpf;
 
     private String username;

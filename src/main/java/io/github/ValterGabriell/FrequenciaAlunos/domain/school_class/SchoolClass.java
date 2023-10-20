@@ -1,5 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.school_class;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professors;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import jakarta.persistence.*;
 
@@ -14,20 +16,26 @@ public class SchoolClass {
     @Column(nullable = false)
     private String skid;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "second_name", nullable = false)
+    @Column(nullable = false)
     private String secondName;
 
-    @Column(name = "period", nullable = false)
+    @Column(nullable = false)
     private String period;
 
-    @Column(name = "year", nullable = false)
+    @Column(nullable = false)
     private int year;
 
-    @Column(name = "tenant", nullable = false)
+    @Column(nullable = false)
     private Integer tenant;
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
+
+    @OneToMany(targetEntity = Discipline.class, cascade = CascadeType.ALL)
+    private List<Discipline> disciplines;
+
+    @ManyToMany(targetEntity = Professors.class)
+    private List<Professors> professors;
 }

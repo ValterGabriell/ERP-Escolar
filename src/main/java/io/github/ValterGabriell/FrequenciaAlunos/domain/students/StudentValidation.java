@@ -8,5 +8,4 @@ public interface StudentValidation {
             StudentsRepository studentsRepository,
             String studentId,
             int tenantId);
-    void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf);
 }

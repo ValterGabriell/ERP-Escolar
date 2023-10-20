@@ -1,5 +1,6 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
+package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 
 public interface AdminValidation {
@@ -11,7 +12,5 @@ public interface AdminValidation {
             AdminRepository adminRepository,
             String skId,
             Integer tenant);
-
-    void checkIfAdminCnpjIsCorrect(String cnpj);
     void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant);
 }

@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professors;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
@@ -29,8 +30,10 @@ public class Admin extends RepresentationModel<Admin> {
     private String cnpj;
 
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer tenant;
+
+    @Column(nullable = false)
+    private String loginId;
 
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
@@ -39,15 +42,27 @@ public class Admin extends RepresentationModel<Admin> {
     private List<SchoolClass> schoolClasses;
 
     @OneToMany(targetEntity = Contacts.class, cascade = CascadeType.ALL)
+    @Column(nullable = false)
     private List<Contacts> contacts;
 
+    @OneToMany(targetEntity = Professors.class, cascade = CascadeType.ALL)
+    private List<Professors> professors;
 
-    public Admin(String firstName, String password, String email, String cnpj, String secondName) {
+
+    public Admin(
+            String firstName,
+            String password,
+            String email,
+            String cnpj,
+            String secondName,
+            List<Contacts> contacts
+    ) {
         this.firstName = firstName;
         this.password = password;
         this.email = email;
         this.cnpj = cnpj;
         this.secondName = secondName;
+        this.contacts = contacts;
     }
 
     public List<Student> getStudents() {
@@ -115,13 +130,32 @@ public class Admin extends RepresentationModel<Admin> {
         return secondName;
     }
 
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public List<Contacts> getContacts() {
+        return contacts;
+    }
+
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public GetAdminMapper getAdminMapper() {
         return new GetAdminMapper(
                 getFirstName(),
                 getEmail(),
                 getCnpj(),
                 getLinks(),
-                getSecondName()
+                getSecondName(),
+                getContacts(),
+                getLoginId()
         );
     }
 }

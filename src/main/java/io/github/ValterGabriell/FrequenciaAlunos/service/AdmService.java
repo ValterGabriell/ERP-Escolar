@@ -3,11 +3,17 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.AdmController;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.login.Login;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.LoginRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.DocumentsValidationImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +21,7 @@ import org.springframework.hateoas.Links;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -23,9 +30,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class AdmService {
     private final AdminRepository adminRepository;
+    private final LoginRepository loginRepository;
+    private final ContactsRepository contactsRepository;
 
-    public AdmService(AdminRepository adminRepository) {
+    public AdmService(AdminRepository adminRepository, LoginRepository loginRepository, ContactsRepository contactsRepository) {
         this.adminRepository = adminRepository;
+        this.loginRepository = loginRepository;
+        this.contactsRepository = contactsRepository;
     }
 
     /**
@@ -41,9 +52,27 @@ public class AdmService {
      * @throws RequestExceptions Se o administrador com o `skId` especificado não for encontrado.
      */
     private boolean returnIfAdminExistsOnDatabase(String cnpj, Integer tenant) {
-        Validation validation = new Validation();
-        Admin adminIsPresent = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin adminIsPresent = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         return adminIsPresent != null;
+    }
+
+    private Login createLogin(Admin admin, int tenant) {
+        // Cria um objeto 'Login' para o fluxo de login
+        Login login = new Login(
+                admin.getEmail(),
+                admin.getPassword(),
+                tenant
+        );
+
+        // Salva o objeto 'Login' no repositório
+        Login loginSaved = loginRepository.save(login);
+
+        // Define o campo 'skid' do 'Login' com o ID gerado após a primeira inserção
+        loginSaved.setSkid(loginSaved.getId());
+
+        // Salva o objeto 'Login' atualizado com o 'skid' no repositório novamente
+        return loginRepository.save(loginSaved);
     }
 
     /**
@@ -66,8 +95,12 @@ public class AdmService {
      */
     @Transactional
     public String createNewAdmin(CreateNewAdmin newAdmin, Integer tenant) {
-        Validation validation = new Validation();
-        validation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        DocumentsValidationImpl documentsValidation = new DocumentsValidationImpl();
+        ContactValidationImpl contactValidation = new ContactValidationImpl();
+
+        adminValidation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
+        newAdmin.getContacts().forEach(contact -> contactValidation.verifyIfEmailIsCorrect(contact.getEmail()));
 
         boolean adminExists =
                 returnIfAdminExistsOnDatabase(newAdmin.getCnpj(), tenant);
@@ -75,24 +108,47 @@ public class AdmService {
         if (adminExists) {
             throw new RequestExceptions("Cadastro com CNPJ encontrado!");
         } else {
-            //validation.checkIfAdminCnpjIsCorrect(newAdmin.getCnpj());
-
+            //documentsValidation.checkIfAdminCnpjIsCorrect(newAdmin.getCnpj());
+            // Converte um objeto 'newAdmin' em um objeto 'admin'
             Admin admin = newAdmin.toAdmin();
-            admin.setSkId(" ");
-            admin.setTenant(tenant);
 
+            Login login = createLogin(admin, tenant);
+
+            List<Contacts> contacts = new ArrayList<>(admin.getContacts());
+            contacts.forEach(contact -> {
+                contact.setUserId(admin.getCnpj());
+                contact.setTenant(tenant);
+            });
+            contactsRepository.saveAll(contacts);
+
+            // Define 'skId' do administrador como um espaço em branco
+            admin.setSkId(" ");
+            // Define o 'tenant' do administrador
+            admin.setTenant(tenant);
+            // Define o ID do 'Login' associado ao administrador
+            admin.setLoginId(login.getSkid());
+
+            // Salva o objeto 'Admin' no repositório
             Admin adminSaved = adminRepository.save(admin);
+
+            // Gera e define 'skId' para o administrador com base no ID
             adminSaved.setSkId(GenerateSKId.generateSkId(adminSaved.getId()));
+
+            // Salva o objeto 'Admin' atualizado com o 'skId' no repositório novamente
             adminRepository.save(adminSaved);
 
+            // Adiciona um link de auto-relacionamento para o administrador
             adminSaved.add(linkTo(methodOn(AdmController.class)
                     .getAdminBySkId(adminSaved.getSkId(), adminSaved.getTenant())).withSelfRel());
-            return adminSaved.getCnpj();
+
+            // Retorna o CNPJ do administrador salvo
+            return "CNPJ: " + adminSaved.getCnpj();
         }
     }
 
     /**
-     * Este método recupera uma página de administradores (Admins) com base nas configurações de paginação especificadas em `pageable`.
+     * Este método recupera uma página de administradores (Admins) com base nas configurações de
+     * paginação especificadas em `pageable`.
      * Ele realiza as seguintes etapas:
      * 1. Chama o método `findAll` no repositório para recuperar uma página de administradores.
      * 2. Mapeia cada administrador para um `GetAdminMapper` e adiciona um link de auto-relação a cada um.
@@ -133,8 +189,8 @@ public class AdmService {
      * @return Uma instância de `GetAdminMapper` que representa o administrador atualizado.
      */
     public GetAdminMapper updateAdminFirstName(String cnpj, UpdateAdminFirstName updateAdminFirstName, Integer tenant) {
-        Validation validation = new Validation();
-        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         if (admin == null) {
             throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
         }
@@ -144,8 +200,8 @@ public class AdmService {
     }
 
     public GetAdminMapper updateAdminSecondName(String cnpj, UpdateAdminSecondName updateAdminSecondName, Integer tenant) {
-        Validation validation = new Validation();
-        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         if (admin == null) {
             throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
         }
@@ -169,8 +225,8 @@ public class AdmService {
      * @return Uma instância de `GetAdminMapper` que representa o administrador atualizado.
      */
     public GetAdminMapper updateAdminPassword(String cnpj, UpdateAdminPassword updateAdminPassword, Integer tenant) {
-        Validation validation = new Validation();
-        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         if (admin == null) {
             throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
         }
@@ -192,8 +248,8 @@ public class AdmService {
      * @return Uma instância de `GetAdminMapper` que representa o administrador com links para ações relacionadas.
      */
     public GetAdminMapper getAdminByCnpj(String cnpj, Integer tenant) {
-        Validation validation = new Validation();
-        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
 
         admin.add(linkTo(
                 methodOn(AdmController.class)
@@ -223,8 +279,8 @@ public class AdmService {
      * @return Uma mensagem indicando o resultado da exclusão.
      */
     public String deleteAdminById(String cnpj, Integer tenant) {
-        Validation validation = new Validation();
-        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         String response;
         if (admin != null) {
             adminRepository.deleteById(admin.getId());

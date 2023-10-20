@@ -11,8 +11,10 @@ import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysTh
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.sheet.SheetManipulation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.DocumentsValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FrequencyValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FrequencyService extends Validation {
+public class FrequencyService extends FrequencyValidationImpl {
 
 
     private final StudentsRepository studentsRepository;
@@ -35,6 +37,12 @@ public class FrequencyService extends Validation {
         this.frequencyRepository = frequencyRepository;
     }
 
+
+    private void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String studentId) {
+        DocumentsValidationImpl documentsValidation = new DocumentsValidationImpl();
+        documentsValidation.checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
+    }
+
     /**
      * method that validate student frequency
      *
@@ -42,9 +50,13 @@ public class FrequencyService extends Validation {
      * @return response with the student frequency validated or erro while validation frequency
      */
     public ResponseValidateFrequency validateFrequency(String studentId, int tenantId) throws RequestExceptions {
+
+        StudentValidationImpl studentValidation = new StudentValidationImpl();
+
         checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
 
-        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+        Student student = studentValidation
+                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
 
         Frequency frequency = frequencyRepository.findById(student.getId()).get();
 
@@ -68,7 +80,10 @@ public class FrequencyService extends Validation {
      */
     public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId, int tenantId) throws RequestExceptions {
         checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
-        Student student = validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+
+        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        Student student = studentValidation
+                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
         Frequency frequency = frequencyRepository.findById(student.getId()).get();
         ResponseDaysThatStudentGoToClass responseDaysThatStudentGoToClass = new ResponseDaysThatStudentGoToClass();
         responseDaysThatStudentGoToClass.setStudentId(student.getId());
