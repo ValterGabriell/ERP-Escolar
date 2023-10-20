@@ -1,6 +1,5 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
@@ -9,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -21,12 +18,12 @@ public class StudentsController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping(value = "/{adminCnpj}")
     public ResponseEntity<GetStudent> insertStudentsIntoDatabase(
             @RequestBody InsertStudents request,
-            @RequestParam String adminSkId,
+            @PathVariable String adminCnpj,
             @RequestParam Integer tenantId) {
-        GetStudent student = service.insertStudentIntoDatabase(request, adminSkId, tenantId);
+        GetStudent student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId);
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
     @GetMapping(value = "get-all", params = {"tenantId"})

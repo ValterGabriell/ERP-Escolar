@@ -10,7 +10,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepos
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -50,28 +49,25 @@ public class StudentsService {
      * @param request   requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
      *                  CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
      *                  O nome de usuário deve conter apenas letras.
-     * @param adminSkId O identificador do administrador responsável pela inserção.
+     * @param adminCnpj O identificador do administrador responsável pela inserção.
      * @param tenant    O inquilino associado ao estudante.
      * @return O objeto do estudante criado.
      */
     public GetStudent insertStudentIntoDatabase(InsertStudents request,
-                                                String adminSkId,
+                                                String adminCnpj,
                                                 Integer tenant) {
         boolean present = studentsRepository.findById(request.getCpf()).isPresent();
 
         if (present) {
             throw new RequestExceptions(STUDENT_ALREADY_SAVED);
         }
-
-
-
         if (!request.usernameIsNotNull()
                 && !request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
                 && !request.emailIsNotNull()
         ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
 
         Admin admin =
-                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminSkId, request.getCpf(), tenant);
+                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getCpf(), tenant);
         if (admin == null) {
             throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
         }
@@ -117,18 +113,18 @@ public class StudentsService {
      * Método privado para verificar
      * se um estudante já foi associado a um administrador e retorna o administrador se não foi.
      *
-     * @param adminSkId O identificador do administrador a ser verificado.
+     * @param cnpj O identificador do administrador a ser verificado.
      * @param studentId O ID do estudante a ser verificado.
      * @param tenantId  O inquilino associado ao administrador.
      * @return O administrador se o estudante já estiver associado a ele; caso contrário, retorna null.
-     * @throws RequestExceptions Se o administrador com o `adminSkId` especificado não for encontrado.
+     * @throws RequestExceptions Se o administrador com o `cnpj` especificado não for encontrado.
      */
     private Admin checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(
-            String adminSkId,
+            String cnpj,
             String studentId,
             Integer tenantId) {
-        Admin admin = adminRepository.findBySkid(adminSkId, tenantId)
-                .orElseThrow(() -> new RequestExceptions("Administrador " + adminSkId + " não encontrado!"));
+        Admin admin = adminRepository.findByCnpj(cnpj, tenantId)
+                .orElseThrow(() -> new RequestExceptions("Administrador " + cnpj + " não encontrado!"));
         for (Student student : admin.getStudents()) {
             if (student.getId().equals(studentId)) {
                 return admin;

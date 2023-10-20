@@ -26,7 +26,7 @@ public class AdmController {
     }
 
     @GetMapping(value = {"/{cnpj}"}, params = {"tenantId"})
-    public ResponseEntity<GetAdminMapper> getAdminBySkId(
+    public ResponseEntity<GetAdminMapper> getAdminByCnpj(
             @PathVariable String cnpj,
             @RequestParam Integer tenantId) {
         GetAdminMapper admin = adminService.getAdminByCnpj(cnpj, tenantId);
@@ -67,9 +67,9 @@ public class AdmController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @DeleteMapping(params = {"adminId", "tenantId"})
-    public ResponseEntity<String> deleteAdminByCnpj(@RequestParam String adminId, @RequestParam Integer tenantId) {
-        String response = adminService.deleteAdminById(adminId, tenantId);
+    @DeleteMapping(value = "/{cnpj}", params = {"tenantId"})
+    public ResponseEntity<String> deleteAdminByCnpj(@PathVariable String cnpj, @RequestParam Integer tenantId) {
+        String response = adminService.deleteAdminByCnpj(cnpj, tenantId);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 }

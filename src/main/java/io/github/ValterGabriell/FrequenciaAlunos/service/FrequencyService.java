@@ -4,9 +4,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
@@ -15,6 +12,9 @@ import io.github.ValterGabriell.FrequenciaAlunos.validation.DocumentsValidationI
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FrequencyValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

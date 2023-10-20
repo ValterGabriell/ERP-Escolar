@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professors;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
@@ -45,8 +45,8 @@ public class Admin extends RepresentationModel<Admin> {
     @Column(nullable = false)
     private List<Contacts> contacts;
 
-    @OneToMany(targetEntity = Professors.class, cascade = CascadeType.ALL)
-    private List<Professors> professors;
+    @OneToMany(targetEntity = Professor.class, cascade = CascadeType.ALL)
+    private List<Professor> professors;
 
 
     public Admin(

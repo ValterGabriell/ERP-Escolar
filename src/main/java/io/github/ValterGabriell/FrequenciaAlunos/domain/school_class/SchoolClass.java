@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.school_class;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professors;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import jakarta.persistence.*;
 
@@ -36,6 +36,6 @@ public class SchoolClass {
     @OneToMany(targetEntity = Discipline.class, cascade = CascadeType.ALL)
     private List<Discipline> disciplines;
 
-    @ManyToMany(targetEntity = Professors.class)
-    private List<Professors> professors;
+    @ManyToMany(targetEntity = Professor.class)
+    private List<Professor> professors;
 }

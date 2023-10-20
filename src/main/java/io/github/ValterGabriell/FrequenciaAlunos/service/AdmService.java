@@ -139,7 +139,7 @@ public class AdmService {
 
             // Adiciona um link de auto-relacionamento para o administrador
             adminSaved.add(linkTo(methodOn(AdmController.class)
-                    .getAdminBySkId(adminSaved.getSkId(), adminSaved.getTenant())).withSelfRel());
+                    .getAdminByCnpj(adminSaved.getSkId(), adminSaved.getTenant())).withSelfRel());
 
             // Retorna o CNPJ do administrador salvo
             return "CNPJ: " + adminSaved.getCnpj();
@@ -166,7 +166,7 @@ public class AdmService {
                         .stream()
                         .map(admin -> admin
                                 .add(linkTo(methodOn(AdmController.class)
-                                        .getAdminBySkId(admin.getCnpj(), admin.getTenant())).withSelfRel())
+                                        .getAdminByCnpj(admin.getCnpj(), admin.getTenant())).withSelfRel())
                                 .getAdminMapper()
                         )
                         .toList();
@@ -278,7 +278,7 @@ public class AdmService {
      * @param tenant O inquilino associado ao administrador.
      * @return Uma mensagem indicando o resultado da exclusão.
      */
-    public String deleteAdminById(String cnpj, Integer tenant) {
+    public String deleteAdminByCnpj(String cnpj, Integer tenant) {
         AdminValidationImpl adminValidation = new AdminValidationImpl();
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         String response;
