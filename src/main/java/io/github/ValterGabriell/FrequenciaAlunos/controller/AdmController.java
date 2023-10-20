@@ -58,7 +58,7 @@ public class AdmController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-password/{cnpj}", params = {"adminId", "tenantId"})
+    @PutMapping(value = "update-password/{cnpj}", params = {"tenantId"})
     public ResponseEntity<GetAdminMapper> updatePassword(
             @PathVariable String cnpj,
             @RequestBody UpdateAdminPassword updateAdminPassword,

@@ -166,7 +166,7 @@ public class AdmService {
                         .stream()
                         .map(admin -> admin
                                 .add(linkTo(methodOn(AdmController.class)
-                                        .getAdminBySkId(admin.getSkId(), admin.getTenant())).withSelfRel())
+                                        .getAdminBySkId(admin.getCnpj(), admin.getTenant())).withSelfRel())
                                 .getAdminMapper()
                         )
                         .toList();
@@ -256,7 +256,7 @@ public class AdmService {
                         .getAllAdmins(Pageable.unpaged())).withRel("Lista de Administradores"));
 
         admin.add(linkTo(methodOn(StudentsController.class)
-                .insertStudentsIntoDatabase(null, admin.getSkId(), admin.getTenant()))
+                .insertStudentsIntoDatabase(null, admin.getCnpj(), admin.getTenant()))
                 .withRel("Inserir novo estudante"));
 
 

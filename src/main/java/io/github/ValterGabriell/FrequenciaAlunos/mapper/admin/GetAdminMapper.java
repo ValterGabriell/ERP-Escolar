@@ -1,6 +1,5 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.admin;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
 import org.springframework.hateoas.Links;
 
@@ -18,51 +17,55 @@ public class GetAdminMapper {
     private String loginId;
     private Links links;
 
-    public GetAdminMapper(
-            String firstName,
-            String email,
-            String cnpj,
-            Links links,
-            String secondName,
-            List<Contacts> contacts,
-            String loginId
-            ) {
-        this.firstName = firstName;
-        this.email = email;
-        this.cnpj = cnpj;
+    public void setLinks(Links links) {
         this.links = links;
-        this.secondName = secondName;
-        this.contacts = contacts;
-        this.loginId = loginId;
     }
 
+    public GetAdminMapper(
+            String cnpj,
+            String skid,
+            String firstName,
+            String secondName,
+            String email, List<Contacts> contacts, String loginId, Links links) {
+        this.cnpj = cnpj;
+        this.skid = skid;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.email = email;
+        this.contacts = contacts;
+        this.loginId = loginId;
+        this.links = links;
+    }
 
-    public GetAdminMapper() {
+    public String getCnpj() {
+        return cnpj;
     }
 
     public String getSkid() {
         return skid;
     }
 
-    public void setSkid(String skid) {
-        this.skid = skid;
-    }
-
-    public void setLinks(Links links) {
-        this.links = links;
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getSecondName() {
         return secondName;
     }
 
-    public Admin toAdmin() {
-        return new Admin(
-                this.firstName,
-                "",
-                this.email,
-                this.cnpj,
-                this.secondName,
-                this.contacts);
+    public String getEmail() {
+        return email;
+    }
+
+    public List<Contacts> getContacts() {
+        return contacts;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public Links getLinks() {
+        return links;
     }
 }

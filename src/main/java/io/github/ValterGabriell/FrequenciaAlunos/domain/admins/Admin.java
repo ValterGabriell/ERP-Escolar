@@ -149,13 +149,14 @@ public class Admin extends RepresentationModel<Admin> {
 
     public GetAdminMapper getAdminMapper() {
         return new GetAdminMapper(
+               getCnpj(),
+                getSkId(),
                 getFirstName(),
-                getEmail(),
-                getCnpj(),
-                getLinks(),
                 getSecondName(),
+                getEmail(),
                 getContacts(),
-                getLoginId()
+                getLoginId(),
+                getLinks()
         );
     }
 }
