@@ -86,7 +86,39 @@ public class Student extends RepresentationModel<Student> {
         return tenant;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getFinishedDate() {
+        return finishedDate;
+    }
+
+    public void setFinishedDate(LocalDateTime finishedDate) {
+        this.finishedDate = finishedDate;
+    }
+
     public void setTenant(Integer tenant) {
         this.tenant = tenant;
+    }
+
+    public String getSchoolClass() {
+        return schoolClass;
+    }
+
+    public void setSchoolClass(String schoolClass) {
+        this.schoolClass = schoolClass;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 }

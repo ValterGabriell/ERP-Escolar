@@ -22,8 +22,9 @@ public class StudentsController {
     public ResponseEntity<GetStudent> insertStudentsIntoDatabase(
             @RequestBody InsertStudents request,
             @PathVariable String adminCnpj,
-            @RequestParam Integer tenantId) {
-        GetStudent student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId);
+            @RequestParam Integer tenantId,
+            @RequestParam String parentIdentifier) {
+        GetStudent student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId, parentIdentifier);
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
     @GetMapping(value = "get-all", params = {"tenantId"})

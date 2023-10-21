@@ -3,10 +3,12 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ParentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
@@ -33,61 +35,16 @@ public class StudentsService {
     private final StudentsRepository studentsRepository;
     private final FrequencyRepository frequencyRepository;
     private final AdminRepository adminRepository;
+    private final ParentsRepository parentsRepository;
 
     public StudentsService(
             StudentsRepository studentsRepository,
             FrequencyRepository frequencyRepository,
-            AdminRepository adminRepository) {
+            AdminRepository adminRepository, ParentsRepository parentsRepository) {
         this.studentsRepository = studentsRepository;
         this.frequencyRepository = frequencyRepository;
         this.adminRepository = adminRepository;
-    }
-
-    /**
-     * Método para inserir um estudante no banco de dados.
-     *
-     * @param request   requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
-     *                  CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
-     *                  O nome de usuário deve conter apenas letras.
-     * @param adminCnpj O identificador do administrador responsável pela inserção.
-     * @param tenant    O inquilino associado ao estudante.
-     * @return O objeto do estudante criado.
-     */
-    public GetStudent insertStudentIntoDatabase(InsertStudents request,
-                                                String adminCnpj,
-                                                Integer tenant) {
-        boolean present = studentsRepository.findById(request.getCpf()).isPresent();
-
-        if (present) {
-            throw new RequestExceptions(STUDENT_ALREADY_SAVED);
-        }
-        if (!request.usernameIsNotNull()
-                && !request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
-                && !request.emailIsNotNull()
-        ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
-
-        Admin admin =
-                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getCpf(), tenant);
-        if (admin == null) {
-            throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
-        }
-
-        Student student;
-        student = request.toModel(admin.getTenant());
-        student.setAdmin(admin.getCnpj());
-
-        Frequency frequency = new Frequency(student.getTenant());
-        frequency.setId(student.getId());
-        frequency.setDaysList(new ArrayList<>());
-
-        //inserir frequencia no estudante
-        frequencyRepository.save(frequency);
-
-        //gerar resposta para o cliente
-        Student studentSaved = studentsRepository.save(student);
-        studentSaved.add(linkTo(methodOn(StudentsController.class)
-                .getAllStudents(null, 0)).withSelfRel());
-        return generateStudentResponse(studentSaved);
+        this.parentsRepository = parentsRepository;
     }
 
     /**
@@ -110,10 +67,71 @@ public class StudentsService {
     }
 
     /**
+     * Método para inserir um estudante no banco de dados.
+     *
+     * @param request   requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
+     *                  CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
+     *                  O nome de usuário deve conter apenas letras.
+     * @param adminCnpj O identificador do administrador responsável pela inserção.
+     * @param tenant    O inquilino associado ao estudante.
+     * @return O objeto do estudante criado.
+     */
+    public GetStudent insertStudentIntoDatabase(InsertStudents request,
+                                                String adminCnpj,
+                                                Integer tenant,
+                                                String parentIdentifier
+    ) {
+
+
+        Parent parent = parentsRepository.findByIdentifierNumberAndTenant(parentIdentifier, tenant).orElseThrow(() -> {
+            throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
+        });
+
+        boolean present = studentsRepository.findById(request.getCpf()).isPresent();
+
+        if (present) {
+            throw new RequestExceptions(STUDENT_ALREADY_SAVED);
+        }
+        if (!request.usernameIsNotNull()
+                && !request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
+                && !request.emailIsNotNull()
+        ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
+
+        Admin admin =
+                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getCpf(), tenant);
+        if (admin == null) {
+            throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
+        }
+
+
+        Student student;
+        student = request.toModel(admin.getTenant());
+        student.setAdmin(admin.getCnpj());
+        student.setSchoolClass(" ");
+        student.setSecondName(request.getSecondName());
+
+
+
+        parent.getStudents().add(student);
+
+        Frequency frequency = new Frequency(student.getTenant());
+        frequency.setId(student.getId());
+        frequency.setDaysList(new ArrayList<>());
+
+        parentsRepository.save(parent);
+        frequencyRepository.save(frequency);
+        Student studentSaved = studentsRepository.save(student);
+
+        studentSaved.add(linkTo(methodOn(StudentsController.class)
+                .getAllStudents(null, 0)).withSelfRel());
+        return generateStudentResponse(studentSaved);
+    }
+
+    /**
      * Método privado para verificar
      * se um estudante já foi associado a um administrador e retorna o administrador se não foi.
      *
-     * @param cnpj O identificador do administrador a ser verificado.
+     * @param cnpj      O identificador do administrador a ser verificado.
      * @param studentId O ID do estudante a ser verificado.
      * @param tenantId  O inquilino associado ao administrador.
      * @return O administrador se o estudante já estiver associado a ele; caso contrário, retorna null.
@@ -139,6 +157,7 @@ public class StudentsService {
 
     /**
      * Método para obter todos os estudantes do banco de dados.
+     *
      * @return Uma lista de todos os estudantes do banco de dados.
      */
     public Page<GetStudent> getAllStudentsFromDatabase(Pageable pageable, int tenantId) {
@@ -175,6 +194,7 @@ public class StudentsService {
 
     /**
      * Método para obter 1 estudante pelo cpf e tenant.
+     *
      * @return Um estudante.
      */
     public GetStudent getStudentByCpf(String cpf, int tenantId) {

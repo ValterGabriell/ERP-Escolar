@@ -29,7 +29,7 @@ public class Parent extends RepresentationModel<Parent> {
     @Column(nullable = false)
     private String identifierNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer tenant;
 
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)

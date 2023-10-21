@@ -9,8 +9,7 @@ import java.util.Optional;
 
 
 public interface ParentsRepository extends JpaRepository<Parent, String> {
-    @Query(value = "SELECT * FROM tbl_pais WHERE identifierNumber = :identifierNumber AND tenant = :tenant",
-            nativeQuery = true)
-    public Optional<Parent> findByIdentifierNumber(@Param("identifierNumber") String identifierNumber, @Param("tenant") int tenant);
+
+    public Optional<Parent> findByIdentifierNumberAndTenant(String identifierNumber,int tenant);
 
 }

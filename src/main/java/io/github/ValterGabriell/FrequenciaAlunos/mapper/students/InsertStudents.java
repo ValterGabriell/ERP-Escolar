@@ -9,13 +9,23 @@ import java.time.LocalDateTime;
 public class InsertStudents extends FieldValidationImpl {
     private String cpf;
 
-    private String username;
+    private String firstName;
+    private String secondName;
     private String email;
 
-    public InsertStudents(String cpf, String username, String email) {
+    public InsertStudents(String cpf, String firstName, String email, String secondName) {
         this.cpf = cpf;
-        this.username = username;
+        this.firstName = firstName;
         this.email = email;
+        this.secondName = secondName;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 
     public String getEmail() {
@@ -28,7 +38,7 @@ public class InsertStudents extends FieldValidationImpl {
 
 
     public String getUsername() {
-        return username;
+        return firstName;
     }
 
     public boolean usernameIsNotNull() {

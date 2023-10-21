@@ -256,7 +256,7 @@ public class AdmService {
                         .getAllAdmins(Pageable.unpaged())).withRel("Lista de Administradores"));
 
         admin.add(linkTo(methodOn(StudentsController.class)
-                .insertStudentsIntoDatabase(null, admin.getCnpj(), admin.getTenant()))
+                .insertStudentsIntoDatabase(null, admin.getCnpj(), admin.getTenant(), ""))
                 .withRel("Inserir novo estudante"));
 
 

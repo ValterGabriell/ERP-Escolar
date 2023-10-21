@@ -1,8 +1,11 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ProfessorController;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.login.Login;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.LoginRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ProfessorRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.CreateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
@@ -21,16 +24,36 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ProfessorService {
     private final ProfessorRepository professorRepository;
+    private final LoginRepository loginRepository;
 
-    public ProfessorService(ProfessorRepository professorRepository) {
+    public ProfessorService(ProfessorRepository professorRepository, LoginRepository loginRepository) {
         this.professorRepository = professorRepository;
+        this.loginRepository = loginRepository;
+    }
+    private Login createLogin(Professor professor, int tenant) {
+        // Cria um objeto 'Login' para o fluxo de login
+        Login login = new Login(
+                professor.getContacts().get(0).getEmail(),
+                professor.getSkid(),
+                tenant
+        );
+
+        // Salva o objeto 'Login' no repositório
+        Login loginSaved = loginRepository.save(login);
+
+        // Define o campo 'skid' do 'Login' com o ID gerado após a primeira inserção
+        loginSaved.setSkid(loginSaved.getId());
+
+        // Salva o objeto 'Login' atualizado com o 'skid' no repositório novamente
+        return loginRepository.save(loginSaved);
     }
 
-    public String createProfessor(CreateProfessor createProfessor, int tenant, String adminCnpj) {
+    public String createProfessor(CreateProfessor createProfessor, int tenant) {
         Professor professor = createProfessor.toProfessor();
         professor.setTenant(tenant);
         professor.setSkid(UUID.randomUUID().toString());
         Professor professorSaved = professorRepository.save(professor);
+        createLogin(professorSaved,tenant);
         return professorSaved.getFirstName();
     }
 
@@ -50,6 +73,7 @@ public class ProfessorService {
         professor.setStartDate(updateProfessor.getStartDate());
 
         Professor professorUpdated = professorRepository.save(professor);
+
         return professorUpdated.getFirstName();
     }
 

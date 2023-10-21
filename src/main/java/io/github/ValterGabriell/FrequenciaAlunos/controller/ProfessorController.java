@@ -25,10 +25,9 @@ public class ProfessorController {
     @PostMapping(value = "{adminCnpj}", params = {"tenantId"})
     public ResponseEntity<String> insert(
             @RequestBody CreateProfessor createProfessor,
-            @RequestParam Integer tenantId,
-            @PathVariable String adminCnpj) {
+            @RequestParam Integer tenantId) {
 
-        String professor = professorService.createProfessor(createProfessor, tenantId, adminCnpj);
+        String professor = professorService.createProfessor(createProfessor, tenantId);
         return new ResponseEntity<>(professor, HttpStatus.CREATED);
     }
 

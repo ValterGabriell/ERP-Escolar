@@ -9,7 +9,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 
 import java.awt.image.BufferedImage;
 
-@EntityScan(basePackages = "io.github.ValterGabriell.FrequenciaAlunos.domain")
 @SpringBootApplication
 public class FrequenciaAlunosApplication {
 
