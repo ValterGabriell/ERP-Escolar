@@ -3,6 +3,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DisciplineRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.discipline.CreateDiscipline;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import org.springframework.stereotype.Service;
 
@@ -17,44 +18,45 @@ public class DisciplineService {
     }
 
 
-
-    public String insert(Discipline discipline) {
+    public String insert(CreateDiscipline createDiscipline, int tenant) {
         //todo: só pode por disciplina pra professor existente
         //todo: por disciplina por cada local tenant
         //verificar nome e tenant
 
 
         List<Discipline> disciplines = disciplineRepository.findAll();
-        if (!disciplines.isEmpty()){
+        if (!disciplines.isEmpty()) {
             boolean disciplinePresent
-                    = disciplineRepository.findDisciplineByName(discipline.getName()).isPresent();
+                    = disciplineRepository.findDisciplineByName(createDiscipline.getName()).isPresent();
             if (disciplinePresent) {
                 throw new RequestExceptions("Disciplina com mesmo nome já cadastrada!");
             }
         }
 
+        Discipline discipline = createDiscipline.toDiscipline();
         discipline.setSkid("-");
+        discipline.setTenant(tenant);
         Discipline saved = disciplineRepository.save(discipline);
-        saved.setSkid(GenerateSKId.generateSkId(saved.getId()));
+        saved.setSkid(GenerateSKId.generateSkId());
         Discipline updated = disciplineRepository.save(saved);
-        return updated.getSkid();
+        return "SKID: " + updated.getSkid();
     }
 
 
-    public String update(Discipline discipline, String id, int tenant) {
+    public String update(Discipline discipline, String skid, int tenant) {
         Discipline disciplinePresent
-                = disciplineRepository.findDisciplineByIdAndTenant(id, tenant).orElseThrow(() ->
+                = disciplineRepository.findDisciplineBySkidAndTenant(skid, tenant).orElseThrow(() ->
                 new RequestExceptions("Disciplina não encontrada"));
 
         disciplinePresent.setName(disciplinePresent.getName());
         disciplinePresent.setDescription(disciplinePresent.getDescription());
         disciplinePresent.setProfessorId(disciplinePresent.getProfessorId());
         disciplinePresent.setSkid(disciplinePresent.getSkid());
-        disciplinePresent.setId(discipline.getId());
+        disciplinePresent.setDisciplineId(discipline.getDisciplineId());
         disciplinePresent.setTenant(disciplinePresent.getTenant());
 
         Discipline saved = disciplineRepository.save(disciplinePresent);
-        return saved.getSkid();
+        return "SKID: " + saved.getSkid();
     }
 
 
@@ -63,17 +65,15 @@ public class DisciplineService {
     }
 
 
-    public Discipline getById(String id, int tenant) {
-        Discipline disciplinePresent
-                = disciplineRepository.findDisciplineByIdAndTenant(id, tenant).orElseThrow(() ->
+    public Discipline getById(String skid, int tenant) {
+        return disciplineRepository.findDisciplineBySkidAndTenant(skid, tenant).orElseThrow(() ->
                 new RequestExceptions("Disciplina não encontrada"));
-        return disciplinePresent;
     }
 
 
-    public void delete(String id, int tenant) {
+    public void delete(String skid, int tenant) {
         Discipline disciplinePresent
-                = disciplineRepository.findDisciplineByIdAndTenant(id, tenant).orElseThrow(() ->
+                = disciplineRepository.findDisciplineBySkidAndTenant(skid, tenant).orElseThrow(() ->
                 new RequestExceptions("Disciplina não encontrada"));
         disciplineRepository.delete(disciplinePresent);
     }

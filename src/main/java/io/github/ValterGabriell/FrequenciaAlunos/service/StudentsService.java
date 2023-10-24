@@ -10,8 +10,10 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ParentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
+import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -56,13 +58,14 @@ public class StudentsService {
     private static GetStudent generateStudentResponse(Student studentSaved) {
         GetStudent getStudent;
         getStudent = new GetStudent(
-                studentSaved.getId(),
+                studentSaved.getStudentId(),
                 studentSaved.getFirstName(),
                 studentSaved.getEmail(),
                 studentSaved.getStartDate(),
                 studentSaved.getAdmin(),
                 studentSaved.getLinks()
         );
+
         return getStudent;
     }
 
@@ -76,13 +79,11 @@ public class StudentsService {
      * @param tenant    O inquilino associado ao estudante.
      * @return O objeto do estudante criado.
      */
-    public GetStudent insertStudentIntoDatabase(InsertStudents request,
-                                                String adminCnpj,
-                                                Integer tenant,
-                                                String parentIdentifier
+    public PatternResponse<String> insertStudentIntoDatabase(InsertStudents request,
+                                            String adminCnpj,
+                                            Integer tenant,
+                                            String parentIdentifier
     ) {
-
-
         Parent parent = parentsRepository.findByIdentifierNumberAndTenant(parentIdentifier, tenant).orElseThrow(() -> {
             throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
         });
@@ -109,28 +110,27 @@ public class StudentsService {
         student.setAdmin(admin.getCnpj());
         student.setSchoolClass(" ");
         student.setSecondName(request.getSecondName());
-
-
-
+        student.setSkid(GenerateSKId.generateSkId());
         parent.getStudents().add(student);
 
         Frequency frequency = new Frequency(student.getTenant());
-        frequency.setId(student.getId());
+        frequency.setFrequencyId(student.getStudentId());
         frequency.setDaysList(new ArrayList<>());
+        frequency.setSkid(GenerateSKId.generateSkId());
 
         parentsRepository.save(parent);
         frequencyRepository.save(frequency);
         Student studentSaved = studentsRepository.save(student);
 
         studentSaved.add(linkTo(methodOn(StudentsController.class)
-                .getAllStudents(null, 0)).withSelfRel());
-        return generateStudentResponse(studentSaved);
+                .getStudentBySkId(studentSaved.getSkid(), 0)).withSelfRel());
+
+        return new PatternResponse<>(studentSaved.getSkid(), studentSaved.getLinks());
     }
 
     /**
      * Método privado para verificar
      * se um estudante já foi associado a um administrador e retorna o administrador se não foi.
-     *
      * @param cnpj      O identificador do administrador a ser verificado.
      * @param studentId O ID do estudante a ser verificado.
      * @param tenantId  O inquilino associado ao administrador.
@@ -144,7 +144,7 @@ public class StudentsService {
         Admin admin = adminRepository.findByCnpj(cnpj, tenantId)
                 .orElseThrow(() -> new RequestExceptions("Administrador " + cnpj + " não encontrado!"));
         for (Student student : admin.getStudents()) {
-            if (student.getId().equals(studentId)) {
+            if (student.getStudentId().equals(studentId)) {
                 return admin;
             }
         }
@@ -169,7 +169,7 @@ public class StudentsService {
 
         Function<Student, GetStudent> mapToGetStudent = (student) -> {
             return new GetStudent(
-                    student.getId(),
+                    student.getStudentId(),
                     student.getFirstName(),
                     student.getEmail(),
                     student.getStartDate(),
@@ -187,20 +187,20 @@ public class StudentsService {
         return page;
     }
 
-    private Student validateIfStudentExistsAndReturnIfExist(String studentId, int tenantId) {
+    private Student validateIfStudentExistsAndReturnIfExist(String studentSkId, int tenantId) {
         StudentValidationImpl studentValidation = new StudentValidationImpl();
-        return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+        return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
     }
 
     /**
-     * Método para obter 1 estudante pelo cpf e tenant.
+     * Método para obter 1 estudante pelo skid e tenant.
      *
      * @return Um estudante.
      */
-    public GetStudent getStudentByCpf(String cpf, int tenantId) {
-        Student student = validateIfStudentExistsAndReturnIfExist(cpf, tenantId);
+    public GetStudent getStudentBySkId(String skid, int tenantId) {
+        Student student = validateIfStudentExistsAndReturnIfExist(skid, tenantId);
         return new GetStudent(
-                student.getId(),
+                student.getStudentId(),
                 student.getFirstName(),
                 student.getEmail(),
                 student.getStartDate(),

@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.professor;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 
@@ -13,23 +13,26 @@ public class CreateProfessor {
 
     private String lastName;
 
+    private String password;
+
     private Double average;
 
     private int tenant;
 
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
-    private List<Contacts> contacts;
+    private List<Contact> contacts;
     private List<SchoolClass> schoolClasses;
 
     public CreateProfessor() {
     }
 
-    public CreateProfessor(String firstName, String lastName, Double average, int tenant,
-                           LocalDateTime startDate, LocalDateTime finishedDate, List<Contacts> contacts,
+    public CreateProfessor(String firstName, String lastName, String password,Double average, int tenant,
+                           LocalDateTime startDate, LocalDateTime finishedDate, List<Contact> contacts,
                            List<SchoolClass> schoolClasses) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
         this.average = average;
         this.tenant = tenant;
         this.startDate = startDate;
@@ -88,16 +91,20 @@ public class CreateProfessor {
         this.finishedDate = finishedDate;
     }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-    public void setContacts(List<Contacts> contacts) {
+    public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
     public List<SchoolClass> getSchoolClasses() {
         return schoolClasses;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setSchoolClasses(List<SchoolClass> schoolClasses) {
@@ -113,6 +120,7 @@ public class CreateProfessor {
         professor.setFinishedDate(this.finishedDate);
         professor.setContacts(this.contacts);
         professor.setSchoolClasses(this.schoolClasses);
+        professor.setPassword(this.password);
         return professor;
     }
 

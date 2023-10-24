@@ -3,12 +3,11 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.AdmController;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.login.Login;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.LoginRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidationImpl;
@@ -30,12 +29,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class AdmService {
     private final AdminRepository adminRepository;
-    private final LoginRepository loginRepository;
     private final ContactsRepository contactsRepository;
 
-    public AdmService(AdminRepository adminRepository, LoginRepository loginRepository, ContactsRepository contactsRepository) {
+    public AdmService(AdminRepository adminRepository, ContactsRepository contactsRepository) {
         this.adminRepository = adminRepository;
-        this.loginRepository = loginRepository;
         this.contactsRepository = contactsRepository;
     }
 
@@ -55,24 +52,6 @@ public class AdmService {
         AdminValidationImpl adminValidation = new AdminValidationImpl();
         Admin adminIsPresent = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         return adminIsPresent != null;
-    }
-
-    private Login createLogin(Admin admin, int tenant) {
-        // Cria um objeto 'Login' para o fluxo de login
-        Login login = new Login(
-                admin.getEmail(),
-                admin.getPassword(),
-                tenant
-        );
-
-        // Salva o objeto 'Login' no repositório
-        Login loginSaved = loginRepository.save(login);
-
-        // Define o campo 'skid' do 'Login' com o ID gerado após a primeira inserção
-        loginSaved.setSkid(loginSaved.getId());
-
-        // Salva o objeto 'Login' atualizado com o 'skid' no repositório novamente
-        return loginRepository.save(loginSaved);
     }
 
     /**
@@ -112,9 +91,7 @@ public class AdmService {
             // Converte um objeto 'newAdmin' em um objeto 'admin'
             Admin admin = newAdmin.toAdmin();
 
-            Login login = createLogin(admin, tenant);
-
-            List<Contacts> contacts = new ArrayList<>(admin.getContacts());
+            List<Contact> contacts = new ArrayList<>(admin.getContacts());
             contacts.forEach(contact -> {
                 contact.setUserId(admin.getCnpj());
                 contact.setTenant(tenant);
@@ -125,24 +102,23 @@ public class AdmService {
             admin.setSkId(" ");
             // Define o 'tenant' do administrador
             admin.setTenant(tenant);
-            // Define o ID do 'Login' associado ao administrador
-            admin.setLoginId(login.getSkid());
 
+            admin.setSkId(GenerateSKId.generateSkId());
+            List<ROLES> roles = new ArrayList<>();
+            roles.add(ROLES.ADMIN);
+            roles.add(ROLES.PARENT);
+            roles.add(ROLES.PROFESSOR);
+            admin.setRoles(roles);
             // Salva o objeto 'Admin' no repositório
-            Admin adminSaved = adminRepository.save(admin);
+            adminRepository.save(admin);
 
-            // Gera e define 'skId' para o administrador com base no ID
-            adminSaved.setSkId(GenerateSKId.generateSkId(adminSaved.getId()));
-
-            // Salva o objeto 'Admin' atualizado com o 'skId' no repositório novamente
-            adminRepository.save(adminSaved);
 
             // Adiciona um link de auto-relacionamento para o administrador
-            adminSaved.add(linkTo(methodOn(AdmController.class)
-                    .getAdminByCnpj(adminSaved.getSkId(), adminSaved.getTenant())).withSelfRel());
+            admin.add(linkTo(methodOn(AdmController.class)
+                    .getAdminByCnpj(admin.getSkId(), admin.getTenant())).withSelfRel());
 
             // Retorna o CNPJ do administrador salvo
-            return "CNPJ: " + adminSaved.getCnpj();
+            return "CNPJ: " + admin.getCnpj();
         }
     }
 
@@ -283,7 +259,7 @@ public class AdmService {
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         String response;
         if (admin != null) {
-            adminRepository.deleteById(admin.getId());
+            adminRepository.deleteById(admin.getAdminId());
             response = "Usuário " + cnpj + " deletado com sucesso!";
         } else {
             response = "Falha ao deletar o usuário: " + cnpj;

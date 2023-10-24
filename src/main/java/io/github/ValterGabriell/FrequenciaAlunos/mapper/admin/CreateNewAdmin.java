@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.admin;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ public class CreateNewAdmin {
     private String password;
     private String email;
     private String cnpj;
-    private List<Contacts> contacts;
+    private List<Contact> contacts;
     public CreateNewAdmin(
             String firstName,
             String password,
             String email,
             String cnpj,
             String secondName,
-            List<Contacts> contacts
+            List<Contact> contacts
     ) {
         this.firstName = firstName;
         this.password = password;
@@ -33,7 +33,7 @@ public class CreateNewAdmin {
         return cnpj;
     }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 

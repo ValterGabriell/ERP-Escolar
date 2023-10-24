@@ -1,19 +1,20 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ParentController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.login.Login;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.LoginRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ParentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.CreateParent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.ParentGet;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.UpdateParent;
+import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -22,31 +23,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ParentsService {
     private final ParentsRepository parentsRepository;
-    private final LoginRepository loginRepository;
-
-    public ParentsService(ParentsRepository parentsRepository, LoginRepository loginRepository) {
+    public ParentsService(ParentsRepository parentsRepository) {
         this.parentsRepository = parentsRepository;
-        this.loginRepository = loginRepository;
     }
-
-    private Login createLogin(Parent parent, int tenant) {
-        // Cria um objeto 'Login' para o fluxo de login
-        Login login = new Login(
-                parent.getContacts().get(0).getEmail(),
-                parent.getIdentifierNumber(),
-                tenant
-        );
-
-        // Salva o objeto 'Login' no repositório
-        Login loginSaved = loginRepository.save(login);
-
-        // Define o campo 'skid' do 'Login' com o ID gerado após a primeira inserção
-        loginSaved.setSkid(loginSaved.getId());
-
-        // Salva o objeto 'Login' atualizado com o 'skid' no repositório novamente
-        return loginRepository.save(loginSaved);
-    }
-
 
     public String createParent(CreateParent createParent, int tenant, String adminCnpj) {
 
@@ -67,12 +46,13 @@ public class ParentsService {
             contacts.setUserId(parent.getIdentifierNumber());
         });
 
-
+        List<ROLES> roles = new ArrayList<>();
+        roles.add(ROLES.PROFESSOR);
+        parent.setRoles(roles);
+        parent.setSkid(GenerateSKId.generateSkId());
         Parent parentSaved = parentsRepository.save(parent);
-        parentSaved.setSkid(parentSaved.getId());
-        Parent updated = parentsRepository.save(parentSaved);
-        createLogin(parent,tenant);
-        return updated.getIdentifierNumber();
+
+        return "SKID: " + parentSaved.getSkid();
     }
 
     public String updateParentFirstName(UpdateParent updateParent, int tenant, String adminCnpj, String identifierNumber) {
@@ -92,7 +72,7 @@ public class ParentsService {
         });
 
         Parent parentUpdated = parentsRepository.save(parent);
-        return parentUpdated.getIdentifierNumber();
+        return "SKID: " + parentUpdated.getSkid();
     }
 
     public ParentGet getByIdentifierNumber(int tenant, String identifierNumber) {

@@ -49,7 +49,7 @@ public class SheetManipulation implements SheetManipulationContract {
             Row _row = sheetAlunos.createRow(rownumber++);
 
             Cell cellCpf = _row.createCell(columnnumber++);
-            cellCpf.setCellValue(student.getId());
+            cellCpf.setCellValue(student.getStudentId());
 
             Cell cellName = _row.createCell(columnnumber++);
             cellName.setCellValue(student.getFirstName());

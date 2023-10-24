@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Discipline {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String disciplineId;
 
     @Column(nullable = false)
     private String skid;
@@ -21,24 +21,27 @@ public class Discipline {
     private int tenant;
 
     @Column(nullable = false)
+    private String adminId;
+
+    @Column(nullable = false)
     private String professorId;
 
-    public Discipline(String name, String description, int tenant, String professorId) {
+    public Discipline(String name, String description, String professorId,String adminId) {
         this.name = name;
         this.description = description;
-        this.tenant = tenant;
         this.professorId = professorId;
+        this.adminId = adminId;
     }
 
     public Discipline() {
     }
 
-    public String getId() {
-        return id;
+    public String getDisciplineId() {
+        return disciplineId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setDisciplineId(String id) {
+        this.disciplineId = id;
     }
 
     public String getSkid() {
@@ -79,5 +82,13 @@ public class Discipline {
 
     public void setProfessorId(String professorId) {
         this.professorId = professorId;
+    }
+
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
     }
 }

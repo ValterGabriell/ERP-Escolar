@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.parents;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.ParentGet;
 import jakarta.persistence.*;
@@ -12,13 +13,15 @@ import java.util.List;
 public class Parent extends RepresentationModel<Parent> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String parentId;
 
     @Column(nullable = true)
     private String skid;
 
     @Column(nullable = false)
     private String firstName;
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private String adminCnpj;
@@ -29,20 +32,24 @@ public class Parent extends RepresentationModel<Parent> {
     @Column(nullable = false)
     private String identifierNumber;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer tenant;
+
+    @Column(nullable = false)
+    private List<ROLES> roles;
 
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
-    @OneToMany(targetEntity = Contacts.class, cascade = CascadeType.ALL)
-    private List<Contacts> contacts;
+    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
+    private List<Contact> contacts;
 
     public Parent() {
     }
 
-    public Parent(String firstName, String lastName, String identifierNumber, List<Contacts> contacts) {
+    public Parent(String firstName, String lastName, String password,String identifierNumber, List<Contact> contacts) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
         this.identifierNumber = identifierNumber;
         this.contacts = contacts;
     }
@@ -79,12 +86,12 @@ public class Parent extends RepresentationModel<Parent> {
         return students;
     }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-    public String getId() {
-        return id;
+    public String getParentId() {
+        return parentId;
     }
 
     public void setTenant(Integer tenant) {
@@ -111,7 +118,7 @@ public class Parent extends RepresentationModel<Parent> {
         this.identifierNumber = identifierNumber;
     }
 
-    public void setContacts(List<Contacts> contacts) {
+    public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
@@ -124,6 +131,22 @@ public class Parent extends RepresentationModel<Parent> {
                 this.students,
                 this.getLinks()
         );
+    }
+
+    public List<ROLES> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<ROLES> roles) {
+        this.roles = roles;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 

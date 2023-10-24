@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface StudentsRepository extends JpaRepository<Student, String> {
 
-    @Query(value = "SELECT * FROM tbl_estudantes WHERE cpf = :cpf AND tenant = :tenant", nativeQuery = true)
-    Optional<Student> findById(@Param("cpf") String cpf, @Param("tenant") int tenant);
+    @Query(value = "SELECT * FROM tbl_estudantes WHERE skid = :skid AND tenant = :tenant", nativeQuery = true)
+    Optional<Student> findBySkId(@Param("skid") String cpf, @Param("tenant") int tenant);
 }

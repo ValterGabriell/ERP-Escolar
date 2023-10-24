@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
@@ -58,9 +58,9 @@ public class FrequencyService extends FrequencyValidationImpl {
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
 
-        Frequency frequency = frequencyRepository.findById(student.getId()).get();
+        Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
 
-        Days currentDay = new Days(LocalDate.now(), frequency.getTenant());
+        Day currentDay = new Day(LocalDate.now(), frequency.getTenant());
 
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, currentDay);
 
@@ -84,12 +84,12 @@ public class FrequencyService extends FrequencyValidationImpl {
         StudentValidationImpl studentValidation = new StudentValidationImpl();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
-        Frequency frequency = frequencyRepository.findById(student.getId()).get();
+        Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
         ResponseDaysThatStudentGoToClass responseDaysThatStudentGoToClass = new ResponseDaysThatStudentGoToClass();
-        responseDaysThatStudentGoToClass.setStudentId(student.getId());
+        responseDaysThatStudentGoToClass.setStudentId(student.getStudentId());
 
-        List<Days> daysList = frequency.getDaysList();
-        responseDaysThatStudentGoToClass.setDaysListThatStudentGoToClass(daysList);
+        List<Day> dayList = frequency.getDaysList();
+        responseDaysThatStudentGoToClass.setDaysListThatStudentGoToClass(dayList);
         return responseDaysThatStudentGoToClass;
     }
 
@@ -117,7 +117,7 @@ public class FrequencyService extends FrequencyValidationImpl {
         List<Student> students = studentsRepository
                 .findAll()
                 .stream()
-                .filter(student -> frequencyRepository.findById(student.getId()).get().getDaysList().stream().anyMatch(_day -> _day.getDate().equals(date)))
+                .filter(student -> frequencyRepository.findById(student.getStudentId()).get().getDaysList().stream().anyMatch(_day -> _day.getDate().equals(date)))
                 .collect(Collectors.toList());
         responseSheet.setSheetName("Planilha do dia " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
         responseSheet.setSheetByteArray(sheetManipulation.createSheet(students, date));
@@ -133,8 +133,8 @@ public class FrequencyService extends FrequencyValidationImpl {
      */
     public ResponseValidateFrequency justifyAbsence(LocalDate date, String studentId) {
         Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
-        Frequency frequency = frequencyRepository.findById(student.getId()).get();
-        Days day = new Days(date, frequency.getTenant());
+        Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
+        Day day = new Day(date, frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, day);
 
         day.setJustified(true);
@@ -155,8 +155,8 @@ public class FrequencyService extends FrequencyValidationImpl {
      */
     public ResponseValidateFrequency updateAbscence(LocalDate date, String studentId) {
         Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
-        Frequency frequency = frequencyRepository.findById(student.getId()).get();
-        Days dayFounded = frequency.getDaysList()
+        Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
+        Day dayFounded = frequency.getDaysList()
                 .stream()
                 .filter(days -> days.getDate().equals(date))
                 .findFirst()

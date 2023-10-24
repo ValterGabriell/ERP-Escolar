@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.infra.repository;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ class AdminRepositoryTest {
 
 
     private Admin createAdmin() {
-        List<Contacts> contacts = new ArrayList<>();
+        List<Contact> contacts = new ArrayList<>();
         return new Admin(
                 "Jose",
                 "123",

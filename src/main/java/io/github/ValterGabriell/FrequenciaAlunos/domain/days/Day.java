@@ -12,10 +12,10 @@ import java.time.format.FormatStyle;
 import java.util.Objects;
 
 @Entity(name = "tbl_dias")
-public class Days {
+public class Day {
 
     @Id
-    private String id;
+    private String dayId;
 
     @Column(nullable = false)
     private String skid;
@@ -29,16 +29,16 @@ public class Days {
     @Column(nullable = false)
     private Integer tenant;
 
-    public Days() {
+    public Day() {
     }
 
-    public Days(LocalDate date, Integer tenant) {
+    public Day(LocalDate date, Integer tenant) {
         this.date = date;
-        this.id = String.valueOf(System.currentTimeMillis());
+        this.dayId = String.valueOf(System.currentTimeMillis());
         this.tenant = tenant;
     }
 
-    public Days(LocalDate date, boolean justified) {
+    public Day(LocalDate date, boolean justified) {
         this.date = date;
         this.justified = false;
     }
@@ -52,12 +52,12 @@ public class Days {
     }
 
     @JsonIgnore
-    public String getId() {
-        return id;
+    public String getDayId() {
+        return dayId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setDayId(String id) {
+        this.dayId = id;
     }
 
     public LocalDate getDate() {
@@ -72,7 +72,7 @@ public class Days {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return date != null && date.equals(((Days) o).date);
+        return date != null && date.equals(((Day) o).date);
     }
 
     @Override

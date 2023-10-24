@@ -1,7 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
@@ -14,7 +15,7 @@ import java.util.List;
 public class Admin extends RepresentationModel<Admin> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String adminId;
     @Column(nullable = true)
     private String skid;
     @Column(nullable = false)
@@ -31,9 +32,8 @@ public class Admin extends RepresentationModel<Admin> {
 
     @Column(nullable = false)
     private Integer tenant;
-
     @Column(nullable = false)
-    private String loginId;
+    private List<ROLES> roles;
 
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
@@ -41,9 +41,9 @@ public class Admin extends RepresentationModel<Admin> {
     @OneToMany(targetEntity = SchoolClass.class, cascade = CascadeType.ALL)
     private List<SchoolClass> schoolClasses;
 
-    @OneToMany(targetEntity = Contacts.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
     @Column(nullable = false)
-    private List<Contacts> contacts;
+    private List<Contact> contacts;
 
     @OneToMany(targetEntity = Professor.class, cascade = CascadeType.ALL)
     private List<Professor> professors;
@@ -55,7 +55,7 @@ public class Admin extends RepresentationModel<Admin> {
             String email,
             String cnpj,
             String secondName,
-            List<Contacts> contacts
+            List<Contact> contacts
     ) {
         this.firstName = firstName;
         this.password = password;
@@ -76,12 +76,12 @@ public class Admin extends RepresentationModel<Admin> {
     public Admin() {
     }
 
-    public String getId() {
-        return id;
+    public String getAdminId() {
+        return adminId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAdminId(String id) {
+        this.adminId = id;
     }
 
     public String getFirstName() {
@@ -130,18 +130,11 @@ public class Admin extends RepresentationModel<Admin> {
         return secondName;
     }
 
-    public String getLoginId() {
-        return loginId;
-    }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
-    }
 
     public String getPassword() {
         return password;
@@ -149,14 +142,21 @@ public class Admin extends RepresentationModel<Admin> {
 
     public GetAdminMapper getAdminMapper() {
         return new GetAdminMapper(
-               getCnpj(),
+                getCnpj(),
                 getSkId(),
                 getFirstName(),
                 getSecondName(),
                 getEmail(),
                 getContacts(),
-                getLoginId(),
                 getLinks()
         );
+    }
+
+    public List<ROLES> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<ROLES> roles) {
+        this.roles = roles;
     }
 }

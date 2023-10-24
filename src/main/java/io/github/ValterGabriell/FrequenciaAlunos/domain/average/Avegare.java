@@ -1,13 +1,12 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.average;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import jakarta.persistence.*;
 
 @Entity(name = "tbl_notas_alunos")
 public class Avegare {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String averageId;
     @Column(nullable = false)
     private String studentId;
 

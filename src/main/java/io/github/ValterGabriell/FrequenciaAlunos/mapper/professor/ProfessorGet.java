@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.professor;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 
@@ -21,14 +21,14 @@ public class ProfessorGet {
 
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
-    private List<Contacts> contacts;
+    private List<Contact> contacts;
     private List<SchoolClass> schoolClasses;
 
     public ProfessorGet() {
     }
 
     public ProfessorGet(String skid, String firstName, String lastName, Double average, int tenant,
-                        LocalDateTime startDate, LocalDateTime finishedDate, List<Contacts> contacts,
+                        LocalDateTime startDate, LocalDateTime finishedDate, List<Contact> contacts,
                         List<SchoolClass> schoolClasses) {
         this.skid = skid;
         this.firstName = firstName;
@@ -98,11 +98,11 @@ public class ProfessorGet {
         this.finishedDate = finishedDate;
     }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-    public void setContacts(List<Contacts> contacts) {
+    public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
 

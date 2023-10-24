@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public class StudentValidationImpl implements StudentValidation {
     @Override
-    public Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentId, int tenantId) {
-        Optional<Student> student = studentsRepository.findById(studentId, tenantId);
+    public Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentSkId, int tenantId) {
+        Optional<Student> student = studentsRepository.findBySkId(studentSkId, tenantId);
         if (student.isEmpty()) {
-            throw new RequestExceptions(ExceptionsValues.USER_NOT_FOUND + " " + studentId);
+            throw new RequestExceptions(ExceptionsValues.USER_NOT_FOUND + " " + studentSkId);
         }
         return student.get();
     }

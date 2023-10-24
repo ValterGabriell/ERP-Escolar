@@ -1,5 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
@@ -19,23 +20,24 @@ public class StudentsController {
     }
 
     @PostMapping(value = "/{adminCnpj}")
-    public ResponseEntity<GetStudent> insertStudentsIntoDatabase(
+    public ResponseEntity<PatternResponse<String>> insertStudentsIntoDatabase(
             @RequestBody InsertStudents request,
             @PathVariable String adminCnpj,
             @RequestParam Integer tenantId,
             @RequestParam String parentIdentifier) {
-        GetStudent student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId, parentIdentifier);
+        PatternResponse<String> student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId, parentIdentifier);
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
+
     @GetMapping(value = "get-all", params = {"tenantId"})
     public ResponseEntity<Page<GetStudent>> getAllStudents(Pageable pageable, @RequestParam int tenantId) {
         Page<GetStudent> allStudentsFromDatabase = service.getAllStudentsFromDatabase(pageable, tenantId);
         return new ResponseEntity<>(allStudentsFromDatabase, HttpStatus.OK);
     }
 
-    @GetMapping(value = "get/{cpf}", params = {"tenantId"})
-    public ResponseEntity<GetStudent> getStudentByCpf(@PathVariable String cpf, @RequestParam int tenantId) {
-        GetStudent student = service.getStudentByCpf(cpf, tenantId);
+    @GetMapping(value = "get/{skid}", params = {"tenantId"})
+    public ResponseEntity<GetStudent> getStudentBySkId(@PathVariable String skid, @RequestParam int tenantId) {
+        GetStudent student = service.getStudentBySkId(skid, tenantId);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 

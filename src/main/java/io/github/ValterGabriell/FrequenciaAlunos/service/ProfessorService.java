@@ -1,22 +1,21 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ProfessorController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.login.Login;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.LoginRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ProfessorRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.CreateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.UpdateProfessor;
+import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -24,43 +23,27 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ProfessorService {
     private final ProfessorRepository professorRepository;
-    private final LoginRepository loginRepository;
 
-    public ProfessorService(ProfessorRepository professorRepository, LoginRepository loginRepository) {
+    public ProfessorService(ProfessorRepository professorRepository) {
         this.professorRepository = professorRepository;
-        this.loginRepository = loginRepository;
-    }
-    private Login createLogin(Professor professor, int tenant) {
-        // Cria um objeto 'Login' para o fluxo de login
-        Login login = new Login(
-                professor.getContacts().get(0).getEmail(),
-                professor.getSkid(),
-                tenant
-        );
-
-        // Salva o objeto 'Login' no repositório
-        Login loginSaved = loginRepository.save(login);
-
-        // Define o campo 'skid' do 'Login' com o ID gerado após a primeira inserção
-        loginSaved.setSkid(loginSaved.getId());
-
-        // Salva o objeto 'Login' atualizado com o 'skid' no repositório novamente
-        return loginRepository.save(loginSaved);
     }
 
-    public String createProfessor(CreateProfessor createProfessor, int tenant) {
+    public String createProfessor(CreateProfessor createProfessor, String adminCnpj, int tenant) {
         Professor professor = createProfessor.toProfessor();
         professor.setTenant(tenant);
-        professor.setSkid(UUID.randomUUID().toString());
+        professor.setSkid(GenerateSKId.generateSkId());
 
         professor.getContacts().forEach(contacts -> {
             contacts.setTenant(tenant);
             contacts.setUserId(professor.getSkid());
         });
 
+        List<ROLES> roles = new ArrayList<>();
+        roles.add(ROLES.PROFESSOR);
+        professor.setRoles(roles);
+        professor.setAdminId(adminCnpj);
         Professor professorSaved = professorRepository.save(professor);
-        createLogin(professorSaved,tenant);
-        return professorSaved.getSkid();
+        return "SKID: " +professorSaved.getSkid();
     }
 
     public String updateProfessor(UpdateProfessor updateProfessor,
@@ -85,7 +68,7 @@ public class ProfessorService {
 
         Professor professorUpdated = professorRepository.save(professor);
 
-        return professorUpdated.getSkid();
+        return "SKID: "+professorUpdated.getSkid();
     }
 
     public ProfessorGet getBySkId(int tenant, String skId) {

@@ -3,10 +3,10 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain.contacts;
 import jakarta.persistence.*;
 
 @Entity(name = "tbl_contatos")
-public class Contacts {
+public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String contactId;
 
     @Column(nullable = false)
     private String phone;
@@ -20,14 +20,14 @@ public class Contacts {
     private Integer tenant;
 
 
-    public Contacts(String phone, String email, String userId, Integer tenant) {
+    public Contact(String phone, String email, String userId, Integer tenant) {
         this.phone = phone;
         this.email = email;
         this.userId = userId;
         this.tenant = tenant;
     }
 
-    public Contacts() {
+    public Contact() {
 
     }
 

@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.parents;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import org.springframework.hateoas.Links;
 
@@ -10,12 +10,12 @@ public class ParentGet {
     private String firstName;
     private String lastName;
     private String identifierNumber;
-    private List<Contacts> contacts;
+    private List<Contact> contacts;
     private List<Student> students;
 
     private Links links;
 
-    public ParentGet(String firstName, String lastName, String identifierNumber, List<Contacts> contacts,
+    public ParentGet(String firstName, String lastName, String identifierNumber, List<Contact> contacts,
                      List<Student> students, Links links) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,7 +37,7 @@ public class ParentGet {
         return identifierNumber;
     }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 

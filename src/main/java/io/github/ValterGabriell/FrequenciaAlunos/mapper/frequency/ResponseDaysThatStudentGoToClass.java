@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Days;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ResponseDaysThatStudentGoToClass {
         return dayListThatStudentGoToClasses;
     }
 
-    public void setDaysListThatStudentGoToClass(List<Days> dayListThatStudentGoToClasses) {
+    public void setDaysListThatStudentGoToClass(List<Day> dayListThatStudentGoToClasses) {
         List<DaysList> daysLists = new ArrayList<>();
         dayListThatStudentGoToClasses.forEach(days -> {
             DaysList dayFormatted = days.toDaysList();

@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.admin;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contacts;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import org.springframework.hateoas.Links;
 
 import java.util.List;
@@ -12,9 +12,7 @@ public class GetAdminMapper {
     private String secondName;
     private String email;
 
-    private List<Contacts> contacts;
-
-    private String loginId;
+    private List<Contact> contacts;
     private Links links;
 
     public void setLinks(Links links) {
@@ -26,14 +24,13 @@ public class GetAdminMapper {
             String skid,
             String firstName,
             String secondName,
-            String email, List<Contacts> contacts, String loginId, Links links) {
+            String email, List<Contact> contacts, Links links) {
         this.cnpj = cnpj;
         this.skid = skid;
         this.firstName = firstName;
         this.secondName = secondName;
         this.email = email;
         this.contacts = contacts;
-        this.loginId = loginId;
         this.links = links;
     }
 
@@ -57,13 +54,10 @@ public class GetAdminMapper {
         return email;
     }
 
-    public List<Contacts> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-    public String getLoginId() {
-        return loginId;
-    }
 
     public Links getLinks() {
         return links;

@@ -9,8 +9,11 @@ import java.time.LocalDateTime;
 public class Student extends RepresentationModel<Student> {
 
     @Id
-    @Column(name = "id", nullable = false)
-    private String id;
+    @Column(name = "studentId", nullable = false)
+    private String studentId;
+
+    @Column(name = "skid", nullable = false)
+    private String skid;
     @Column(name = "nome", nullable = false)
     private String firstName;
 
@@ -32,13 +35,13 @@ public class Student extends RepresentationModel<Student> {
     private String schoolClass;
 
     public Student(
-            String id,
+            String studentId,
             String firstName,
             String email,
             LocalDateTime startDate,
             LocalDateTime finishedDate,
             Integer tenant) {
-        this.id = id;
+        this.studentId = studentId;
         this.firstName = firstName;
         this.email = email;
         this.startDate = startDate;
@@ -61,12 +64,12 @@ public class Student extends RepresentationModel<Student> {
     public Student() {
     }
 
-    public String getId() {
-        return id;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setStudentId(String id) {
+        this.studentId = id;
     }
 
     public String getFirstName() {
@@ -120,5 +123,13 @@ public class Student extends RepresentationModel<Student> {
 
     public void setSecondName(String secondName) {
         this.secondName = secondName;
+    }
+
+    public String getSkid() {
+        return skid;
+    }
+
+    public void setSkid(String skid) {
+        this.skid = skid;
     }
 }

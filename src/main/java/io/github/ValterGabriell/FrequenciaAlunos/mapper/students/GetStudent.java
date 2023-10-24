@@ -1,6 +1,5 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import org.springframework.hateoas.Links;
 
 import java.time.LocalDateTime;
