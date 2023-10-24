@@ -52,9 +52,15 @@ public class ProfessorService {
         Professor professor = createProfessor.toProfessor();
         professor.setTenant(tenant);
         professor.setSkid(UUID.randomUUID().toString());
+
+        professor.getContacts().forEach(contacts -> {
+            contacts.setTenant(tenant);
+            contacts.setUserId(professor.getSkid());
+        });
+
         Professor professorSaved = professorRepository.save(professor);
         createLogin(professorSaved,tenant);
-        return professorSaved.getFirstName();
+        return professorSaved.getSkid();
     }
 
     public String updateProfessor(UpdateProfessor updateProfessor,
@@ -72,9 +78,14 @@ public class ProfessorService {
         professor.setFinishedDate(updateProfessor.getFinishedDate());
         professor.setStartDate(updateProfessor.getStartDate());
 
+        professor.getContacts().forEach(contacts -> {
+            contacts.setTenant(tenant);
+            contacts.setUserId(professor.getSkid());
+        });
+
         Professor professorUpdated = professorRepository.save(professor);
 
-        return professorUpdated.getFirstName();
+        return professorUpdated.getSkid();
     }
 
     public ProfessorGet getBySkId(int tenant, String skId) {

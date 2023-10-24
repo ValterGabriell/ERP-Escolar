@@ -16,7 +16,6 @@ public class ProfessorGet {
 
     private Double average;
 
-    private String email;
 
     private int tenant;
 
@@ -28,14 +27,13 @@ public class ProfessorGet {
     public ProfessorGet() {
     }
 
-    public ProfessorGet(String skid, String firstName, String lastName, Double average, String email, int tenant,
+    public ProfessorGet(String skid, String firstName, String lastName, Double average, int tenant,
                         LocalDateTime startDate, LocalDateTime finishedDate, List<Contacts> contacts,
                         List<SchoolClass> schoolClasses) {
         this.skid = skid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.average = average;
-        this.email = email;
         this.tenant = tenant;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
@@ -75,13 +73,6 @@ public class ProfessorGet {
         this.average = average;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public int getTenant() {
         return tenant;

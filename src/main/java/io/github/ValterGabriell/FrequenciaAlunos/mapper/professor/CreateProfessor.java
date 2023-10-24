@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class CreateProfessor {
-    private String skid;
 
     private String firstName;
 
@@ -26,10 +25,9 @@ public class CreateProfessor {
     public CreateProfessor() {
     }
 
-    public CreateProfessor(String skid, String firstName, String lastName, Double average, int tenant,
+    public CreateProfessor(String firstName, String lastName, Double average, int tenant,
                            LocalDateTime startDate, LocalDateTime finishedDate, List<Contacts> contacts,
                            List<SchoolClass> schoolClasses) {
-        this.skid = skid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.average = average;
@@ -40,13 +38,6 @@ public class CreateProfessor {
         this.schoolClasses = schoolClasses;
     }
 
-    public String getSkid() {
-        return skid;
-    }
-
-    public void setSkid(String skid) {
-        this.skid = skid;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -114,7 +105,6 @@ public class CreateProfessor {
     }
     public Professor toProfessor() {
         Professor professor = new Professor();
-        professor.setSkid(this.skid);
         professor.setFirstName(this.firstName);
         professor.setLastName(this.lastName);
         professor.setAverage(this.average);

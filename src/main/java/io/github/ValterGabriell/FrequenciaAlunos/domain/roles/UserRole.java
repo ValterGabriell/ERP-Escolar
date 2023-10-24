@@ -1,6 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.roles;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity(name = "tbl_role")
 public class UserRole {
