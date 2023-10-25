@@ -4,11 +4,12 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
 @Entity(name = "tbl_turmas")
-public class SchoolClass {
+public class SchoolClass extends RepresentationModel<SchoolClass> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String classId;
@@ -102,5 +103,25 @@ public class SchoolClass {
 
     public void setProfessors(List<Professor> professors) {
         this.professors = professors;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public int getYear() {
+        return year;
     }
 }

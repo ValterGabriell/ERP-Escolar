@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.schoolclass.CreateSC;
 import io.github.ValterGabriell.FrequenciaAlunos.service.SchoolClassService;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,9 @@ public class SchoolClassController {
     }
 
     @PostMapping(value = "/{adminId}", params = {"tenantId"})
-    public ResponseEntity<String> create(
+    public ResponseEntity<PatternResponse<String>> create(
             @RequestBody CreateSC createSC, @PathVariable String adminId, @RequestParam int tenantId) {
-        String skid = schoolClassService.create(createSC, adminId, tenantId);
+        PatternResponse<String> skid = schoolClassService.create(createSC, adminId, tenantId);
         return new ResponseEntity<>(skid, HttpStatus.CREATED);
     }
 
@@ -39,7 +40,7 @@ public class SchoolClassController {
 
     @DeleteMapping(value = "/{skid}", params = {"tenantId"})
     public ResponseEntity<?> delete(@PathVariable String skid, @RequestParam int tenantId) {
-        schoolClassService.delete(skid,tenantId);
+        schoolClassService.delete(skid, tenantId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

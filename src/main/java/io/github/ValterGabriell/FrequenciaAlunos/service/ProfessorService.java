@@ -1,10 +1,13 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ProfessorController;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ProfessorRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.CreateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.UpdateProfessor;
@@ -23,12 +26,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ProfessorService {
     private final ProfessorRepository professorRepository;
+    private final AdminRepository adminRepository;
 
-    public ProfessorService(ProfessorRepository professorRepository) {
+    public ProfessorService(ProfessorRepository professorRepository, AdminRepository adminRepository) {
         this.professorRepository = professorRepository;
+        this.adminRepository = adminRepository;
     }
 
-    public String createProfessor(CreateProfessor createProfessor, String adminCnpj, int tenant) {
+    public PatternResponse<String> createProfessor(CreateProfessor createProfessor, String adminCnpj, int tenant) {
+        Admin admin = adminRepository
+                .findByCnpj(adminCnpj, tenant)
+                .orElseThrow(() -> new RequestExceptions("Administrador não encontrado"));
+
         Professor professor = createProfessor.toProfessor();
         professor.setTenant(tenant);
         professor.setSkid(GenerateSKId.generateSkId());
@@ -43,7 +52,17 @@ public class ProfessorService {
         professor.setRoles(roles);
         professor.setAdminId(adminCnpj);
         Professor professorSaved = professorRepository.save(professor);
-        return "SKID: " +professorSaved.getSkid();
+        admin.getProfessors().add(professorSaved);
+        adminRepository.save(admin);
+
+        professorSaved
+                .add(linkTo(methodOn(ProfessorController.class)
+                        .getByIdentifier(professorSaved.getSkid(), tenant)).withSelfRel());
+
+        return new PatternResponse<>(
+                professorSaved.getSkid(),
+                professorSaved.getLinks()
+        );
     }
 
     public String updateProfessor(UpdateProfessor updateProfessor,
@@ -68,7 +87,7 @@ public class ProfessorService {
 
         Professor professorUpdated = professorRepository.save(professor);
 
-        return "SKID: "+professorUpdated.getSkid();
+        return "SKID: " + professorUpdated.getSkid();
     }
 
     public ProfessorGet getBySkId(int tenant, String skId) {

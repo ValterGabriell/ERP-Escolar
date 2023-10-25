@@ -19,9 +19,9 @@ public class AdmController {
         this.adminService = adminService;
     }
 
-    @PostMapping(params = {"tenantId"})
-    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin, @RequestParam Integer tenantId) {
-        var newAdmin = adminService.createNewAdmin(insertAdmin, tenantId);
+    @PostMapping(params = {"tenant"})
+    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin, @RequestParam Integer tenant) {
+        var newAdmin = adminService.createNewAdmin(insertAdmin, tenant);
         return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }
 
@@ -40,7 +40,7 @@ public class AdmController {
         return new ResponseEntity<>(listAdmins, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-first-name/{cnpj}", params = {"tenantId"})
+    @PatchMapping(value = "update-first-name/{cnpj}", params = {"tenantId"})
     public ResponseEntity<GetAdminMapper> updateFirstUsername(
             @PathVariable String cnpj,
             @RequestBody UpdateAdminFirstName updateAdminFirstName,
@@ -49,7 +49,7 @@ public class AdmController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-second-name/{cnpj}", params = {"tenantId"})
+    @PatchMapping(value = "update-second-name/{cnpj}", params = {"tenantId"})
     public ResponseEntity<GetAdminMapper> updateSecondUsername(
             @PathVariable String cnpj,
             @RequestBody UpdateAdminSecondName updateAdminSecondName,
@@ -58,7 +58,7 @@ public class AdmController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update-password/{cnpj}", params = {"tenantId"})
+    @PatchMapping(value = "update-password/{cnpj}", params = {"tenantId"})
     public ResponseEntity<GetAdminMapper> updatePassword(
             @PathVariable String cnpj,
             @RequestBody UpdateAdminPassword updateAdminPassword,

@@ -7,8 +7,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
+import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.util.sheet.SheetManipulation;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.DocumentsValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FrequencyValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
@@ -38,32 +38,24 @@ public class FrequencyService extends FrequencyValidationImpl {
     }
 
 
-    private void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String studentId) {
-        DocumentsValidationImpl documentsValidation = new DocumentsValidationImpl();
-        documentsValidation.checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
-    }
 
     /**
      * method that validate student frequency
      *
-     * @param studentId represent primary key of student table
+     * @param studentSkId represent primary key of student table
      * @return response with the student frequency validated or erro while validation frequency
      */
-    public ResponseValidateFrequency validateFrequency(String studentId, int tenantId) throws RequestExceptions {
+    public ResponseValidateFrequency validateFrequency(String studentSkId, int tenantId) throws RequestExceptions {
 
         StudentValidationImpl studentValidation = new StudentValidationImpl();
-
-        checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
-
         Student student = studentValidation
-                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
 
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
 
         Day currentDay = new Day(LocalDate.now(), frequency.getTenant());
-
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, currentDay);
-
+        currentDay.setSkid(GenerateSKId.generateSkId());
         frequency.getDaysList().add(currentDay);
 
         frequencyRepository.save(frequency);
@@ -79,14 +71,13 @@ public class FrequencyService extends FrequencyValidationImpl {
      * @param studentId represent primary key of student table
      */
     public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId, int tenantId) throws RequestExceptions {
-        checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(studentId);
 
         StudentValidationImpl studentValidation = new StudentValidationImpl();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
         ResponseDaysThatStudentGoToClass responseDaysThatStudentGoToClass = new ResponseDaysThatStudentGoToClass();
-        responseDaysThatStudentGoToClass.setStudentId(student.getStudentId());
+        responseDaysThatStudentGoToClass.setStudentSkId(student.getSkid());
 
         List<Day> dayList = frequency.getDaysList();
         responseDaysThatStudentGoToClass.setDaysListThatStudentGoToClass(dayList);
@@ -96,10 +87,10 @@ public class FrequencyService extends FrequencyValidationImpl {
     /*
     create sheet for current day and download it
      */
-    public ResponseSheet createSheetForCurrentDay() {
+    public ResponseSheet createSheetForCurrentDay(int tenant) {
         ResponseSheet responseSheet = new ResponseSheet();
         SheetManipulation sheetManipulation = new SheetManipulation();
-        List<Student> students = studentsRepository.findAll();
+        List<Student> students = studentsRepository.findAllByTenant(tenant);
         responseSheet.setSheetName("Planilha do dia " + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
         responseSheet.setSheetByteArray(sheetManipulation.createSheet(students));
         return responseSheet;
@@ -111,15 +102,18 @@ public class FrequencyService extends FrequencyValidationImpl {
      * @param date that represent date to create sheet
      * @return sheet download
      */
-    public ResponseSheet returnSheetForSpecifyDay(LocalDate date) {
+    public ResponseSheet returnSheetForSpecifyDay(LocalDate date, int tenant) {
         SheetManipulation sheetManipulation = new SheetManipulation();
         ResponseSheet responseSheet = new ResponseSheet();
         List<Student> students = studentsRepository
-                .findAll()
+                .findAllByTenant(tenant)
                 .stream()
-                .filter(student -> frequencyRepository.findById(student.getStudentId()).get().getDaysList().stream().anyMatch(_day -> _day.getDate().equals(date)))
+                .filter(student -> frequencyRepository.findById(student.getStudentId())
+                        .get().getDaysList().stream()
+                        .anyMatch(_day -> _day.getDate().equals(date)))
                 .collect(Collectors.toList());
-        responseSheet.setSheetName("Planilha do dia " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
+        responseSheet.setSheetName("Planilha do dia " +
+                date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
         responseSheet.setSheetByteArray(sheetManipulation.createSheet(students, date));
         return responseSheet;
     }
@@ -128,21 +122,26 @@ public class FrequencyService extends FrequencyValidationImpl {
      * method to justify abscence of student on some class
      *
      * @param date      date to validate student present
-     * @param studentId student to be justified
+     * @param studentkId student to be justified
      * @return string with message
      */
-    public ResponseValidateFrequency justifyAbsence(LocalDate date, String studentId) {
-        Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
+    public ResponseValidateFrequency justifyAbsence(LocalDate date, String studentkId, int tenant) {
+        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        Student student = studentValidation
+                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentkId, tenant);
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
         Day day = new Day(date, frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, day);
 
         day.setJustified(true);
+        day.setSkid(GenerateSKId.generateSkId());
         frequency.getDaysList().add(day);
         frequencyRepository.save(frequency);
 
         ResponseValidateFrequency responseValidateFrequency = new ResponseValidateFrequency();
-        responseValidateFrequency.setMessage("Frequência para " + student.getFirstName() + " justificada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+        responseValidateFrequency.setMessage("Frequência para "
+                + student.getFirstName() + " justificada! - Dia: "
+                + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
         return responseValidateFrequency;
     }
 
@@ -150,11 +149,14 @@ public class FrequencyService extends FrequencyValidationImpl {
      * update the justified field changing it from true to false
      *
      * @param date      date to change the student present
-     * @param studentId student to be justified
+     * @param studentSkId student to be justified
+     * @param tenant
      * @return string with message
      */
-    public ResponseValidateFrequency updateAbscence(LocalDate date, String studentId) {
-        Student student = studentsRepository.findById(studentId).orElseThrow(() -> new RequestExceptions(ExceptionsValues.USER_NOT_FOUND));
+    public ResponseValidateFrequency updateAbscence(LocalDate date, String studentSkId, int tenant) {
+        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        Student student = studentValidation
+                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenant);
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
         Day dayFounded = frequency.getDaysList()
                 .stream()

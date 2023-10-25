@@ -3,7 +3,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain.contacts;
 import jakarta.persistence.*;
 
 @Entity(name = "tbl_contatos")
-public class Contact {
+public class Contact  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String contactId;

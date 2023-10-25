@@ -1,9 +1,10 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.discipline;
 
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 @Entity(name = "tbl_disciplina")
-public class Discipline {
+public class Discipline extends RepresentationModel<Discipline> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String disciplineId;

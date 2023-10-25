@@ -27,6 +27,9 @@ public class Professor extends RepresentationModel<Professor> {
     private String lastName;
 
     @Column(nullable = false)
+    private String identifierNumber;
+
+    @Column(nullable = false)
     private Double average;
 
     @Column(nullable = false)
@@ -52,22 +55,15 @@ public class Professor extends RepresentationModel<Professor> {
     @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
     private List<Contact> contacts;
 
-    public Professor() {
+    public String getIdentifierNumber() {
+        return identifierNumber;
     }
 
-    public Professor(String skid, String firstName, String lastName, String password, Double average, int tenant,
-                     LocalDateTime startDate, LocalDateTime finishedDate,
-                     List<Contact> contacts, List<SchoolClass> schoolClasses) {
-        this.skid = skid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.average = average;
-        this.tenant = tenant;
-        this.startDate = startDate;
-        this.finishedDate = finishedDate;
-        this.contacts = contacts;
-        this.schoolClasses = schoolClasses;
+    public void setIdentifierNumber(String identifierNumber) {
+        this.identifierNumber = identifierNumber;
+    }
+
+    public Professor() {
     }
 
     public void setProfessorId(String id) {
@@ -181,6 +177,7 @@ public class Professor extends RepresentationModel<Professor> {
         professor.setFirstName(this.firstName);
         professor.setLastName(this.lastName);
         professor.setAverage(this.average);
+        professor.setIdentifierNumber(this.identifierNumber);
         professor.setTenant(this.tenant);
         professor.setStartDate(this.startDate);
         professor.setFinishedDate(this.finishedDate);

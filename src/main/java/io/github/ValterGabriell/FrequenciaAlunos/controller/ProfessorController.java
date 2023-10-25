@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.CreateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.UpdateProfessor;
@@ -23,13 +24,13 @@ public class ProfessorController {
 
 
     @PostMapping(value = "{adminCnpj}", params = {"tenantId"})
-    public ResponseEntity<String> insert(
+    public ResponseEntity<PatternResponse<String>> insert(
             @RequestBody CreateProfessor createProfessor,
             @RequestParam Integer tenantId,
             @PathVariable String adminCnpj
-            ) {
+    ) {
 
-        String professor = professorService.createProfessor(createProfessor, adminCnpj, tenantId);
+        PatternResponse<String> professor = professorService.createProfessor(createProfessor, adminCnpj, tenantId);
         return new ResponseEntity<>(professor, HttpStatus.CREATED);
     }
 
@@ -48,7 +49,7 @@ public class ProfessorController {
         return new ResponseEntity<>(allProfessors, HttpStatus.OK);
     }
 
-    @PatchMapping(value = "update/{skid}", params = {"tenantId"})
+    @PutMapping(value = "update/{skid}", params = {"tenantId"})
     public ResponseEntity<String> update(
             @PathVariable String skid,
             @RequestBody UpdateProfessor updateProfessor,

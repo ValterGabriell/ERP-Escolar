@@ -68,6 +68,22 @@ public class Day {
         this.date = date;
     }
 
+    public String getSkid() {
+        return skid;
+    }
+
+    public void setSkid(String skid) {
+        this.skid = skid;
+    }
+
+    public Integer getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Integer tenant) {
+        this.tenant = tenant;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

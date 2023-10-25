@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DisciplineRepository extends JpaRepository<Discipline, String> {
-    Optional<Discipline> findDisciplineByName(String name);
+    Optional<Discipline> findDisciplineByNameAndTenant(String name, int tenant);
     Optional<Discipline> findDisciplineBySkidAndTenant(String skid, int tenant);
     List<Discipline> getAllByTenant(int tenant);
 }

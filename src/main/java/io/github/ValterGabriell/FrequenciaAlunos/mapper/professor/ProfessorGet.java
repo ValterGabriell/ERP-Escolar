@@ -16,6 +16,7 @@ public class ProfessorGet {
 
     private Double average;
 
+    private String identifierNumber;
 
     private int tenant;
 
@@ -27,19 +28,6 @@ public class ProfessorGet {
     public ProfessorGet() {
     }
 
-    public ProfessorGet(String skid, String firstName, String lastName, Double average, int tenant,
-                        LocalDateTime startDate, LocalDateTime finishedDate, List<Contact> contacts,
-                        List<SchoolClass> schoolClasses) {
-        this.skid = skid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.average = average;
-        this.tenant = tenant;
-        this.startDate = startDate;
-        this.finishedDate = finishedDate;
-        this.contacts = contacts;
-        this.schoolClasses = schoolClasses;
-    }
 
     public String getSkid() {
         return skid;
@@ -110,12 +98,21 @@ public class ProfessorGet {
         return schoolClasses;
     }
 
+    public String getIdentifierNumber() {
+        return identifierNumber;
+    }
+
+    public void setIdentifierNumber(String identifierNumber) {
+        this.identifierNumber = identifierNumber;
+    }
+
     public void setSchoolClasses(List<SchoolClass> schoolClasses) {
         this.schoolClasses = schoolClasses;
     }
     public Professor toProfessor() {
         Professor professor = new Professor();
         professor.setSkid(this.skid);
+        professor.setIdentifierNumber(this.identifierNumber);
         professor.setFirstName(this.firstName);
         professor.setLastName(this.lastName);
         professor.setAverage(this.average);

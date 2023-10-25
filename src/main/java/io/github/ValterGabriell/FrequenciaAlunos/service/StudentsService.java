@@ -50,26 +50,6 @@ public class StudentsService {
     }
 
     /**
-     * Método privado para gerar a resposta de um estudante (GetStudent) com base nos dados do estudante salvo.
-     *
-     * @param studentSaved O estudante recém-salvo cujos dados serão usados para criar a resposta.
-     * @return Uma instância de GetStudent com os dados do estudante salvo.
-     */
-    private static GetStudent generateStudentResponse(Student studentSaved) {
-        GetStudent getStudent;
-        getStudent = new GetStudent(
-                studentSaved.getStudentId(),
-                studentSaved.getFirstName(),
-                studentSaved.getEmail(),
-                studentSaved.getStartDate(),
-                studentSaved.getAdmin(),
-                studentSaved.getLinks()
-        );
-
-        return getStudent;
-    }
-
-    /**
      * Método para inserir um estudante no banco de dados.
      *
      * @param request   requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
@@ -88,18 +68,13 @@ public class StudentsService {
             throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
         });
 
-        boolean present = studentsRepository.findById(request.getCpf()).isPresent();
-
-        if (present) {
-            throw new RequestExceptions(STUDENT_ALREADY_SAVED);
-        }
         if (!request.usernameIsNotNull()
-                && !request.isFieldHasNumberExcatlyOfChars(request.getCpf(), 11)
+                && !request.isFieldHasNumberExcatlyOfChars(request.getStudentId(), 11)
                 && !request.emailIsNotNull()
         ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
 
         Admin admin =
-                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getCpf(), tenant);
+                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getStudentId(), tenant);
         if (admin == null) {
             throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
         }
@@ -122,6 +97,11 @@ public class StudentsService {
         frequencyRepository.save(frequency);
         Student studentSaved = studentsRepository.save(student);
 
+        admin.getStudents().add(studentSaved);
+        adminRepository.save(admin);
+
+
+
         studentSaved.add(linkTo(methodOn(StudentsController.class)
                 .getStudentBySkId(studentSaved.getSkid(), 0)).withSelfRel());
 
@@ -131,7 +111,7 @@ public class StudentsService {
     /**
      * Método privado para verificar
      * se um estudante já foi associado a um administrador e retorna o administrador se não foi.
-     * @param cnpj      O identificador do administrador a ser verificado.
+     *   @param cnpj      O identificador do administrador a ser verificado.
      * @param studentId O ID do estudante a ser verificado.
      * @param tenantId  O inquilino associado ao administrador.
      * @return O administrador se o estudante já estiver associado a ele; caso contrário, retorna null.
@@ -174,7 +154,8 @@ public class StudentsService {
                     student.getEmail(),
                     student.getStartDate(),
                     student.getAdmin(),
-                    student.getLinks());
+                    student.getLinks(),
+                    student.getSkid());
         };
 
         List<GetStudent> studentsFilteredByTenantId =
@@ -205,7 +186,8 @@ public class StudentsService {
                 student.getEmail(),
                 student.getStartDate(),
                 student.getAdmin(),
-                student.getLinks()
+                student.getLinks(),
+                student.getSkid()
         );
     }
 

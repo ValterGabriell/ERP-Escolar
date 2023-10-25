@@ -2,9 +2,10 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ParentController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
-import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ParentsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.CreateParent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.ParentGet;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.UpdateParent;
@@ -23,11 +24,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ParentsService {
     private final ParentsRepository parentsRepository;
+
     public ParentsService(ParentsRepository parentsRepository) {
         this.parentsRepository = parentsRepository;
     }
 
-    public String createParent(CreateParent createParent, int tenant, String adminCnpj) {
+    public PatternResponse<String> createParent(CreateParent createParent, int tenant, String adminCnpj) {
 
         boolean isPresent =
                 parentsRepository.findByIdentifierNumberAndTenant(createParent.getIdentifierNumber(), tenant).isPresent();
@@ -39,7 +41,6 @@ public class ParentsService {
         Parent parent = createParent.toParent();
         parent.setTenant(tenant);
         parent.setAdminCnpj(adminCnpj);
-        parent.setSkid(" ");
 
         parent.getContacts().forEach(contacts -> {
             contacts.setTenant(tenant);
@@ -51,13 +52,18 @@ public class ParentsService {
         parent.setRoles(roles);
         parent.setSkid(GenerateSKId.generateSkId());
         Parent parentSaved = parentsRepository.save(parent);
+        parentSaved.add(linkTo(methodOn(ParentController.class)
+                .getBySkId(parentSaved.getSkid(), 0)).withSelfRel());
 
-        return "SKID: " + parentSaved.getSkid();
+        return new PatternResponse<>(
+                parentSaved.getSkid(),
+                parentSaved.getLinks()
+        );
     }
 
-    public String updateParentFirstName(UpdateParent updateParent, int tenant, String adminCnpj, String identifierNumber) {
-        Parent parent = parentsRepository.findByIdentifierNumberAndTenant(identifierNumber, tenant).orElseThrow(() -> {
-            throw new RequestExceptions("Genitor não encontrado! -> " + identifierNumber);
+    public String updateParentFirstName(UpdateParent updateParent, int tenant, String adminCnpj, String skid) {
+        Parent parent = parentsRepository.findBySkidAndTenant(skid, tenant).orElseThrow(() -> {
+            throw new RequestExceptions("Genitor não encontrado! -> " + skid);
         });
         parent.setContacts(updateParent.getContacts());
         parent.setFirstName(updateParent.getFirstName());
@@ -75,9 +81,9 @@ public class ParentsService {
         return "SKID: " + parentUpdated.getSkid();
     }
 
-    public ParentGet getByIdentifierNumber(int tenant, String identifierNumber) {
-        Parent parent = parentsRepository.findByIdentifierNumberAndTenant(identifierNumber, tenant).orElseThrow(() -> {
-            throw new RequestExceptions("Genitor não encontrado! -> " + identifierNumber);
+    public ParentGet getBySkId(int tenant, String skid) {
+        Parent parent = parentsRepository.findBySkidAndTenant(skid, tenant).orElseThrow(() -> {
+            throw new RequestExceptions("Genitor não encontrado! -> " + skid);
         });
 
         return new ParentGet(
@@ -86,32 +92,24 @@ public class ParentsService {
                 parent.getIdentifierNumber(),
                 parent.getContacts(),
                 parent.getStudents(),
-                parent.getLinks()
+                parent.getLinks(),
+                parent.getSkid()
         );
     }
 
     public Page<ParentGet> getAllParents(int tenant, Pageable pageable) {
         Page<Parent> adminList = parentsRepository.findAll(pageable);
-        List<Parent> listaComTenantFiltrado =
+        List<ParentGet> listaComTenantFiltrado =
                 adminList.stream()
-                        .filter(parent -> parent.getTenant() == tenant).toList();
-        List<ParentGet> collect =
-                listaComTenantFiltrado
-                        .stream()
-                        .map(parent -> parent
-                                .add(linkTo(methodOn(ParentController.class)
-                                        .getParentByIdentifier(parent.getIdentifierNumber(),
-                                                parent.getTenant())).withSelfRel())
-                                .toParentGet()
-                        )
+                        .filter(parent -> parent.getTenant() == tenant)
+                        .map(item -> item.toParentGet())
                         .toList();
-
-        return new PageImpl<>(collect);
+        return new PageImpl<>(listaComTenantFiltrado);
     }
 
-    public void deleteParentByIdentifierNumber(int tenant, String identifierNumber) {
-        Parent parent = parentsRepository.findByIdentifierNumberAndTenant(identifierNumber, tenant).orElseThrow(() -> {
-            throw new RequestExceptions("Genitor não encontrado! -> " + identifierNumber);
+    public void deleteParentBySkId(int tenant, String skid) {
+        Parent parent = parentsRepository.findBySkidAndTenant(skid, tenant).orElseThrow(() -> {
+            throw new RequestExceptions("Genitor não encontrado! -> " + skid);
         });
         parentsRepository.delete(parent);
     }

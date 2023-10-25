@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface ParentsRepository extends JpaRepository<Parent, String> {
 
     public Optional<Parent> findByIdentifierNumberAndTenant(String identifierNumber,int tenant);
+    Optional<Parent> findBySkidAndTenant(String skid,int tenant);
 
 }

@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.CreateParent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.ParentGet;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.UpdateParent;
@@ -22,19 +23,19 @@ public class ParentController {
     }
 
     @PostMapping(value = "{adminCnpj}", params = {"tenantId"})
-    public ResponseEntity<String> insert(
+    public ResponseEntity<PatternResponse<String>> insert(
             @RequestBody CreateParent createParent,
             @RequestParam Integer tenantId,
             @PathVariable String adminCnpj) {
-        String parent = parentsService.createParent(createParent, tenantId, adminCnpj);
+        PatternResponse<String> parent = parentsService.createParent(createParent, tenantId, adminCnpj);
         return new ResponseEntity<>(parent, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = {"/{parentIdentifier}"}, params = {"tenantId"})
-    public ResponseEntity<ParentGet> getParentByIdentifier(
-            @PathVariable String parentIdentifier,
+    @GetMapping(value = {"/{skid}"}, params = {"tenantId"})
+    public ResponseEntity<ParentGet> getBySkId(
+            @PathVariable String skid,
             @RequestParam Integer tenantId) {
-        ParentGet parentGet = parentsService.getByIdentifierNumber(tenantId, parentIdentifier);
+        ParentGet parentGet = parentsService.getBySkId(tenantId, skid);
         return new ResponseEntity<>(parentGet, HttpStatus.OK);
     }
 
@@ -45,19 +46,19 @@ public class ParentController {
         return new ResponseEntity<>(listAdmins, HttpStatus.OK);
     }
 
-    @PatchMapping(value = "update/{identifierNumber}", params = {"tenantId", "adminCnpj"})
+    @PutMapping(value = "update/{skid}", params = {"tenantId", "adminCnpj"})
     public ResponseEntity<String> updateParent(
-            @PathVariable String identifierNumber,
+            @PathVariable String skid,
             @RequestBody UpdateParent updateParent,
             @RequestParam Integer tenantId,
             @RequestParam String adminCnpj) throws RequestExceptions {
-        String result = parentsService.updateParentFirstName(updateParent, tenantId, adminCnpj, identifierNumber);
+        String result = parentsService.updateParentFirstName(updateParent, tenantId, adminCnpj, skid);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{identifierNumber}", params = {"tenantId"})
-    public ResponseEntity<?> deleteAdminByCnpj(@PathVariable String identifierNumber, @RequestParam Integer tenantId) {
-        parentsService.deleteParentByIdentifierNumber(tenantId, identifierNumber);
+    @DeleteMapping(value = "/{skid}", params = {"tenantId"})
+    public ResponseEntity<?> deleteBySkId(@PathVariable String skid, @RequestParam Integer tenantId) {
+        parentsService.deleteParentBySkId(tenantId, skid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

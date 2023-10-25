@@ -13,7 +13,6 @@ public class UpdateProfessor {
 
     private Double average;
 
-
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
     private List<Contact> contacts;

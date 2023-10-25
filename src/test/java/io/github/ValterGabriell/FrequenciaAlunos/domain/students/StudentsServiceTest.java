@@ -44,6 +44,6 @@ class StudentsServiceTest {
     @Test
     @DisplayName("cpf should have exactly 11 characters and return true when it is")
     void cpfLenght() {
-        Assertions.assertTrue(studentCpfTest.isFieldHasNumberExcatlyOfChars(studentCpfTest.getCpf(), 11));
+        Assertions.assertTrue(studentCpfTest.isFieldHasNumberExcatlyOfChars(studentCpfTest.getStudentId(), 11));
     }
 }

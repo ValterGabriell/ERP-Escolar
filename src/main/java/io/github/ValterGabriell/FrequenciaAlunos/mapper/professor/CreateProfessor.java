@@ -13,6 +13,8 @@ public class CreateProfessor {
 
     private String lastName;
 
+    private String identifierNumber;
+
     private String password;
 
     private Double average;
@@ -26,21 +28,6 @@ public class CreateProfessor {
 
     public CreateProfessor() {
     }
-
-    public CreateProfessor(String firstName, String lastName, String password,Double average, int tenant,
-                           LocalDateTime startDate, LocalDateTime finishedDate, List<Contact> contacts,
-                           List<SchoolClass> schoolClasses) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.average = average;
-        this.tenant = tenant;
-        this.startDate = startDate;
-        this.finishedDate = finishedDate;
-        this.contacts = contacts;
-        this.schoolClasses = schoolClasses;
-    }
-
 
     public String getFirstName() {
         return firstName;
@@ -103,6 +90,18 @@ public class CreateProfessor {
         return schoolClasses;
     }
 
+    public String getIdentifierNumber() {
+        return identifierNumber;
+    }
+
+    public void setIdentifierNumber(String identifierNumber) {
+        this.identifierNumber = identifierNumber;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -114,6 +113,7 @@ public class CreateProfessor {
         Professor professor = new Professor();
         professor.setFirstName(this.firstName);
         professor.setLastName(this.lastName);
+        professor.setIdentifierNumber(this.identifierNumber);
         professor.setAverage(this.average);
         professor.setTenant(this.tenant);
         professor.setStartDate(this.startDate);

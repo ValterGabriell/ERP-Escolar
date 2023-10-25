@@ -18,49 +18,51 @@ import java.time.LocalDate;
 public class FrequencyController {
     private final FrequencyService frequencyService;
 
-
     public FrequencyController(FrequencyService frequencyService) {
         this.frequencyService = frequencyService;
     }
 
-    @PostMapping(params = {"studentId", "tenantId"})
-    public ResponseEntity<ResponseValidateFrequency> validateFrequency(@RequestParam String studentId,
-                                                                       @RequestParam int tenantId) throws RequestExceptions {
-        ResponseValidateFrequency responseValidadeFrequency = frequencyService.validateFrequency(studentId, tenantId);
+    @PostMapping(params = {"studentSkId", "tenant"})
+    public ResponseEntity<ResponseValidateFrequency> validateFrequency(@RequestParam String studentSkId,
+                                                                       @RequestParam int tenant) throws RequestExceptions {
+        ResponseValidateFrequency responseValidadeFrequency = frequencyService.validateFrequency(studentSkId, tenant);
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
-    @PostMapping(params = {"studentId", "date"})
-    public ResponseEntity<ResponseValidateFrequency> justifyAbsence(@RequestParam String studentId, @RequestParam LocalDate date) throws RequestExceptions {
-        ResponseValidateFrequency responseValidadeFrequency = frequencyService.justifyAbsence(date, studentId);
+    @PostMapping(params = {"studentSkId", "date", "tenant"})
+    public ResponseEntity<ResponseValidateFrequency> justifyAbsence(
+            @RequestParam String studentSkId, @RequestParam LocalDate date, @RequestParam int tenant)
+            throws RequestExceptions {
+        ResponseValidateFrequency responseValidadeFrequency = frequencyService.justifyAbsence(date, studentSkId, tenant);
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
-    @PutMapping(params = {"studentId", "date"})
-    public ResponseEntity<ResponseValidateFrequency> updateAbscence(@RequestParam String studentId, @RequestParam LocalDate date) throws RequestExceptions {
-        ResponseValidateFrequency responseValidadeFrequency = frequencyService.updateAbscence(date, studentId);
+    @PutMapping(params = {"studentSkId", "date", "tenant"})
+    public ResponseEntity<ResponseValidateFrequency> updateAbscence(
+            @RequestParam String studentSkId, @RequestParam LocalDate date, @RequestParam int tenant) throws RequestExceptions {
+        ResponseValidateFrequency responseValidadeFrequency = frequencyService.updateAbscence(date, studentSkId, tenant);
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
-    @GetMapping(params = {"studentId","tenantId"})
-    public ResponseEntity<ResponseDaysThatStudentGoToClass> getListOfDays(@RequestParam String studentId,
-                                                                          @RequestParam int tenantId) throws RequestExceptions {
-        ResponseDaysThatStudentGoToClass listOfDaysByFrequencyId = frequencyService.getListOfDaysByFrequencyId(studentId,tenantId);
+    @GetMapping(params = {"studentSkId","tenant"})
+    public ResponseEntity<ResponseDaysThatStudentGoToClass> getListOfDays(@RequestParam String studentSkId,
+                                                                          @RequestParam int tenant) throws RequestExceptions {
+        ResponseDaysThatStudentGoToClass listOfDaysByFrequencyId = frequencyService.getListOfDaysByFrequencyId(studentSkId,tenant);
         return new ResponseEntity<>(listOfDaysByFrequencyId, HttpStatus.OK);
     }
 
-    @GetMapping(value = "sheet")
-    public ResponseEntity<?> createSheet() {
-        ResponseSheet responseSheet = frequencyService.createSheetForCurrentDay();
+    @GetMapping(value = "sheet", params = "tenant")
+    public ResponseEntity<?> createSheet(@RequestParam int tenant) {
+        ResponseSheet responseSheet = frequencyService.createSheetForCurrentDay(tenant);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(responseSheet.getSheetByteArray());
     }
 
-    @GetMapping(value = "sheet", params = {"date"})
-    public ResponseEntity<?> getSheetForSpecifyDay(@RequestParam LocalDate date) {
-        ResponseSheet responseSheet = frequencyService.returnSheetForSpecifyDay(date);
+    @GetMapping(value = "sheet", params = {"date", "tenant"})
+    public ResponseEntity<?> getSheetForSpecifyDay(@RequestParam LocalDate date, @RequestParam int tenant) {
+        ResponseSheet responseSheet = frequencyService.returnSheetForSpecifyDay(date,tenant);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))

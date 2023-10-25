@@ -8,6 +8,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidationImpl;
@@ -42,7 +43,6 @@ public class AdmService {
      * 1. Chama um método de validação para verificar se o administrador existe com base no `skId` e inquilino.
      * 2. Se o administrador não for encontrado, lança uma exceção indicando que o usuário não foi encontrado.
      * 3. Se o administrador for encontrado, retorna a instância do administrador.
-     *
      * @param cnpj   O identificador único do administrador a ser encontrado.
      * @param tenant O inquilino associado ao administrador.
      * @return A instância do administrador se encontrado.
@@ -66,7 +66,6 @@ public class AdmService {
      * 5. Salva o administrador no repositório.
      * 6. Adiciona um link de auto-relação ao administrador salvo para futuras referências.
      * 7. Retorna os links do administrador como uma representação em formato de string.
-     *
      * @param newAdmin Os dados do novo administrador a serem criados.
      * @param tenant   O inquilino ao qual o novo administrador será associado.
      * @return Uma representação em formato de string dos links do administrador recém-criado.
@@ -75,7 +74,6 @@ public class AdmService {
     @Transactional
     public String createNewAdmin(CreateNewAdmin newAdmin, Integer tenant) {
         AdminValidationImpl adminValidation = new AdminValidationImpl();
-        DocumentsValidationImpl documentsValidation = new DocumentsValidationImpl();
         ContactValidationImpl contactValidation = new ContactValidationImpl();
 
         adminValidation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
@@ -87,39 +85,35 @@ public class AdmService {
         if (adminExists) {
             throw new RequestExceptions("Cadastro com CNPJ encontrado!");
         } else {
-            //documentsValidation.checkIfAdminCnpjIsCorrect(newAdmin.getCnpj());
-            // Converte um objeto 'newAdmin' em um objeto 'admin'
             Admin admin = newAdmin.toAdmin();
 
-            List<Contact> contacts = new ArrayList<>(admin.getContacts());
-            contacts.forEach(contact -> {
-                contact.setUserId(admin.getCnpj());
-                contact.setTenant(tenant);
-            });
-            contactsRepository.saveAll(contacts);
-
-            // Define 'skId' do administrador como um espaço em branco
-            admin.setSkId(" ");
-            // Define o 'tenant' do administrador
-            admin.setTenant(tenant);
-
-            admin.setSkId(GenerateSKId.generateSkId());
+            List<Contact> contacts = setAdminIdAndTenantToContacts(tenant, admin);
             List<ROLES> roles = new ArrayList<>();
             roles.add(ROLES.ADMIN);
             roles.add(ROLES.PARENT);
             roles.add(ROLES.PROFESSOR);
+
+            admin.setTenant(tenant);
+            admin.setSkId(GenerateSKId.generateSkId());
             admin.setRoles(roles);
-            // Salva o objeto 'Admin' no repositório
+
+            contactsRepository.saveAll(contacts);
             adminRepository.save(admin);
 
-
-            // Adiciona um link de auto-relacionamento para o administrador
             admin.add(linkTo(methodOn(AdmController.class)
-                    .getAdminByCnpj(admin.getSkId(), admin.getTenant())).withSelfRel());
+                    .getAdminByCnpj(admin.getSkId(), 0)).withSelfRel());
 
-            // Retorna o CNPJ do administrador salvo
             return "CNPJ: " + admin.getCnpj();
         }
+    }
+
+    private static List<Contact> setAdminIdAndTenantToContacts(Integer tenant, Admin admin) {
+        List<Contact> contacts = new ArrayList<>(admin.getContacts());
+        contacts.forEach(contact -> {
+            contact.setUserId(admin.getCnpj());
+            contact.setTenant(tenant);
+        });
+        return contacts;
     }
 
     /**

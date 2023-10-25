@@ -29,13 +29,13 @@ public class StudentsController {
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "get-all", params = {"tenantId"})
+    @GetMapping(params = {"tenantId"})
     public ResponseEntity<Page<GetStudent>> getAllStudents(Pageable pageable, @RequestParam int tenantId) {
         Page<GetStudent> allStudentsFromDatabase = service.getAllStudentsFromDatabase(pageable, tenantId);
         return new ResponseEntity<>(allStudentsFromDatabase, HttpStatus.OK);
     }
 
-    @GetMapping(value = "get/{skid}", params = {"tenantId"})
+    @GetMapping(value = "/{skid}", params = {"tenantId"})
     public ResponseEntity<GetStudent> getStudentBySkId(@PathVariable String skid, @RequestParam int tenantId) {
         GetStudent student = service.getStudentBySkId(skid, tenantId);
         return new ResponseEntity<>(student, HttpStatus.OK);

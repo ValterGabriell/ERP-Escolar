@@ -6,7 +6,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.qrcode.QrCodeMessage;
 import io.github.ValterGabriell.FrequenciaAlunos.util.QRCode.QRCodeGenerate;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
 import org.springframework.stereotype.Service;
 
@@ -26,25 +25,21 @@ public class QRCodeService {
     }
 
 
-    private Student validateIfStudentExistsAndReturnIfExist(String studentId, int tenantId) {
+    private Student validateIfStudentExistsAndReturnIfExist(String studentSkId, int tenantId) {
         StudentValidationImpl studentValidation = new StudentValidationImpl();
-        return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
+        return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
     }
 
 
     /**
      * Method that create and returns qrcode with student id
      *
-     * @param studentId representing the student id to put data on qrcode
+     * @param studentSkId representing the student id to put data on qrcode
      * @return qrcode generated as base64
      * @throws WriterException
      */
-    public String returnQrCodeAsBase64(String studentId, int tenantId) throws WriterException, RequestExceptions {
-        if (studentId.length() != 11) {
-            throw new RequestExceptions(ExceptionsValues.ILLEGAL_CPF_LENGTH);
-        }
-
-        Student student = validateIfStudentExistsAndReturnIfExist(studentId, tenantId);
+    public String returnQrCodeAsBase64(String studentSkId, int tenantId) throws WriterException, RequestExceptions {
+        Student student = validateIfStudentExistsAndReturnIfExist(studentSkId, tenantId);
         QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getStudentId());
         BufferedImage bufferedImage = QRCodeGenerate.generateQRCodeImage(qrm, 400, 400);
         String imageAsBase64;
@@ -58,13 +53,8 @@ public class QRCodeService {
         return imageAsBase64;
     }
 
-    public BufferedImage returnQrCodeImage(String studentId, int tenantId) throws WriterException, RequestExceptions {
-        if (studentId.length() != 11) {
-            throw new RequestExceptions(ExceptionsValues.ILLEGAL_CPF_LENGTH);
-        }
-
-
-        Student student = validateIfStudentExistsAndReturnIfExist(studentId, tenantId);
+    public BufferedImage returnQrCodeImage(String studentSkId, int tenant) throws WriterException, RequestExceptions {
+        Student student = validateIfStudentExistsAndReturnIfExist(studentSkId, tenant);
         QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getStudentId());
         return QRCodeGenerate.generateQRCodeImage(qrm, 400, 400);
     }

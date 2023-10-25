@@ -140,6 +140,24 @@ public class Admin extends RepresentationModel<Admin> {
         return password;
     }
 
+    public List<SchoolClass> getSchoolClasses() {
+        return schoolClasses;
+    }
+
+    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
+        this.schoolClasses = schoolClasses;
+    }
+
+    public List<Professor> getProfessors() {
+        return professors;
+    }
+
+    public void setProfessors(List<Professor> professors) {
+        this.professors = professors;
+    }
+
+
+
     public GetAdminMapper getAdminMapper() {
         return new GetAdminMapper(
                 getCnpj(),

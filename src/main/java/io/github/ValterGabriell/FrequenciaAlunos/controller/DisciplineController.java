@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.discipline.CreateDiscipline;
 import io.github.ValterGabriell.FrequenciaAlunos.service.DisciplineService;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,12 @@ public class DisciplineController {
     }
 
     @PostMapping(params = {"tenantId"})
-    public ResponseEntity<String> insert(@RequestBody CreateDiscipline discipline, @RequestParam int tenantId) {
-        String skid = disciplineService.insert(discipline, tenantId);
+    public ResponseEntity<PatternResponse<String>> insert(@RequestBody CreateDiscipline discipline, @RequestParam int tenantId) {
+        PatternResponse<String> skid = disciplineService.insert(discipline, tenantId);
         return new ResponseEntity<>(skid, HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{skid}", params = {"tenantId"})
+    @PutMapping(value = "/{skid}", params = {"tenantId"})
     public ResponseEntity<String> update(@RequestBody Discipline discipline, @PathVariable String skid, @RequestParam("tenantId") int tenant) {
         String skidRet = disciplineService.update(discipline, skid, tenant);
         return new ResponseEntity<>(skidRet, HttpStatus.OK);

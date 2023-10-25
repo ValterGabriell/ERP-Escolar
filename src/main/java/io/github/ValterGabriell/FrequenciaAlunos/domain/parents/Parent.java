@@ -129,7 +129,8 @@ public class Parent extends RepresentationModel<Parent> {
                 this.identifierNumber,
                 this.contacts,
                 this.students,
-                this.getLinks()
+                this.getLinks(),
+                this.skid
         );
     }
 
