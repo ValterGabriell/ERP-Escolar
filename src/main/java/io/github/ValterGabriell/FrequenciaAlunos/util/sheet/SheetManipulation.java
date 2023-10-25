@@ -1,10 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.util.sheet;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.HandleDate;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.FrequencyByClass;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -29,23 +27,6 @@ public class SheetManipulation implements SheetManipulationContract {
         columnTitle.add("ALUNO ID");
         columnTitle.add("ALUNO NOME");
         columnTitle.add("DIA");
-        columnTitle.add("PRESENTE");
-
-        Row row = sheetAlunos.createRow(0);
-        int cellnumber = 0;
-        for (String value : columnTitle) {
-            Cell cell = row.createCell(cellnumber++);
-            cell.setCellValue(value);
-        }
-    }
-
-    private static void createHeadersOfColumnsByClass(HSSFSheet sheetAlunos) {
-        List<String> columnTitle = new ArrayList<>();
-        columnTitle.add("ALUNO ID");
-        columnTitle.add("ALUNO NOME");
-        columnTitle.add("DIA");
-        columnTitle.add("JUSTIFICADO");
-        columnTitle.add("DESCRIÇÃO DA JUSTIFICATIVA");
         columnTitle.add("PRESENTE");
 
         Row row = sheetAlunos.createRow(0);
@@ -84,36 +65,6 @@ public class SheetManipulation implements SheetManipulationContract {
         }
     }
 
-    private static void createFieldOfColumnsForClasses(List<FrequencyByClass> frequencyByClasses, HSSFSheet sheetAlunos) {
-        int rownumber = 1;
-        int columnnumber = 0;
-        for (FrequencyByClass frequencyByClass : frequencyByClasses) {
-            Row _row = sheetAlunos.createRow(rownumber++);
-
-            Cell cellCpf = _row.createCell(columnnumber++);
-            cellCpf.setCellValue(frequencyByClass.getStudent().getStudentId());
-
-            Cell cellName = _row.createCell(columnnumber++);
-            cellName.setCellValue(frequencyByClass.getStudent().getFirstName());
-
-            for (Day day : frequencyByClass.getDayList()) {
-                Cell cellDate = _row.createCell(columnnumber++);
-                cellDate.setCellValue(day.getDate().toString());
-
-                Cell cellJustified = _row.createCell(columnnumber++);
-                cellJustified.setCellValue(day.isJustified());
-
-                Cell cellDesc = _row.createCell(columnnumber++);
-                cellDesc.setCellValue(day.getDescription());
-
-                Cell cellOk = _row.createCell(columnnumber++);
-                cellOk.setCellValue("OK");
-
-            }
-            columnnumber = 0;
-        }
-    }
-
     /**
      * method to and download sheet
      *
@@ -139,16 +90,6 @@ public class SheetManipulation implements SheetManipulationContract {
         createFieldOfColumns(students, sheetAlunos);
         return returnSheetByteArrayToDownloadIt(workbook);
     }
-
-    @Override
-    public byte[] createSheetByClass(List<FrequencyByClass> frequencyByClasses) {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheetAlunos = workbook.createSheet(HandleDate.getDateFormat() + " - PRESENÇA");
-        createHeadersOfColumnsByClass(sheetAlunos);
-        createFieldOfColumnsForClasses(frequencyByClasses, sheetAlunos);
-        return returnSheetByteArrayToDownloadIt(workbook);
-    }
-
     @Override
     public byte[] createSheet(List<Student> students, LocalDate localDate) {
         HSSFWorkbook workbook = new HSSFWorkbook();

@@ -2,14 +2,12 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.SchoolClassesRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.FrequencyByClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.JustifyAbscenceDesc;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,32 +118,6 @@ public class FrequencyService extends FrequencyValidationImpl {
         responseSheet.setSheetName("Planilha do dia " +
                 date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
         responseSheet.setSheetByteArray(sheetManipulation.createSheet(students, date));
-        return responseSheet;
-    }
-
-    public ResponseSheet returnFrequencyByClass(String classSkId, int tenant) {
-        RequestExceptions ex = new RequestExceptions("Classe não encontrada");
-        SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(classSkId, tenant)
-                .orElseThrow(() -> ex);
-
-        List<FrequencyByClass> frequencyByClasses = new ArrayList<>();
-        for (Student student : schoolClass.getStudents()) {
-            Frequency byFrequencyIdAndTenant =
-                    frequencyRepository.findByFrequencyIdAndTenant(student.getStudentId(), tenant);
-
-            List<Day> dayList = new ArrayList<>(byFrequencyIdAndTenant.getDaysList());
-
-            FrequencyByClass frequencyByClass = new FrequencyByClass(student, dayList);
-
-            frequencyByClasses.add(frequencyByClass);
-        }
-
-
-        SheetManipulation sheetManipulation = new SheetManipulation();
-        ResponseSheet responseSheet = new ResponseSheet();
-        responseSheet.setSheetName("Planilha da classe: " +
-                schoolClass.getName() + " - " + schoolClass.getPeriod() + ".xls");
-        responseSheet.setSheetByteArray(sheetManipulation.createSheetByClass(frequencyByClasses));
         return responseSheet;
     }
 

@@ -74,12 +74,4 @@ public class FrequencyController {
                 .body(responseSheet.getSheetByteArray());
     }
 
-    @GetMapping(value = "sheet", params = {"classSkId", "tenant"})
-    public ResponseEntity<?> getSheetByClass(@RequestParam String classSkId, @RequestParam int tenant) {
-        ResponseSheet responseSheet = frequencyService.returnFrequencyByClass(classSkId, tenant);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .body(responseSheet.getSheetByteArray());
-    }
 }
