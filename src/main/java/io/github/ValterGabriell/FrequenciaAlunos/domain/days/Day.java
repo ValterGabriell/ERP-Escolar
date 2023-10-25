@@ -25,6 +25,8 @@ public class Day {
 
     @Column(nullable = false)
     private boolean justified;
+    @Column(nullable = true)
+    private String description;
 
     @Column(nullable = false)
     private Integer tenant;
@@ -37,10 +39,12 @@ public class Day {
         this.dayId = String.valueOf(System.currentTimeMillis());
         this.tenant = tenant;
     }
+    public String getDescription() {
+        return description;
+    }
 
-    public Day(LocalDate date, boolean justified) {
-        this.date = date;
-        this.justified = false;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isJustified() {
@@ -63,6 +67,8 @@ public class Day {
     public LocalDate getDate() {
         return date;
     }
+
+
 
     public void setDate(LocalDate date) {
         this.date = date;

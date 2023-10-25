@@ -2,8 +2,15 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.SchoolClassesRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.FrequencyByClass;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.JustifyAbscenceDesc;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
@@ -12,14 +19,12 @@ import io.github.ValterGabriell.FrequenciaAlunos.util.sheet.SheetManipulation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FrequencyValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +35,14 @@ public class FrequencyService extends FrequencyValidationImpl {
     private final StudentsRepository studentsRepository;
     private final DaysRepository daysRepository;
     private final FrequencyRepository frequencyRepository;
+    private final SchoolClassesRepository schoolClassesRepository;
 
-    public FrequencyService(StudentsRepository studentsRepository, DaysRepository daysRepository, FrequencyRepository frequencyRepository) {
+    public FrequencyService(StudentsRepository studentsRepository, DaysRepository daysRepository, FrequencyRepository frequencyRepository, SchoolClassesRepository schoolClassesRepository) {
         this.studentsRepository = studentsRepository;
         this.daysRepository = daysRepository;
         this.frequencyRepository = frequencyRepository;
+        this.schoolClassesRepository = schoolClassesRepository;
     }
-
 
 
     /**
@@ -118,14 +124,42 @@ public class FrequencyService extends FrequencyValidationImpl {
         return responseSheet;
     }
 
+    public ResponseSheet returnFrequencyByClass(String classSkId, int tenant) {
+        RequestExceptions ex = new RequestExceptions("Classe não encontrada");
+        SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(classSkId, tenant)
+                .orElseThrow(() -> ex);
+
+        List<FrequencyByClass> frequencyByClasses = new ArrayList<>();
+        for (Student student : schoolClass.getStudents()) {
+            Frequency byFrequencyIdAndTenant =
+                    frequencyRepository.findByFrequencyIdAndTenant(student.getStudentId(), tenant);
+
+            List<Day> dayList = new ArrayList<>(byFrequencyIdAndTenant.getDaysList());
+
+            FrequencyByClass frequencyByClass = new FrequencyByClass(student, dayList);
+
+            frequencyByClasses.add(frequencyByClass);
+        }
+
+
+        SheetManipulation sheetManipulation = new SheetManipulation();
+        ResponseSheet responseSheet = new ResponseSheet();
+        responseSheet.setSheetName("Planilha da classe: " +
+                schoolClass.getName() + " - " + schoolClass.getPeriod() + ".xls");
+        responseSheet.setSheetByteArray(sheetManipulation.createSheetByClass(frequencyByClasses));
+        return responseSheet;
+    }
+
     /**
      * method to justify abscence of student on some class
      *
-     * @param date      date to validate student present
+     * @param date       date to validate student present
      * @param studentkId student to be justified
      * @return string with message
      */
-    public ResponseValidateFrequency justifyAbsence(LocalDate date, String studentkId, int tenant) {
+    public ResponseValidateFrequency justifyAbsence(JustifyAbscenceDesc justifyAbscenceDesc
+            , LocalDate date, String studentkId, int tenant) {
+
         StudentValidationImpl studentValidation = new StudentValidationImpl();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentkId, tenant);
@@ -133,8 +167,14 @@ public class FrequencyService extends FrequencyValidationImpl {
         Day day = new Day(date, frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, day);
 
+
+        if (justifyAbscenceDesc.getDescription().isEmpty() || justifyAbscenceDesc.getDescription().isBlank())
+            throw new RequestExceptions("Descrição de justificativa precisa ser passada");
+
+
         day.setJustified(true);
         day.setSkid(GenerateSKId.generateSkId());
+        day.setDescription(justifyAbscenceDesc.getDescription());
         frequency.getDaysList().add(day);
         frequencyRepository.save(frequency);
 
@@ -148,7 +188,7 @@ public class FrequencyService extends FrequencyValidationImpl {
     /**
      * update the justified field changing it from true to false
      *
-     * @param date      date to change the student present
+     * @param date        date to change the student present
      * @param studentSkId student to be justified
      * @param tenant
      * @return string with message

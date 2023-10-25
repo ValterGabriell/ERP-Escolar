@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.JustifyAbscenceDesc;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
@@ -31,9 +32,13 @@ public class FrequencyController {
 
     @PostMapping(params = {"studentSkId", "date", "tenant"})
     public ResponseEntity<ResponseValidateFrequency> justifyAbsence(
-            @RequestParam String studentSkId, @RequestParam LocalDate date, @RequestParam int tenant)
+            @RequestBody JustifyAbscenceDesc justifyAbscenceDesc,
+            @RequestParam String studentSkId,
+            @RequestParam LocalDate date,
+            @RequestParam int tenant)
             throws RequestExceptions {
-        ResponseValidateFrequency responseValidadeFrequency = frequencyService.justifyAbsence(date, studentSkId, tenant);
+        ResponseValidateFrequency responseValidadeFrequency = frequencyService
+                .justifyAbsence(justifyAbscenceDesc, date, studentSkId, tenant);
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
@@ -44,10 +49,10 @@ public class FrequencyController {
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
-    @GetMapping(params = {"studentSkId","tenant"})
+    @GetMapping(params = {"studentSkId", "tenant"})
     public ResponseEntity<ResponseDaysThatStudentGoToClass> getListOfDays(@RequestParam String studentSkId,
                                                                           @RequestParam int tenant) throws RequestExceptions {
-        ResponseDaysThatStudentGoToClass listOfDaysByFrequencyId = frequencyService.getListOfDaysByFrequencyId(studentSkId,tenant);
+        ResponseDaysThatStudentGoToClass listOfDaysByFrequencyId = frequencyService.getListOfDaysByFrequencyId(studentSkId, tenant);
         return new ResponseEntity<>(listOfDaysByFrequencyId, HttpStatus.OK);
     }
 
@@ -62,7 +67,16 @@ public class FrequencyController {
 
     @GetMapping(value = "sheet", params = {"date", "tenant"})
     public ResponseEntity<?> getSheetForSpecifyDay(@RequestParam LocalDate date, @RequestParam int tenant) {
-        ResponseSheet responseSheet = frequencyService.returnSheetForSpecifyDay(date,tenant);
+        ResponseSheet responseSheet = frequencyService.returnSheetForSpecifyDay(date, tenant);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(responseSheet.getSheetByteArray());
+    }
+
+    @GetMapping(value = "sheet", params = {"classSkId", "tenant"})
+    public ResponseEntity<?> getSheetByClass(@RequestParam String classSkId, @RequestParam int tenant) {
+        ResponseSheet responseSheet = frequencyService.returnFrequencyByClass(classSkId, tenant);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))

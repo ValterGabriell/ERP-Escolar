@@ -11,11 +11,12 @@ public class GetStudent implements Comparable<GetStudent>  {
     private String skid;
     private LocalDateTime startDate;
     private String adminId;
+    private String schoolClass;
 
     private Links links;
 
     public GetStudent(String studentIdentifier, String username, String email, LocalDateTime startDate,
-                      String adminId, Links links, String skid) {
+                      String adminId, Links links, String skid,String schoolClass) {
         this.studentIdentifier = studentIdentifier;
         this.username = username;
         this.email = email;
@@ -23,6 +24,7 @@ public class GetStudent implements Comparable<GetStudent>  {
         this.adminId = adminId;
         this.links = links;
         this.skid = skid;
+        this.schoolClass = schoolClass;
     }
 
     public String getStudentIdentifier() {
@@ -55,6 +57,14 @@ public class GetStudent implements Comparable<GetStudent>  {
 
     public Links getLinks() {
         return links;
+    }
+
+    public String getSchoolClass() {
+        return schoolClass;
+    }
+
+    public void setSchoolClass(String schoolClass) {
+        this.schoolClass = schoolClass;
     }
 
     @Override

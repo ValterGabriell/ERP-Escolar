@@ -124,14 +124,12 @@ public class StudentsService {
         Admin admin = adminRepository.findByCnpj(cnpj, tenantId)
                 .orElseThrow(() -> new RequestExceptions("Administrador " + cnpj + " não encontrado!"));
         for (Student student : admin.getStudents()) {
-            if (student.getStudentId().equals(studentId)) {
-                return admin;
+            var currentStudentId = student.getStudentId();
+            if (currentStudentId.equals(studentId)) {
+                return null;
             }
         }
-        if (admin.getStudents().isEmpty()) {
-            return admin;
-        }
-        return null;
+        return admin;
     }
 
 
@@ -155,7 +153,8 @@ public class StudentsService {
                     student.getStartDate(),
                     student.getAdmin(),
                     student.getLinks(),
-                    student.getSkid());
+                    student.getSkid(),
+                    student.getSchoolClass());
         };
 
         List<GetStudent> studentsFilteredByTenantId =
@@ -187,7 +186,8 @@ public class StudentsService {
                 student.getStartDate(),
                 student.getAdmin(),
                 student.getLinks(),
-                student.getSkid()
+                student.getSkid(),
+                student.getSchoolClass()
         );
     }
 

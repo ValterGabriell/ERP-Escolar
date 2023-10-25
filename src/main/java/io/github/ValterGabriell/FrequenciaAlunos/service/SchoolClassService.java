@@ -4,10 +4,13 @@ import io.github.ValterGabriell.FrequenciaAlunos.controller.SchoolClassControlle
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.PERIOD;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ProfessorRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.SchoolClassesRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.schoolclass.CreateSC;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -25,11 +29,15 @@ public class SchoolClassService {
     private final SchoolClassesRepository schoolClassesRepository;
     private final ProfessorRepository professorRepository;
     private final AdminRepository adminRepository;
+    private final StudentsRepository studentsRepository;
 
-    public SchoolClassService(SchoolClassesRepository schoolClassesRepository, ProfessorRepository professorRepository, AdminRepository adminRepository) {
+    public SchoolClassService(SchoolClassesRepository schoolClassesRepository, ProfessorRepository professorRepository
+            , AdminRepository adminRepository, StudentsRepository studentsRepository) {
         this.schoolClassesRepository = schoolClassesRepository;
         this.professorRepository = professorRepository;
         this.adminRepository = adminRepository;
+
+        this.studentsRepository = studentsRepository;
     }
 
     @Transactional
@@ -37,6 +45,19 @@ public class SchoolClassService {
             CreateSC createSC,
             String adminCnpj,
             int tenant) {
+
+        boolean classWithSameNamePresent =
+                schoolClassesRepository
+                        .findAllByTenant(tenant)
+                        .stream()
+                        .anyMatch(schoolClass -> schoolClass.getName().equals(createSC.getName()));
+
+        boolean match = Arrays.stream(PERIOD.values()).anyMatch(value -> value.getName().equals(createSC.getPeriod()));
+        if (classWithSameNamePresent)
+            throw new RequestExceptions("Classe já cadastrada", "set a different name");
+        if (!match)
+            throw new RequestExceptions("Sete um período válido", Arrays.toString(PERIOD.values()));
+
 
         SchoolClass sc = createSC.toSC();
 
@@ -81,6 +102,16 @@ public class SchoolClassService {
         );
     }
 
+    public List<Student> getAllStudentsByClassSkId(String skid, int tenant) {
+        SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(
+                skid,
+                tenant
+        ).orElseThrow(() -> new RequestExceptions("Sala não cadastrada!"));
+
+        return schoolClass.getStudents();
+    }
+
+
     public void delete(String skid, int tenant) {
         SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(
                 skid,
@@ -89,4 +120,31 @@ public class SchoolClassService {
         schoolClassesRepository.delete(schoolClass);
     }
 
+    public PatternResponse<String> setStudentToClass(String classSkid, int tenant, String studentSkId) {
+        SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(
+                classSkid,
+                tenant
+        ).orElseThrow(() -> new RequestExceptions("Sala não cadastrada!"));
+
+        Student student = studentsRepository.findBySkId(studentSkId, tenant)
+                .orElseThrow(() -> new RequestExceptions("Estudante não encontrado"));
+
+        if (student.getSchoolClass().length() > 2)
+            throw new RequestExceptions("Estudante já está cadastrado em uma classe"
+                    , "Update Student Class. Check The Documentation");
+
+
+        student.setSchoolClass(schoolClass.getSkid());
+        studentsRepository.save(student);
+
+        schoolClass.getStudents().add(student);
+        SchoolClass saved = schoolClassesRepository.save(schoolClass);
+
+        saved.add(linkTo(methodOn(SchoolClassController.class).getStudentsByClassSkId(classSkid, tenant)).withSelfRel());
+
+        return new PatternResponse<String>(
+                classSkid,
+                saved.getLinks()
+        );
+    }
 }
