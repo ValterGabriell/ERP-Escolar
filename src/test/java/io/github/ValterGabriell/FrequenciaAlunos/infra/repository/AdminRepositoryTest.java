@@ -1,14 +1,16 @@
 package io.github.ValterGabriell.FrequenciaAlunos.infra.repository;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @DataJpaTest
 @DisplayName("Tests for Admin Repository")
@@ -36,7 +38,7 @@ class AdminRepositoryTest {
 
         Admin savedAdmin = this.adminRepository.save(adminToBeSaved);
 
-        savedAdmin.setUsername("NOME NOVO");
+        savedAdmin.setFirstName("NOME NOVO");
 
         Admin updatedAdmin = this.adminRepository.save(savedAdmin);
 
@@ -77,12 +79,14 @@ class AdminRepositoryTest {
 
 
     private Admin createAdmin() {
+        List<Contact> contacts = new ArrayList<>();
         return new Admin(
-                UUID.randomUUID().toString(),
-                "Jose Carlos",
+                "Jose",
                 "123",
                 "email@gmail.com",
-                "123456789"
+                "123456789",
+                "Carlos",
+                contacts
         );
     }
 

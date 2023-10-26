@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain;
+package io.github.ValterGabriell.FrequenciaAlunos.helper;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 

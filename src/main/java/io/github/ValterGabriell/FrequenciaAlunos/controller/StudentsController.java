@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -21,23 +19,25 @@ public class StudentsController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<GetStudent> insertStudentsIntoDatabase(
+    @PostMapping(value = "/{adminCnpj}")
+    public ResponseEntity<PatternResponse<String>> insertStudentsIntoDatabase(
             @RequestBody InsertStudents request,
-            @RequestParam String adminSkId,
-            @RequestParam Integer tenantId) {
-        GetStudent student = service.insertStudentIntoDatabase(request, adminSkId, tenantId);
+            @PathVariable String adminCnpj,
+            @RequestParam Integer tenantId,
+            @RequestParam String parentIdentifier) {
+        PatternResponse<String> student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId, parentIdentifier);
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
-    @GetMapping(value = "get-all", params = {"tenantId"})
+
+    @GetMapping(params = {"tenantId"})
     public ResponseEntity<Page<GetStudent>> getAllStudents(Pageable pageable, @RequestParam int tenantId) {
         Page<GetStudent> allStudentsFromDatabase = service.getAllStudentsFromDatabase(pageable, tenantId);
         return new ResponseEntity<>(allStudentsFromDatabase, HttpStatus.OK);
     }
 
-    @GetMapping(value = "get/{cpf}", params = {"tenantId"})
-    public ResponseEntity<GetStudent> getStudentByCpf(@PathVariable String cpf, @RequestParam int tenantId) {
-        GetStudent student = service.getStudentByCpf(cpf, tenantId);
+    @GetMapping(value = "/{skid}", params = {"tenantId"})
+    public ResponseEntity<GetStudent> getStudentBySkId(@PathVariable String skid, @RequestParam int tenantId) {
+        GetStudent student = service.getStudentBySkId(skid, tenantId);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 

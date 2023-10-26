@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.util.sheet;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.HandleDate;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.HandleDate;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.ValterGabriell.FrequenciaAlunos.domain.HandleDate.getDateFormat;
+import static io.github.ValterGabriell.FrequenciaAlunos.helper.HandleDate.getDateFormat;
 
 public class SheetManipulation implements SheetManipulationContract {
     /**
@@ -39,6 +39,7 @@ public class SheetManipulation implements SheetManipulationContract {
 
     /**
      * fill the sheet with students data
+     *
      * @param students    current student to insert on sheet
      * @param sheetAlunos sheet
      */
@@ -49,10 +50,10 @@ public class SheetManipulation implements SheetManipulationContract {
             Row _row = sheetAlunos.createRow(rownumber++);
 
             Cell cellCpf = _row.createCell(columnnumber++);
-            cellCpf.setCellValue(student.getCpf());
+            cellCpf.setCellValue(student.getStudentId());
 
             Cell cellName = _row.createCell(columnnumber++);
-            cellName.setCellValue(student.getUsername());
+            cellName.setCellValue(student.getFirstName());
 
             Cell cellDate = _row.createCell(columnnumber++);
             cellDate.setCellValue(LocalDate.now().toString());
@@ -66,6 +67,7 @@ public class SheetManipulation implements SheetManipulationContract {
 
     /**
      * method to and download sheet
+     *
      * @param workbook specify type to work with sheets
      * @return byte array that contains sheet
      */
@@ -88,7 +90,6 @@ public class SheetManipulation implements SheetManipulationContract {
         createFieldOfColumns(students, sheetAlunos);
         return returnSheetByteArrayToDownloadIt(workbook);
     }
-
     @Override
     public byte[] createSheet(List<Student> students, LocalDate localDate) {
         HSSFWorkbook workbook = new HSSFWorkbook();

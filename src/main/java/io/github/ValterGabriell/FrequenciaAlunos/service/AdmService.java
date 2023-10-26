@@ -3,14 +3,17 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.AdmController;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.CreateNewAdmin;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.UpdateAdminPassword;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.UpdateAdminUsername;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidationImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +21,9 @@ import org.springframework.hateoas.Links;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -26,9 +31,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class AdmService {
     private final AdminRepository adminRepository;
+    private final ContactsRepository contactsRepository;
 
-    public AdmService(AdminRepository adminRepository) {
+    public AdmService(AdminRepository adminRepository, ContactsRepository contactsRepository) {
         this.adminRepository = adminRepository;
+        this.contactsRepository = contactsRepository;
     }
 
     /**
@@ -38,19 +45,15 @@ public class AdmService {
      * 2. Se o administrador não for encontrado, lança uma exceção indicando que o usuário não foi encontrado.
      * 3. Se o administrador for encontrado, retorna a instância do administrador.
      *
-     * @param skId   O identificador único do administrador a ser encontrado.
+     * @param cnpj   O identificador único do administrador a ser encontrado.
      * @param tenant O inquilino associado ao administrador.
      * @return A instância do administrador se encontrado.
      * @throws RequestExceptions Se o administrador com o `skId` especificado não for encontrado.
      */
-    private Admin findAdminBySkIdOrThrowException(String skId, Integer tenant) {
-        Validation validation = new Validation();
-        Admin admin = validation.validateIfAdminExistsAndReturnIfExist_BySkId(adminRepository, skId, tenant);
-        if (admin == null) {
-            throw new RequestExceptions("Usuário " + skId + " não encontrado!");
-        } else {
-            return admin;
-        }
+    private boolean returnIfAdminExistsOnDatabase(String cnpj, Integer tenant) {
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin adminIsPresent = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        return adminIsPresent != null;
     }
 
     /**
@@ -73,31 +76,52 @@ public class AdmService {
      */
     @Transactional
     public String createNewAdmin(CreateNewAdmin newAdmin, Integer tenant) {
-        Validation validation = new Validation();
-        validation.checkIfAdminTenantIdAlreadyExists(adminRepository, tenant);
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        ContactValidationImpl contactValidation = new ContactValidationImpl();
 
-        boolean isPresent =
-                validation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, newAdmin.getCnpj(), tenant);
+        adminValidation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
+        newAdmin.getContacts().forEach(contact -> contactValidation.verifyIfEmailIsCorrect(contact.getEmail()));
 
-        if (isPresent) {
+        boolean adminExists =
+                returnIfAdminExistsOnDatabase(newAdmin.getCnpj(), tenant);
+
+        if (adminExists) {
             throw new RequestExceptions("Cadastro com CNPJ encontrado!");
         } else {
-            validation.checkIfAdminCnpjIsCorrect(newAdmin.getCnpj());
-
             Admin admin = newAdmin.toAdmin();
-            admin.setSkId(GenerateSKId.generateSkId(admin.getId()));
+
+            List<Contact> contacts = setAdminIdAndTenantToContacts(tenant, admin);
+            List<ROLES> roles = new ArrayList<>();
+            roles.add(ROLES.ADMIN);
+            roles.add(ROLES.PARENT);
+            roles.add(ROLES.PROFESSOR);
+
             admin.setTenant(tenant);
+            admin.setSkId(GenerateSKId.generateSkId());
+            admin.setRoles(roles);
 
-            Admin adminSaved = adminRepository.save(admin);
+            contactsRepository.saveAll(contacts);
+            adminRepository.save(admin);
 
-            adminSaved.add(linkTo(methodOn(AdmController.class)
-                    .getAdminBySkId(adminSaved.getSkId(), adminSaved.getTenant())).withSelfRel());
-            return adminSaved.getLinks().toString();
+            admin.add(linkTo(methodOn(AdmController.class)
+                    .getAdminByCnpj(admin.getSkId(), 0)).withSelfRel());
+
+            return "CNPJ: " + admin.getCnpj();
         }
     }
 
+    private static List<Contact> setAdminIdAndTenantToContacts(Integer tenant, Admin admin) {
+        List<Contact> contacts = new ArrayList<>(admin.getContacts());
+        contacts.forEach(contact -> {
+            contact.setUserId(admin.getCnpj());
+            contact.setTenant(tenant);
+        });
+        return contacts;
+    }
+
     /**
-     * Este método recupera uma página de administradores (Admins) com base nas configurações de paginação especificadas em `pageable`.
+     * Este método recupera uma página de administradores (Admins) com base nas configurações de
+     * paginação especificadas em `pageable`.
      * Ele realiza as seguintes etapas:
      * 1. Chama o método `findAll` no repositório para recuperar uma página de administradores.
      * 2. Mapeia cada administrador para um `GetAdminMapper` e adiciona um link de auto-relação a cada um.
@@ -110,13 +134,12 @@ public class AdmService {
     public Page<GetAdminMapper> getAllAdmins(Pageable pageable) {
         Page<Admin> adminList = adminRepository.findAll(pageable);
 
-
         List<GetAdminMapper> collect =
                 adminList
                         .stream()
                         .map(admin -> admin
                                 .add(linkTo(methodOn(AdmController.class)
-                                        .getAdminBySkId(admin.getSkId(), admin.getTenant())).withSelfRel())
+                                        .getAdminByCnpj(admin.getCnpj(), admin.getTenant())).withSelfRel())
                                 .getAdminMapper()
                         )
                         .toList();
@@ -126,41 +149,62 @@ public class AdmService {
     }
 
     /**
-     * Este método atualiza o nome de usuário de um administrador (Admin) identificado pelo `skId`, associado a um inquilino (tenant) especificado.
+     * Este método atualiza o nome de usuário de um administrador (Admin) identificado pelo `cnpj`, associado a um inquilino (tenant) especificado.
      * Realiza as seguintes etapas:
-     * 1. Encontra o administrador com o `skId` especificado ou lança uma exceção se não for encontrado.
+     * 1. Encontra o administrador com o `cnpj` especificado ou lança uma exceção se não for encontrado.
      * 2. Atualiza o nome de usuário do administrador com o valor fornecido em `updateAdminUsername`.
      * 3. Salva as alterações no repositório.
      * 4. Retorna uma instância de `GetAdminMapper` que representa o administrador atualizado.
      *
-     * @param skId                O identificador único do administrador a ser atualizado.
-     * @param updateAdminUsername O novo nome de usuário a ser definido para o administrador.
-     * @param tenant              O inquilino associado ao administrador.
+     * @param cnpj                 O identificador único do administrador a ser atualizado.
+     * @param updateAdminFirstName O novo nome de usuário a ser definido para o administrador.
+     * @param tenant               O inquilino associado ao administrador.
      * @return Uma instância de `GetAdminMapper` que representa o administrador atualizado.
      */
-    public GetAdminMapper updateAdminUsername(String skId, UpdateAdminUsername updateAdminUsername, Integer tenant) {
-        Admin admin = findAdminBySkIdOrThrowException(skId, tenant);
-        admin.setUsername(updateAdminUsername.getUsername());
+
+    @Transactional
+    public GetAdminMapper updateAdminFirstName(String cnpj, UpdateAdminFirstName updateAdminFirstName, Integer tenant) {
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        if (admin == null) {
+            throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
+        }
+        admin.setFirstName(updateAdminFirstName.getFirstName());
+        adminRepository.save(admin);
+        return admin.getAdminMapper();
+    }
+
+    public GetAdminMapper updateAdminSecondName(String cnpj, UpdateAdminSecondName updateAdminSecondName, Integer tenant) {
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        if (admin == null) {
+            throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
+        }
+        admin.setSecondName(updateAdminSecondName.getSecondName());
         adminRepository.save(admin);
         return admin.getAdminMapper();
     }
 
 
     /**
-     * Este método atualiza a senha de um administrador (Admin) identificado pelo `skId`, associado a um inquilino (tenant) especificado.
+     * Este método atualiza a senha de um administrador (Admin) identificado pelo `cnpj`, associado a um inquilino (tenant) especificado.
      * Realiza as seguintes etapas:
-     * 1. Encontra o administrador com o `skId` especificado ou lança uma exceção se não for encontrado.
+     * 1. Encontra o administrador com o `cnpj` especificado ou lança uma exceção se não for encontrado.
      * 2. Atualiza a senha do administrador com o valor fornecido em `updateAdminPassword`.
      * 3. Salva as alterações no repositório.
      * 4. Retorna uma instância de `GetAdminMapper` que representa o administrador atualizado.
      *
-     * @param skId                O identificador único do administrador a ser atualizado.
+     * @param cnpj                O identificador único do administrador a ser atualizado.
      * @param updateAdminPassword A nova senha a ser definida para o administrador.
      * @param tenant              O inquilino associado ao administrador.
      * @return Uma instância de `GetAdminMapper` que representa o administrador atualizado.
      */
-    public GetAdminMapper updateAdminPassword(String skId, UpdateAdminPassword updateAdminPassword, Integer tenant) {
-        Admin admin = findAdminBySkIdOrThrowException(skId, tenant);
+    public GetAdminMapper updateAdminPassword(String cnpj, UpdateAdminPassword updateAdminPassword, Integer tenant) {
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
+        if (admin == null) {
+            throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
+        }
         admin.setPassword(updateAdminPassword.getPassword());
         adminRepository.save(admin);
         return admin.getAdminMapper();
@@ -168,25 +212,26 @@ public class AdmService {
 
 
     /**
-     * Este método recupera os detalhes de um administrador (Admin) identificado pelo `skId`, associado a um inquilino (tenant) especificado, juntamente com links para ações relacionadas.
+     * Este método recupera os detalhes de um administrador (Admin) identificado pelo `cnpj`, associado a um inquilino (tenant) especificado, juntamente com links para ações relacionadas.
      * Realiza as seguintes etapas:
-     * 1. Encontra o administrador com o `skId` especificado ou lança uma exceção se não for encontrado.
+     * 1. Encontra o administrador com o `cnpj` especificado ou lança uma exceção se não for encontrado.
      * 2. Adiciona links de auto-relação e links para ações relacionadas ao administrador, como atualização de nome de usuário, senha e exclusão.
      * 3. Retorna uma instância de `GetAdminMapper` que representa o administrador com links para ações relacionadas.
      *
-     * @param skId   O identificador único do administrador a ser recuperado.
+     * @param cnpj   O identificador único do administrador a ser recuperado.
      * @param tenant O inquilino associado ao administrador.
      * @return Uma instância de `GetAdminMapper` que representa o administrador com links para ações relacionadas.
      */
-    public GetAdminMapper getAdminBySkId(String skId, Integer tenant) {
-        Admin admin = findAdminBySkIdOrThrowException(skId, tenant);
+    public GetAdminMapper getAdminByCnpj(String cnpj, Integer tenant) {
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
 
         admin.add(linkTo(
                 methodOn(AdmController.class)
                         .getAllAdmins(Pageable.unpaged())).withRel("Lista de Administradores"));
 
         admin.add(linkTo(methodOn(StudentsController.class)
-                .insertStudentsIntoDatabase(null, admin.getSkId(), admin.getTenant()))
+                .insertStudentsIntoDatabase(null, admin.getCnpj(), admin.getTenant(), ""))
                 .withRel("Inserir novo estudante"));
 
 
@@ -198,25 +243,42 @@ public class AdmService {
 
 
     /**
-     * Este método exclui um administrador (Admin) identificado pelo `skId`, associado a um inquilino (tenant) especificado.
+     * Este método exclui um administrador (Admin) identificado pelo `cnpj`, associado a um inquilino (tenant) especificado.
      * Realiza as seguintes etapas:
-     * 1. Encontra o administrador com o `skId` especificado ou retorna uma mensagem de falha se não for encontrado.
+     * 1. Encontra o administrador com o `cnpj` especificado ou retorna uma mensagem de falha se não for encontrado.
      * 2. Se o administrador for encontrado, ele é excluído do repositório.
      * 3. Retorna uma mensagem indicando o resultado da operação de exclusão.
      *
-     * @param skId   O identificador único do administrador a ser excluído.
+     * @param cnpj   O identificador único do administrador a ser excluído.
      * @param tenant O inquilino associado ao administrador.
      * @return Uma mensagem indicando o resultado da exclusão.
      */
-    public String deleteAdminById(String skId, Integer tenant) {
-        Admin admin = findAdminBySkIdOrThrowException(skId, tenant);
+    public String deleteAdminByCnpj(String cnpj, Integer tenant) {
+        AdminValidationImpl adminValidation = new AdminValidationImpl();
+        Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
         String response;
         if (admin != null) {
-            adminRepository.deleteById(admin.getId());
-            response = "Usuário " + skId + " deletado com sucesso!";
+            adminRepository.deleteById(admin.getAdminId());
+            response = "Usuário " + cnpj + " deletado com sucesso!";
         } else {
-            response = "Falha ao deletar o usuário " + skId;
+            response = "Falha ao deletar o usuário: " + cnpj;
         }
         return response;
     }
+
+    public List<ProfessorGet> getAllProfessorsByCnpj(String cnpj, int tenant) {
+        Admin admin =
+                adminRepository.findByCnpj(cnpj, tenant)
+                        .orElseThrow(() -> new RequestExceptions("Admin não encontrado"));
+
+        Function<Professor, ProfessorGet> professorProfessorGetFunction = (professor) -> new ProfessorGet(
+                professor.getSkid(), professor.getFirstName(), professor.getLastName(), professor.getAverage(),
+                professor.getIdentifierNumber(), professor.getTenant(), professor.getStartDate(),
+                professor.getFinishedDate(), professor.getContacts()
+
+        );
+        return admin.getProfessors().stream().map(professorProfessorGetFunction).toList();
+    }
+
+
 }

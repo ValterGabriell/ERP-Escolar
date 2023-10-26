@@ -1,34 +1,44 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidationImpl;
 
 import java.time.LocalDateTime;
 
-public class InsertStudents extends Validation {
-    private String cpf;
+public class InsertStudents extends FieldValidationImpl {
+    private String studentId;
 
-    private String username;
+    private String firstName;
+    private String secondName;
     private String email;
 
-    public InsertStudents(String cpf, String username, String email) {
-        this.cpf = cpf;
-        this.username = username;
+    public InsertStudents(String cpf, String firstName, String email, String secondName) {
+        this.studentId = cpf;
+        this.firstName = firstName;
         this.email = email;
+        this.secondName = secondName;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getStudentId() {
+        return studentId;
     }
 
 
     public String getUsername() {
-        return username;
+        return firstName;
     }
 
     public boolean usernameIsNotNull() {
@@ -40,7 +50,7 @@ public class InsertStudents extends Validation {
     }
 
     public boolean cpfIsNull() {
-        return validateIfIsNotEmpty(getCpf(), ExceptionsValues.CPF_NULL);
+        return validateIfIsNotEmpty(getStudentId(), ExceptionsValues.CPF_NULL);
     }
 
     public boolean usernameHasToBeMoreThanTwoChars() {
@@ -48,6 +58,6 @@ public class InsertStudents extends Validation {
     }
 
     public Student toModel(Integer tenant) {
-        return new Student(this.cpf, this.username, this.email, LocalDateTime.now(), null, null, tenant );
+        return new Student(this.studentId, this.getUsername(), this.getEmail(), LocalDateTime.now(), null, tenant);
     }
 }

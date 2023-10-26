@@ -13,8 +13,8 @@ class StudentsServiceTest {
 
     @BeforeEach
     public void setUp() {
-        studentUsernameTest = new InsertStudents("0", "ana", "ana@gmail.com");
-        studentCpfTest = new InsertStudents("00000000000", "", "email@.com");
+        studentUsernameTest = new InsertStudents("0", "ana", "","ana@gmail.com");
+        studentCpfTest = new InsertStudents("00000000000", "","", "email@.com");
     }
 
     @Test
@@ -44,6 +44,6 @@ class StudentsServiceTest {
     @Test
     @DisplayName("cpf should have exactly 11 characters and return true when it is")
     void cpfLenght() {
-        Assertions.assertTrue(studentCpfTest.isFieldHasNumberExcatlyOfChars(studentCpfTest.getCpf(), 11));
+        Assertions.assertTrue(studentCpfTest.isFieldHasNumberExcatlyOfChars(studentCpfTest.getStudentId(), 11));
     }
 }

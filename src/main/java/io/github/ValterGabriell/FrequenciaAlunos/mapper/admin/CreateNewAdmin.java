@@ -1,63 +1,62 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.admin;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.contacs.CreateContact;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CreateNewAdmin {
 
-    private String username;
+    private String firstName;
+    private String secondName;
     private String password;
     private String email;
     private String cnpj;
+    private List<CreateContact> contacts;
 
-
-    public CreateNewAdmin(String username, String password, String email, String cnpj) {
-        this.username = username;
+    public CreateNewAdmin(
+            String firstName,
+            String password,
+            String email,
+            String cnpj,
+            String secondName,
+            List<CreateContact> contacts
+    ) {
+        this.firstName = firstName;
         this.password = password;
         this.email = email;
         this.cnpj = cnpj;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+        this.secondName = secondName;
+        this.contacts = contacts;
     }
 
     public String getCnpj() {
         return cnpj;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+    public List<CreateContact> getContacts() {
+        return contacts;
     }
 
     public Admin toAdmin() {
+
+        Function<CreateContact, Contact>
+                createContactContactFunction = (val) -> {
+            return new Contact(val.getPhone(), val.getEmail(), "", -1);
+        };
+
+        List<Contact> collect = this.contacts.stream().map(createContactContactFunction).toList();
         return new Admin(
-                UUID.randomUUID().toString(),
-                this.username,
+                this.firstName,
                 this.password,
                 this.email,
-                this.cnpj
+                this.cnpj,
+                this.secondName,
+                collect
         );
     }
 }

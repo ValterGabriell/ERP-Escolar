@@ -16,7 +16,7 @@ public class ApiExceptionsHandle {
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST,
                 ZonedDateTime.now(ZoneId.of("Z")),
-                "Check the Documentation"
+                e.getDeveloperMessage()
         );
         return new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST);
     }

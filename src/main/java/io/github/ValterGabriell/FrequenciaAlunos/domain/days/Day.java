@@ -11,33 +11,40 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Objects;
 
-@Entity
-public class Days {
+@Entity(name = "tbl_dias")
+public class Day {
 
     @Id
-    private String id;
+    private String dayId;
+
+    @Column(nullable = false)
+    private String skid;
 
     @Column(nullable = false)
     private LocalDate date;
 
     @Column(nullable = false)
     private boolean justified;
+    @Column(nullable = true)
+    private String description;
 
     @Column(nullable = false)
     private Integer tenant;
 
-    public Days() {
+    public Day() {
     }
 
-    public Days(LocalDate date, Integer tenant) {
+    public Day(LocalDate date, Integer tenant) {
         this.date = date;
-        this.id = String.valueOf(System.currentTimeMillis());
+        this.dayId = String.valueOf(System.currentTimeMillis());
         this.tenant = tenant;
     }
+    public String getDescription() {
+        return description;
+    }
 
-    public Days(LocalDate date, boolean justified) {
-        this.date = date;
-        this.justified = false;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isJustified() {
@@ -49,27 +56,45 @@ public class Days {
     }
 
     @JsonIgnore
-    public String getId() {
-        return id;
+    public String getDayId() {
+        return dayId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setDayId(String id) {
+        this.dayId = id;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
+
+
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getSkid() {
+        return skid;
+    }
+
+    public void setSkid(String skid) {
+        this.skid = skid;
+    }
+
+    public Integer getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Integer tenant) {
+        this.tenant = tenant;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return date != null && date.equals(((Days) o).date);
+        return date != null && date.equals(((Day) o).date);
     }
 
     @Override

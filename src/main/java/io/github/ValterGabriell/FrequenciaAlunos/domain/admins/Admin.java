@@ -1,5 +1,9 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
 import jakarta.persistence.*;
@@ -7,15 +11,17 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-@Entity(name = "table_admin")
+@Entity(name = "tbl_admin")
 public class Admin extends RepresentationModel<Admin> {
     @Id
-    private String id;
-
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String adminId;
+    @Column(nullable = true)
     private String skid;
     @Column(nullable = false)
-    private String username;
+    private String firstName;
+    @Column(nullable = false)
+    private String secondName;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -25,19 +31,38 @@ public class Admin extends RepresentationModel<Admin> {
     private String cnpj;
 
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer tenant;
+    @Column(nullable = false)
+    private List<ROLES> roles;
 
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
 
+    @OneToMany(targetEntity = SchoolClass.class, cascade = CascadeType.ALL)
+    private List<SchoolClass> schoolClasses;
 
-    public Admin(String id, String username, String password, String email, String cnpj) {
-        this.id = id;
-        this.username = username;
+    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private List<Contact> contacts;
+
+    @OneToMany(targetEntity = Professor.class, cascade = CascadeType.ALL)
+    private List<Professor> professors;
+
+
+    public Admin(
+            String firstName,
+            String password,
+            String email,
+            String cnpj,
+            String secondName,
+            List<Contact> contacts
+    ) {
+        this.firstName = firstName;
         this.password = password;
         this.email = email;
         this.cnpj = cnpj;
+        this.secondName = secondName;
+        this.contacts = contacts;
     }
 
     public List<Student> getStudents() {
@@ -51,20 +76,16 @@ public class Admin extends RepresentationModel<Admin> {
     public Admin() {
     }
 
-    public String getId() {
-        return id;
+    public String getAdminId() {
+        return adminId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String username) {
+        this.firstName = username;
     }
 
 
@@ -96,27 +117,58 @@ public class Admin extends RepresentationModel<Admin> {
         this.tenant = tenant;
     }
 
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public List<SchoolClass> getSchoolClasses() {
+        return schoolClasses;
+    }
+
+    public List<Professor> getProfessors() {
+        return professors;
+    }
+
+    public void setProfessors(List<Professor> professors) {
+        this.professors = professors;
+    }
+
+    public String getSkid() {
+        return skid;
+    }
+
+    public List<ROLES> getRoles() {
+        return roles;
+    }
+
     public GetAdminMapper getAdminMapper() {
         return new GetAdminMapper(
-                getSkId(),
-                getUsername(),
-                getEmail(),
                 getCnpj(),
+                getSkId(),
+                getFirstName(),
+                getSecondName(),
+                getEmail(),
+                getContacts(),
                 getLinks()
         );
     }
 
-    @Override
-    public String toString() {
-        return "Admin{" +
-                "id='" + id + '\'' +
-                ", skid='" + skid + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", cnpj='" + cnpj + '\'' +
-                ", tenant=" + tenant +
-                ", students=" + students +
-                '}';
+    public void setRoles(List<ROLES> roles) {
+        this.roles = roles;
     }
 }

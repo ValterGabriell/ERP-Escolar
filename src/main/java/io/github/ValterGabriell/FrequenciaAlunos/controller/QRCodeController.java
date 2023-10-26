@@ -20,18 +20,18 @@ public class QRCodeController {
     public QRCodeController(QRCodeService qrCodeService) {
         this.qrCodeService = qrCodeService;
     }
-    @GetMapping(value = "generate", params = {"studentId","tenantId"})
-    public ResponseEntity<String> generateQRCodeBase64(@RequestParam String studentId,
-                                                       @RequestParam int tenantId) throws Exception {
-        String imageData = qrCodeService.returnQrCodeAsBase64(studentId, tenantId);
+    @GetMapping(value = "generate", params = {"studentSkId","tenant"})
+    public ResponseEntity<String> generateQRCodeBase64(@RequestParam String studentSkId,
+                                                       @RequestParam int tenant) throws Exception {
+        String imageData = qrCodeService.returnQrCodeAsBase64(studentSkId, tenant);
         return ResponseEntity.ok().body(imageData);
     }
-    @GetMapping(value = "image", produces = MediaType.IMAGE_PNG_VALUE, params = {"studentId", "tenantId"})
-    public ResponseEntity<BufferedImage> generateQRCode(@RequestParam String studentId,
-                                                        @RequestParam int tenantId) throws Exception {
+    @GetMapping(value = "image", produces = MediaType.IMAGE_PNG_VALUE, params = {"studentSkId", "tenant"})
+    public ResponseEntity<BufferedImage> generateQRCode(@RequestParam String studentSkId,
+                                                        @RequestParam int tenant) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
-        BufferedImage imageData = qrCodeService.returnQrCodeImage(studentId, tenantId);
+        BufferedImage imageData = qrCodeService.returnQrCodeImage(studentSkId, tenant);
         return ResponseEntity.ok().headers(headers).body(imageData);
     }
 
