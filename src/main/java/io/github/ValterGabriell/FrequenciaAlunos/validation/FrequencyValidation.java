@@ -1,11 +1,11 @@
 package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.FrequencyValidation;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 
-public class FrequencyValidationImpl implements FrequencyValidation {
+public class FrequencyValidation extends Validation {
     @Override
     public void verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(Frequency frequency, Day day) {
         if (frequency.getDaysList().contains(day)) {

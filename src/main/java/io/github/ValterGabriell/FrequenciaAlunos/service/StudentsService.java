@@ -1,10 +1,10 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Parent;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
@@ -14,7 +14,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED;
-import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR;
+import static io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues.STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -168,7 +167,7 @@ public class StudentsService {
     }
 
     private Student validateIfStudentExistsAndReturnIfExist(String studentSkId, int tenantId) {
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
     }
 

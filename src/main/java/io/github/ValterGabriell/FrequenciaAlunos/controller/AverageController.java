@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.average.Average;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Average;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.average.InsertAverage;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AverageService;
 import org.springframework.http.HttpStatus;

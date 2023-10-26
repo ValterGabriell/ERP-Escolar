@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.schoolclass;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.SchoolClass;
 
 import java.util.List;
 

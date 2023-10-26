@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.infra.repository;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.average.Average;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Average;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

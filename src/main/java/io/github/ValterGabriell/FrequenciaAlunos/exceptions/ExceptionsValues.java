@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.validation;
+package io.github.ValterGabriell.FrequenciaAlunos.exceptions;
 
 public class ExceptionsValues {
     public static final String ILLEGAL_CPF_LENGTH = "Tamanho do CPF inválido! Correto: 11";

@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.average.Average;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Average;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AverageRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DisciplineRepository;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 @Service
 public class AverageService {

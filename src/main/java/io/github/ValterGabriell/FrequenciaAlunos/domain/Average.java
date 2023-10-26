@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.average;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import jakarta.persistence.*;
 

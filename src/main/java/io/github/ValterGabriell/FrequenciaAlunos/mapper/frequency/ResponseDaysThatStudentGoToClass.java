@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;
 
 import java.util.ArrayList;

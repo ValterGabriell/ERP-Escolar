@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.util.sheet;
 
 import io.github.ValterGabriell.FrequenciaAlunos.helper.HandleDate;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

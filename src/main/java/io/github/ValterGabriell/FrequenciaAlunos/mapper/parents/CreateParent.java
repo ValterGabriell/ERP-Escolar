@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.parents;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Parent;
 
 import java.util.List;
 

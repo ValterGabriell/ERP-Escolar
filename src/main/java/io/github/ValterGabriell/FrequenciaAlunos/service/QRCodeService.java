@@ -1,12 +1,12 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import com.google.zxing.WriterException;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.qrcode.QrCodeMessage;
 import io.github.ValterGabriell.FrequenciaAlunos.util.QRCode.QRCodeGenerate;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidation;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -26,7 +26,7 @@ public class QRCodeService {
 
 
     private Student validateIfStudentExistsAndReturnIfExist(String studentSkId, int tenantId) {
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
     }
 

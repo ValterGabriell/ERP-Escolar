@@ -1,10 +1,6 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.admins;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;

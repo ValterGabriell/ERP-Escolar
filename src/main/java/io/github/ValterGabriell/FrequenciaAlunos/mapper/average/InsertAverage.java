@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.average;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.average.Average;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Average;
 
 public class InsertAverage {
     private String studentSkId;

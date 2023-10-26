@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.parents;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import org.springframework.hateoas.Links;
 
 import java.util.List;

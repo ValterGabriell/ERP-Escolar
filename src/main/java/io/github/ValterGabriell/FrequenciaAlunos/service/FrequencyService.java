@@ -1,8 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
@@ -14,9 +14,9 @@ import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValida
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.util.sheet.SheetManipulation;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.FrequencyValidationImpl;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FrequencyValidation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidation;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FrequencyService extends FrequencyValidationImpl {
+public class FrequencyService extends FrequencyValidation {
 
 
     private final StudentsRepository studentsRepository;
@@ -50,7 +50,7 @@ public class FrequencyService extends FrequencyValidationImpl {
      */
     public ResponseValidateFrequency validateFrequency(String studentSkId, int tenantId) throws RequestExceptions {
 
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
 
@@ -75,7 +75,7 @@ public class FrequencyService extends FrequencyValidationImpl {
      */
     public ResponseDaysThatStudentGoToClass getListOfDaysByFrequencyId(String studentId, int tenantId) throws RequestExceptions {
 
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentId, tenantId);
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
@@ -131,7 +131,7 @@ public class FrequencyService extends FrequencyValidationImpl {
     public ResponseValidateFrequency justifyAbsence(JustifyAbscenceDesc justifyAbscenceDesc
             , LocalDate date, String studentkId, int tenant) {
 
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentkId, tenant);
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
@@ -165,7 +165,7 @@ public class FrequencyService extends FrequencyValidationImpl {
      * @return string with message
      */
     public ResponseValidateFrequency updateAbscence(LocalDate date, String studentSkId, int tenant) {
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenant);
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();

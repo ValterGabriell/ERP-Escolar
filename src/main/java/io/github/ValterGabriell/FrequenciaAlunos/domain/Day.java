@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.days;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;

@@ -1,7 +1,7 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.frequency;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import jakarta.persistence.*;
 
 import java.util.List;

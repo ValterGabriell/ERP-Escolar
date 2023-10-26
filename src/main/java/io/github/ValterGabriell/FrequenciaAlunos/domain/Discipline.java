@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.discipline;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;

@@ -1,9 +1,9 @@
 package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.helper.FieldValidation;
 
-public class FieldValidationImpl implements FieldValidation {
+public class FieldValidation extends Validation {
     @Override
     public boolean fieldContainsOnlyLetters(String field) {
         String regex = "^[a-zA-Z]+$";

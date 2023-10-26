@@ -1,8 +1,5 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.school_class;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 

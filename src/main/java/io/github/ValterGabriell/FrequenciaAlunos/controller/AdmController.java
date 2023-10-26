@@ -1,8 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.function.Function;
 
 @RestController()
 @RequestMapping("/api/v1/admin")
