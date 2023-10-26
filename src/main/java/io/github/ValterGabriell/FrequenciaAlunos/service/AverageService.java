@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class AverageService {
@@ -42,7 +43,7 @@ public class AverageService {
                 "Do you wanna update? Check the documentation!");
 
         if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
-        if (!disciplinePresent) throw new RequestExceptions("Discipline não encontrada!");
+        if (!disciplinePresent) throw new RequestExceptions("Disciplina não encontrada!");
 
         Average average = insertAverage.toAverage();
         average.setSkid(GenerateSKId.generateSkId());
@@ -58,6 +59,21 @@ public class AverageService {
         if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
 
         return averageRepository.findAllByStudentSkIdAndTenant(studentSkId, tenant);
+    }
+
+    public String totalAverageByStudent(String studentSkId, int tenant) {
+        boolean studentPresent = studentsRepository.findBySkId(studentSkId, tenant).isPresent();
+        if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
+
+        List<Average> allByStudentSkIdAndTenant = averageRepository.findAllByStudentSkIdAndTenant(studentSkId, tenant);
+
+        double increment = 0.0;
+        for (Average average : allByStudentSkIdAndTenant) {
+            increment = increment + average.getAverage();
+        }
+        Double total = increment / allByStudentSkIdAndTenant.size();
+
+        return "Média final: " + total;
     }
 
 

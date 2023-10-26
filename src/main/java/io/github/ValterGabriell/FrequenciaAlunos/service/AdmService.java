@@ -4,16 +4,16 @@ import io.github.ValterGabriell.FrequenciaAlunos.controller.AdmController;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
+import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidationImpl;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidationImpl;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.DocumentsValidationImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -43,6 +44,7 @@ public class AdmService {
      * 1. Chama um método de validação para verificar se o administrador existe com base no `skId` e inquilino.
      * 2. Se o administrador não for encontrado, lança uma exceção indicando que o usuário não foi encontrado.
      * 3. Se o administrador for encontrado, retorna a instância do administrador.
+     *
      * @param cnpj   O identificador único do administrador a ser encontrado.
      * @param tenant O inquilino associado ao administrador.
      * @return A instância do administrador se encontrado.
@@ -66,6 +68,7 @@ public class AdmService {
      * 5. Salva o administrador no repositório.
      * 6. Adiciona um link de auto-relação ao administrador salvo para futuras referências.
      * 7. Retorna os links do administrador como uma representação em formato de string.
+     *
      * @param newAdmin Os dados do novo administrador a serem criados.
      * @param tenant   O inquilino ao qual o novo administrador será associado.
      * @return Uma representação em formato de string dos links do administrador recém-criado.
@@ -158,6 +161,8 @@ public class AdmService {
      * @param tenant               O inquilino associado ao administrador.
      * @return Uma instância de `GetAdminMapper` que representa o administrador atualizado.
      */
+
+    @Transactional
     public GetAdminMapper updateAdminFirstName(String cnpj, UpdateAdminFirstName updateAdminFirstName, Integer tenant) {
         AdminValidationImpl adminValidation = new AdminValidationImpl();
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExist_ByCnpj(adminRepository, cnpj, tenant);
@@ -260,4 +265,20 @@ public class AdmService {
         }
         return response;
     }
+
+    public List<ProfessorGet> getAllProfessorsByCnpj(String cnpj, int tenant) {
+        Admin admin =
+                adminRepository.findByCnpj(cnpj, tenant)
+                        .orElseThrow(() -> new RequestExceptions("Admin não encontrado"));
+
+        Function<Professor, ProfessorGet> professorProfessorGetFunction = (professor) -> new ProfessorGet(
+                professor.getSkid(), professor.getFirstName(), professor.getLastName(), professor.getAverage(),
+                professor.getIdentifierNumber(), professor.getTenant(), professor.getStartDate(),
+                professor.getFinishedDate(), professor.getContacts()
+
+        );
+        return admin.getProfessors().stream().map(professorProfessorGetFunction).toList();
+    }
+
+
 }

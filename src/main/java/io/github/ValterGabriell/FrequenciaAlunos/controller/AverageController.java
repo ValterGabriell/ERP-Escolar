@@ -1,7 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.average.Average;
-import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.average.InsertAverage;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AverageService;
 import org.springframework.http.HttpStatus;
@@ -32,6 +31,13 @@ public class AverageController {
     public ResponseEntity<List<Average>> getAverageByStudent(
             @PathVariable String studentSkId, @RequestParam int tenant) {
         List<Average> averageByStudent = averageService.getAverageByStudent(studentSkId, tenant);
+        return new ResponseEntity<>(averageByStudent, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{studentSkId}/total", params = {"tenant"})
+    public ResponseEntity<String> totalAverageByStudent(
+            @PathVariable String studentSkId, @RequestParam int tenant) {
+        String averageByStudent = averageService.totalAverageByStudent(studentSkId, tenant);
         return new ResponseEntity<>(averageByStudent, HttpStatus.OK);
     }
 

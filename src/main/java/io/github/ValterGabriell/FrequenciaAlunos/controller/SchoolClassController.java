@@ -1,5 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
@@ -33,7 +34,7 @@ public class SchoolClassController {
         return new ResponseEntity<>(schoolClass, HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/{skid}", params = {"tenant", "studentSkId"})
+    @PatchMapping(value = "/student/{skid}", params = {"tenant", "studentSkId"})
     public ResponseEntity<PatternResponse<String>> setStudentToClass(@PathVariable String skid,
                                                                      @RequestParam int tenant,
                                                                      @RequestParam String studentSkId) {
@@ -41,9 +42,24 @@ public class SchoolClassController {
         return new ResponseEntity<>(schoolClass, HttpStatus.OK);
     }
 
+    @PatchMapping(value = "/professor/{skid}", params = {"tenant", "professorSkId"})
+    public ResponseEntity<PatternResponse<String>> setProfessorToClass(@PathVariable String skid,
+                                                                     @RequestParam int tenant,
+                                                                     @RequestParam String professorSkId) {
+        PatternResponse<String> schoolClass = schoolClassService.setProfessorToClass(skid, tenant, professorSkId);
+        return new ResponseEntity<>(schoolClass, HttpStatus.OK);
+    }
+
     @GetMapping(value = "students/{skid}", params = {"tenant"})
     public ResponseEntity<List<Student>> getStudentsByClassSkId(@PathVariable String skid, @RequestParam int tenant) {
         List<Student> schoolClass = schoolClassService.getAllStudentsByClassSkId(skid, tenant);
+        return new ResponseEntity<>(schoolClass, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "professors/{skid}", params = {"tenant"})
+    public ResponseEntity<List<Professor>> getAllProfessorsByClassSkId(@PathVariable String skid,
+                                                                     @RequestParam int tenant) {
+        List<Professor> schoolClass = schoolClassService.getAllProfessorsByClassSkId(skid, tenant);
         return new ResponseEntity<>(schoolClass, HttpStatus.OK);
     }
 
@@ -58,6 +74,4 @@ public class SchoolClassController {
         schoolClassService.delete(skid, tenant);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 }

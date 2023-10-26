@@ -111,6 +111,15 @@ public class SchoolClassService {
         return schoolClass.getStudents();
     }
 
+    public List<Professor> getAllProfessorsByClassSkId(String skid, int tenant) {
+        SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(
+                skid,
+                tenant
+        ).orElseThrow(() -> new RequestExceptions("Sala não cadastrada!"));
+
+        return schoolClass.getProfessors();
+    }
+
 
     public void delete(String skid, int tenant) {
         SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(
@@ -141,6 +150,33 @@ public class SchoolClassService {
         SchoolClass saved = schoolClassesRepository.save(schoolClass);
 
         saved.add(linkTo(methodOn(SchoolClassController.class).getStudentsByClassSkId(classSkid, tenant)).withSelfRel());
+
+        return new PatternResponse<String>(
+                classSkid,
+                saved.getLinks()
+        );
+    }
+
+    public PatternResponse<String> setProfessorToClass(String classSkid, int tenant, String professorSkId) {
+        SchoolClass schoolClass = schoolClassesRepository.findBySkidAndTenant(
+                classSkid,
+                tenant
+        ).orElseThrow(() -> new RequestExceptions("Sala não cadastrada!"));
+
+        Professor professor = professorRepository.findBySkidAndTenant(professorSkId, tenant)
+                .orElseThrow(() -> new RequestExceptions("Estudante não encontrado"));
+
+        if (professor.getSchoolClasses().contains(schoolClass))
+            throw new RequestExceptions("Professor já está cadastrado nesta classe");
+
+
+        professor.getSchoolClasses().add(schoolClass);
+        professorRepository.save(professor);
+
+        schoolClass.getProfessors().add(professor);
+        SchoolClass saved = schoolClassesRepository.save(schoolClass);
+
+        saved.add(linkTo(methodOn(SchoolClassController.class).getAllProfessorsByClassSkId(classSkid, tenant)).withSelfRel());
 
         return new PatternResponse<String>(
                 classSkid,

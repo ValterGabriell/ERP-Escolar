@@ -35,7 +35,7 @@ public class OpenAPIConfig {
                 .title("Tutorial Management API")
                 .version("1.0")
                 .contact(contact)
-                .description("This API exposes endpoints.");
+                .description("This API exposes endpoints. To check documentation, go to my Github Page");
 
         return new OpenAPI().info(info).servers(List.of(devServer));
     }

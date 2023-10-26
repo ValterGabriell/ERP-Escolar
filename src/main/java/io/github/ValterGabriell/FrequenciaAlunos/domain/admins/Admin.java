@@ -80,10 +80,6 @@ public class Admin extends RepresentationModel<Admin> {
         return adminId;
     }
 
-    public void setAdminId(String id) {
-        this.adminId = id;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -144,10 +140,6 @@ public class Admin extends RepresentationModel<Admin> {
         return schoolClasses;
     }
 
-    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
-        this.schoolClasses = schoolClasses;
-    }
-
     public List<Professor> getProfessors() {
         return professors;
     }
@@ -156,7 +148,13 @@ public class Admin extends RepresentationModel<Admin> {
         this.professors = professors;
     }
 
+    public String getSkid() {
+        return skid;
+    }
 
+    public List<ROLES> getRoles() {
+        return roles;
+    }
 
     public GetAdminMapper getAdminMapper() {
         return new GetAdminMapper(
@@ -168,10 +166,6 @@ public class Admin extends RepresentationModel<Admin> {
                 getContacts(),
                 getLinks()
         );
-    }
-
-    public List<ROLES> getRoles() {
-        return roles;
     }
 
     public void setRoles(List<ROLES> roles) {

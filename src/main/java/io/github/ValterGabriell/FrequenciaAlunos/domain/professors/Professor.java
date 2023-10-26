@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.professors;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
@@ -36,6 +37,7 @@ public class Professor extends RepresentationModel<Professor> {
     private String password;
 
     @ManyToMany(mappedBy = "professors")
+    @JsonIgnore
     private List<SchoolClass> schoolClasses;
 
     @Column(nullable = false)
@@ -182,7 +184,6 @@ public class Professor extends RepresentationModel<Professor> {
         professor.setStartDate(this.startDate);
         professor.setFinishedDate(this.finishedDate);
         professor.setContacts(this.contacts);
-        professor.setSchoolClasses(this.schoolClasses);
         return professor;
     }
 }

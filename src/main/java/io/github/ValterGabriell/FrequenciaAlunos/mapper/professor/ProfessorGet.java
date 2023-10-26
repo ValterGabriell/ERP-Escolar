@@ -23,11 +23,23 @@ public class ProfessorGet {
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
     private List<Contact> contacts;
-    private List<SchoolClass> schoolClasses;
 
     public ProfessorGet() {
     }
 
+    public ProfessorGet(String skid, String firstName, String lastName, Double average, String identifierNumber,
+                        int tenant, LocalDateTime startDate, LocalDateTime finishedDate,
+                        List<Contact> contacts) {
+        this.skid = skid;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.average = average;
+        this.identifierNumber = identifierNumber;
+        this.tenant = tenant;
+        this.startDate = startDate;
+        this.finishedDate = finishedDate;
+        this.contacts = contacts;
+    }
 
     public String getSkid() {
         return skid;
@@ -94,9 +106,7 @@ public class ProfessorGet {
         this.contacts = contacts;
     }
 
-    public List<SchoolClass> getSchoolClasses() {
-        return schoolClasses;
-    }
+
 
     public String getIdentifierNumber() {
         return identifierNumber;
@@ -104,24 +114,6 @@ public class ProfessorGet {
 
     public void setIdentifierNumber(String identifierNumber) {
         this.identifierNumber = identifierNumber;
-    }
-
-    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
-        this.schoolClasses = schoolClasses;
-    }
-    public Professor toProfessor() {
-        Professor professor = new Professor();
-        professor.setSkid(this.skid);
-        professor.setIdentifierNumber(this.identifierNumber);
-        professor.setFirstName(this.firstName);
-        professor.setLastName(this.lastName);
-        professor.setAverage(this.average);
-        professor.setTenant(this.tenant);
-        professor.setStartDate(this.startDate);
-        professor.setFinishedDate(this.finishedDate);
-        professor.setContacts(this.contacts);
-        professor.setSchoolClasses(this.schoolClasses);
-        return professor;
     }
 
 }
