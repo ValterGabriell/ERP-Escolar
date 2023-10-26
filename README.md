@@ -1,4 +1,4 @@
-<h1 align="center">Sistema de frequência de alunos. DOCUMENTAÇÃO DEPRECIADA. NOVA EM ANDAMENTO</h1>
+<h1 align="center">Sistema de Gestão Escolar</h1>
 
 
 # Arquitetura
