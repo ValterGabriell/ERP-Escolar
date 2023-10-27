@@ -6,7 +6,11 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
+import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.Repository;
 
 public abstract class Validation {
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(
@@ -29,14 +33,38 @@ public abstract class Validation {
     public void checkIfAdminCnpjIsCorrect(String cnpj) {
     }
 
-    public boolean fieldContainsOnlyLetters(String field){return false;}
+    public boolean fieldContainsOnlyLetters(String field) {
+        return false;
+    }
 
-    public boolean isFieldHasNumberExcatlyOfChars(String field, int charNumber){return false;}
+    public boolean fieldContainsOnlyNumbers(String field) {
+        return false;
+    }
 
-    public boolean validateIfIsNotEmpty(String field, String exceptionMessage) throws RequestExceptions{return false;}
-    public void verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(Frequency frequency, Day day){}
+
+    public boolean isFieldHasNumberExcatlyOfChars(String field, int charNumber) {
+        return false;
+    }
+
+    public boolean validateIfIsNotEmpty(String field, String exceptionMessage) throws RequestExceptions {
+        return false;
+    }
+
+    public void verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(Frequency frequency, Day day) {
+    }
+
     public Student validateIfStudentExistsAndReturnIfExist(
             StudentsRepository studentsRepository,
             String studentId,
-            int tenantId){return null;}
+            int tenantId) {
+        return null;
+    }
+
+    public boolean verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant) {
+       return false;
+    }
+
+    protected boolean validateMonth(String month) {
+        return false;
+    }
 }

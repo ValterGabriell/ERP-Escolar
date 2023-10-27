@@ -4,5 +4,5 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FrequencyRepository extends JpaRepository<Frequency, String> {
-    Frequency findByFrequencyIdAndTenant(String frequencyId, int tenant);
+    Frequency findBySkidAndTenant(String skid, int tenant);
 }

@@ -14,6 +14,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidation;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,6 +36,7 @@ public class AdmService {
     private final ContactsRepository contactsRepository;
     private final AdminValidation adminValidation = new AdminValidation();
     private final ContactValidation contactValidation = new ContactValidation();
+    private final FieldValidation fieldValidation = new FieldValidation();
 
     public AdmService(AdminRepository adminRepository, ContactsRepository contactsRepository) {
         this.adminRepository = adminRepository;
@@ -79,6 +81,9 @@ public class AdmService {
      */
     @Transactional
     public String createNewAdmin(CreateNewAdmin newAdmin, Integer tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(newAdmin.getCnpj()))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
+
         adminValidation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
         newAdmin.getContacts().forEach(contact -> contactValidation
                 .verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(contact.getEmail()));
@@ -165,6 +170,8 @@ public class AdmService {
 
     @Transactional
     public GetAdminMapper updateAdminFirstName(String cnpj, UpdateAdminFirstName updateAdminFirstName, Integer tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExistByCnpj(adminRepository, cnpj, tenant);
         if (admin == null) {
             throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
@@ -175,6 +182,8 @@ public class AdmService {
     }
 
     public GetAdminMapper updateAdminSecondName(String cnpj, UpdateAdminSecondName updateAdminSecondName, Integer tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExistByCnpj(adminRepository, cnpj, tenant);
         if (admin == null) {
             throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
@@ -199,6 +208,8 @@ public class AdmService {
      * @return Uma instância de `GetAdminMapper` que representa o administrador atualizado.
      */
     public GetAdminMapper updateAdminPassword(String cnpj, UpdateAdminPassword updateAdminPassword, Integer tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExistByCnpj(adminRepository, cnpj, tenant);
         if (admin == null) {
             throw new RequestExceptions("Cadastro com CNPJ não encontrado!");
@@ -221,6 +232,8 @@ public class AdmService {
      * @return Uma instância de `GetAdminMapper` que representa o administrador com links para ações relacionadas.
      */
     public GetAdminMapper getAdminByCnpj(String cnpj, Integer tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExistByCnpj(adminRepository, cnpj, tenant);
 
         admin.add(linkTo(
@@ -251,6 +264,8 @@ public class AdmService {
      * @return Uma mensagem indicando o resultado da exclusão.
      */
     public String deleteAdminByCnpj(String cnpj, Integer tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExistByCnpj(adminRepository, cnpj, tenant);
         String response;
         if (admin != null) {
@@ -263,6 +278,8 @@ public class AdmService {
     }
 
     public List<ProfessorGet> getAllProfessorsByCnpj(String cnpj, int tenant) {
+        if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin =
                 adminRepository.findByCnpj(cnpj, tenant)
                         .orElseThrow(() -> new RequestExceptions("Admin não encontrado"));
@@ -275,6 +292,4 @@ public class AdmService {
         );
         return admin.getProfessors().stream().map(professorProfessorGetFunction).toList();
     }
-
-
 }

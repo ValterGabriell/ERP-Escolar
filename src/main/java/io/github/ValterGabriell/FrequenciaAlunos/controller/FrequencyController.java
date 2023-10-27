@@ -1,5 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.JustifyAbscenceDesc;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/frequency")
@@ -72,6 +75,15 @@ public class FrequencyController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(responseSheet.getSheetByteArray());
+    }
+
+    @GetMapping(value = "/month/{month}")
+    public ResponseEntity<List<Day>> getDaysThatStudentsWatchedSchoolClassesInASpecificMonth(@RequestParam String studentSkId,
+                                                                                             @PathVariable String month,
+                                                                                             @RequestParam int tenant) {
+        List<Day> list = frequencyService
+                .getDaysThatStudentsWatchedSchoolClassesInASpecificMonth(studentSkId, month, tenant);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
 }
