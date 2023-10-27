@@ -75,6 +75,7 @@ Este controlador lida com as operações relacionadas às frequências.
 - `GET /api/v1/frequency`: Obtém a lista de dias que um estudante foi para a aula.
 - `GET /api/v1/frequency/sheet`: Cria uma planilha para o dia atual.
 - `GET /api/v1/frequency/sheet`: Obtém a planilha para um dia específico.
+- `GET /api/v1/frequency/month/{month}`: Obtém a lista de dias que um estudante foi para a aula em um mês específico. Formato do month: [JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER]
 
 ## ParentController
 
@@ -151,11 +152,6 @@ Este controlador lida com as operações relacionadas às disciplinas.
 2. `GET /api/v1/discipline/professors/{skid}`: Obtém todos os professores que lecionam uma disciplina pelo ID da disciplina.
 3. `POST /api/v1/discipline/enroll/{skid}`: Matricula um estudante em uma disciplina pelo ID da disciplina.
 4. `DELETE /api/v1/discipline/unenroll/{skid}`: Desmatricula um estudante de uma disciplina pelo ID da disciplina.
-
-## FrequencyController
-Este controlador lida com as operações relacionadas às frequências.
-
-1. `GET /api/v1/frequency/month/{month}`: Obtém a lista de dias que um estudante foi para a aula em um mês específico.
 
 ## StudentsController
 Este controlador lida com as operações relacionadas aos estudantes.
