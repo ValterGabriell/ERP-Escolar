@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AverageService {
@@ -26,31 +27,36 @@ public class AverageService {
 
     @Transactional
     public String insert(InsertAverage insertAverage, int tenant) {
-        boolean averagePresent = averageRepository.findByStudentSkIdAndDisciplineSkIdAndAverageAndEvaluationAndTenant(
-                insertAverage.getStudentSkId(),
-                insertAverage.getDisciplineSkId(),
-                insertAverage.getAverage(),
-                insertAverage.getEvaluation(),
-                tenant).isPresent();
-
-
-        boolean studentPresent = studentsRepository.findBySkId(insertAverage.getStudentSkId(), tenant).isPresent();
-        boolean disciplinePresent = disciplineRepository
-                .findDisciplineBySkidAndTenant(insertAverage.getDisciplineSkId(), tenant).isPresent();
+        boolean averagePresent =
+                getByStudentSkIdAndDisciplineSkIdAndAverageAndEvaluationAndTenant(insertAverage, tenant).isPresent();
 
         if (averagePresent) throw new RequestExceptions("Nota já cadastrada!",
                 "Do you wanna update? Check the documentation!");
 
-        if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
-        if (!disciplinePresent) throw new RequestExceptions("Disciplina não encontrada!");
-
         Average average = insertAverage.toAverage();
         average.setSkid(GenerateSKId.generateSkId());
         average.setTenant(tenant);
+        average.setAverage(insertAverage.getAverage());
 
         Average saved = averageRepository.save(average);
 
         return "SKID: " + saved.getSkid();
+    }
+
+    private Optional<Average> getByStudentSkIdAndDisciplineSkIdAndAverageAndEvaluationAndTenant(InsertAverage insertAverage,
+                                                                                                int tenant) {
+        boolean studentPresent = studentsRepository.findBySkId(insertAverage.getStudentSkId(), tenant).isPresent();
+        boolean disciplinePresent = disciplineRepository
+                .findDisciplineBySkidAndTenant(insertAverage.getDisciplineSkId(), tenant).isPresent();
+
+        if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
+        if (!disciplinePresent) throw new RequestExceptions("Disciplina não encontrada!");
+
+        return averageRepository.findByStudentSkIdAndDisciplineSkIdAndEvaluationAndTenant(
+                insertAverage.getStudentSkId(),
+                insertAverage.getDisciplineSkId(),
+                insertAverage.getEvaluation(),
+                tenant);
     }
 
     public List<Average> getAverageByStudent(String studentSkId, int tenant) {
@@ -76,4 +82,11 @@ public class AverageService {
     }
 
 
+    public String update(InsertAverage insertAverage, int tenant) {
+        Average average = getByStudentSkIdAndDisciplineSkIdAndAverageAndEvaluationAndTenant(insertAverage, tenant)
+                .orElseThrow(() -> new RequestExceptions("Nota do estudante para essa avaliação e disciplina não encontrada!"));
+        average.setAverage(insertAverage.getAverage());
+        Average save = averageRepository.save(average);
+        return save.getSkid();
+    }
 }

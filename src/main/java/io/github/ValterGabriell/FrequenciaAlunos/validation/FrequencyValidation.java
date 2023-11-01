@@ -20,9 +20,11 @@ public class FrequencyValidation extends Validation {
     }
 
     @Override
-    public boolean verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant) {
+    public void verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant) {
         Frequency frequency = frequencyRepository.findBySkidAndTenant(studentSkId, tenant);
-        return frequency != null;
+        if (frequency == null) {
+            throw new RequestExceptions("Frequencia nao encontrada");
+        }
     }
 
     @Override

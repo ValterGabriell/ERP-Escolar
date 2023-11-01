@@ -8,9 +8,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.Repository;
 
 public abstract class Validation {
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(
@@ -60,9 +57,7 @@ public abstract class Validation {
         return null;
     }
 
-    public boolean verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant) {
-       return false;
-    }
+    public void verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant){};
 
     protected boolean validateMonth(String month) {
         return false;

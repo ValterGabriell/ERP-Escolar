@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AverageRepository extends JpaRepository<Average, String> {
-    Optional<Average> findByStudentSkIdAndDisciplineSkIdAndAverageAndEvaluationAndTenant(
-            String studentSkId, String disciplineSkId, double average, int evaluation, int tenant);
+    Optional<Average> findByStudentSkIdAndDisciplineSkIdAndEvaluationAndTenant(
+            String studentSkId, String disciplineSkId, int evaluation, int tenant);
 
     List<Average> findAllByStudentSkIdAndTenant(String studentSkId, int tenant);
 }

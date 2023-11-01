@@ -67,6 +67,7 @@ public class FrequencyService extends FrequencyValidation {
         Day currentDay = new Day(LocalDate.now(), frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, currentDay);
         currentDay.setSkid(GenerateSKId.generateSkId());
+        currentDay.setDescription("Estudante Presente!");
         frequency.getDaysList().add(currentDay);
 
         frequencyRepository.save(frequency);
@@ -129,27 +130,16 @@ public class FrequencyService extends FrequencyValidation {
         return responseSheet;
     }
 
-    /**
-     * method to justify abscence of student on some class
-     *
-     * @param date       date to validate student present
-     * @param studentkId student to be justified
-     * @return string with message
-     */
     public ResponseValidateFrequency justifyAbsence(JustifyAbscenceDesc justifyAbscenceDesc
             , LocalDate date, String studentkId, int tenant) {
 
         StudentValidation studentValidation = new StudentValidation();
         Student student = studentValidation
                 .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentkId, tenant);
+
         Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
         Day day = new Day(date, frequency.getTenant());
         verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs(frequency, day);
-
-
-        if (justifyAbscenceDesc.getDescription().isEmpty() || justifyAbscenceDesc.getDescription().isBlank())
-            throw new RequestExceptions("Descrição de justificativa precisa ser passada");
-
 
         day.setJustified(true);
         day.setSkid(GenerateSKId.generateSkId());
@@ -164,14 +154,6 @@ public class FrequencyService extends FrequencyValidation {
         return responseValidateFrequency;
     }
 
-    /**
-     * update the justified field changing it from true to false
-     *
-     * @param date        date to change the student present
-     * @param studentSkId student to be justified
-     * @param tenant
-     * @return string with message
-     */
     public ResponseValidateFrequency updateAbscence(LocalDate date, String studentSkId, int tenant) {
         StudentValidation studentValidation = new StudentValidation();
         Student student = studentValidation
@@ -187,7 +169,9 @@ public class FrequencyService extends FrequencyValidation {
         daysRepository.save(dayFounded);
 
         ResponseValidateFrequency responseValidateFrequency = new ResponseValidateFrequency();
-        responseValidateFrequency.setMessage("Justificativa para " + student.getFirstName() + " atualizada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+        responseValidateFrequency
+                .setMessage("Justificativa para " + student.getFirstName()
+                        + " atualizada! - Dia: " + date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
         return responseValidateFrequency;
     }
 
@@ -197,12 +181,9 @@ public class FrequencyService extends FrequencyValidation {
                                                                              int tenant) {
         fieldValidation.validateIfIsNotEmpty(studentSkId, "SKid do Estudante não pode estar nulo!");
         fieldValidation.validateIfIsNotEmpty(month, "Mês não pode estar nulo!");
-        // studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenant);
-
-        Frequency frequency =
-                frequencyRepository.findBySkidAndTenant(studentSkId, tenant);
-        boolean exists = frequencyValidation.verifyIfFrequencyExists(frequencyRepository, studentSkId, tenant);
-        if (!exists) throw new RequestExceptions("Frequencia nao encontrada");
+        Student student = studentValidation
+                .validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenant);
+        Frequency frequency = frequencyRepository.findById(student.getStudentId()).get();
         boolean validated = frequencyValidation.validateMonth(month);
         if (!validated) throw new RequestExceptions("Insira um mês válido", Arrays.toString(Month.values()));
         return frequency

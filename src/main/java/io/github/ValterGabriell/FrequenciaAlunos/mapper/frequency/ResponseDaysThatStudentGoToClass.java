@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ResponseDaysThatStudentGoToClass {
     private String studentSkId;
+
     private List<DaysList> dayListThatStudentGoToClasses;
 
     public ResponseDaysThatStudentGoToClass() {
@@ -16,6 +17,7 @@ public class ResponseDaysThatStudentGoToClass {
     public String getStudentSkId() {
         return studentSkId;
     }
+
 
     public void setStudentSkId(String studentSkId) {
         this.studentSkId = studentSkId;

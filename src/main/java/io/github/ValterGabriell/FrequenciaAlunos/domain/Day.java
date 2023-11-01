@@ -103,6 +103,6 @@ public class Day {
     }
 
     public DaysList toDaysList() {
-        return new DaysList(this.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)), this.justified);
+        return new DaysList(this.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)), this.description ,this.justified);
     }
 }

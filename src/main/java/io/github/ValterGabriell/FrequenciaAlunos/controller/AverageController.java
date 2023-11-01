@@ -41,4 +41,11 @@ public class AverageController {
         return new ResponseEntity<>(averageByStudent, HttpStatus.OK);
     }
 
+    @PatchMapping(value = "/{studentSkId}", params = {"tenant"})
+    public ResponseEntity<String> totalAverageByStudent(
+            @RequestBody InsertAverage insertAverage, @PathVariable String studentSkId, @RequestParam int tenant) {
+        String updated = averageService.update(insertAverage,tenant);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
 }
