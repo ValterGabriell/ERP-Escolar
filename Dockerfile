@@ -1,17 +1,6 @@
-FROM ubuntu:latest AS build
-
-RUN apt-get update
-RUN apt-get install opendjk-17-jdk -y
-COPY . .
-
-RUN apt-get install maven -y
-RUN mvn clean install
-
-FROM openjdk:17-jdk-slim
-
+FROM openjdk:17-alpine
+ENV APP_NAME FrequenciaAlunos-0.0.1-SNAPSHOT
+COPY ./target/${APP_NAME}.jar /app/${APP_NAME}.jar
+WORKDIR /app
+CMD java -jar ${APP_NAME}.jar
 EXPOSE 8080
-
-COPY --from=build /target/FrequenciaAlunos-0.0.1-SNAPSHOT.jar app.jar
-
-ENTRYPOINT ["java","-jar","app.jar"]
-
