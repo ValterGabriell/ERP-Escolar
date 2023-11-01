@@ -1,10 +1,10 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.frequency.Frequency;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Parent;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
@@ -14,7 +14,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED;
-import static io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues.STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR;
+import static io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues.STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -49,16 +48,6 @@ public class StudentsService {
         this.parentsRepository = parentsRepository;
     }
 
-    /**
-     * Método para inserir um estudante no banco de dados.
-     *
-     * @param request   requisição com os dados para a inserção, incluindo CPF (formato: XXXXXXXXXXX),
-     *                  CPF deve conter exatamente 11 caracteres numéricos, além do nome de usuário do estudante.
-     *                  O nome de usuário deve conter apenas letras.
-     * @param adminCnpj O identificador do administrador responsável pela inserção.
-     * @param tenant    O inquilino associado ao estudante.
-     * @return O objeto do estudante criado.
-     */
     public PatternResponse<String> insertStudentIntoDatabase(InsertStudents request,
                                             String adminCnpj,
                                             Integer tenant,
@@ -68,18 +57,10 @@ public class StudentsService {
             throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
         });
 
-        if (!request.usernameIsNotNull()
-                && !request.isFieldHasNumberExcatlyOfChars(request.getStudentId(), 11)
-                && !request.emailIsNotNull()
-        ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
+        validateIfStudentFieldsIsOk(request);
 
         Admin admin =
                 checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getStudentId(), tenant);
-        if (admin == null) {
-            throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
-        }
-
-
         Student student;
         student = request.toModel(admin.getTenant());
         student.setAdmin(admin.getCnpj());
@@ -100,23 +81,19 @@ public class StudentsService {
         admin.getStudents().add(studentSaved);
         adminRepository.save(admin);
 
-
-
         studentSaved.add(linkTo(methodOn(StudentsController.class)
                 .getStudentBySkId(studentSaved.getSkid(), 0)).withSelfRel());
 
         return new PatternResponse<>(studentSaved.getSkid(), studentSaved.getLinks());
     }
 
-    /**
-     * Método privado para verificar
-     * se um estudante já foi associado a um administrador e retorna o administrador se não foi.
-     *   @param cnpj      O identificador do administrador a ser verificado.
-     * @param studentId O ID do estudante a ser verificado.
-     * @param tenantId  O inquilino associado ao administrador.
-     * @return O administrador se o estudante já estiver associado a ele; caso contrário, retorna null.
-     * @throws RequestExceptions Se o administrador com o `cnpj` especificado não for encontrado.
-     */
+    private static void validateIfStudentFieldsIsOk(InsertStudents request) {
+        if (!request.usernameIsNotNull()
+                && !request.isFieldHasNumberExcatlyOfChars(request.getStudentId(), 11)
+                && !request.emailIsNotNull()
+        ) throw new RequestExceptions("Erro desconhecido ao gerar estudante, contate o desenvolvedor!");
+    }
+
     private Admin checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(
             String cnpj,
             String studentId,
@@ -126,18 +103,12 @@ public class StudentsService {
         for (Student student : admin.getStudents()) {
             var currentStudentId = student.getStudentId();
             if (currentStudentId.equals(studentId)) {
-                return null;
+               throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
             }
         }
         return admin;
     }
 
-
-    /**
-     * Método para obter todos os estudantes do banco de dados.
-     *
-     * @return Uma lista de todos os estudantes do banco de dados.
-     */
     public Page<GetStudent> getAllStudentsFromDatabase(Pageable pageable, int tenantId) {
         Page<Student> allStudents = studentsRepository.findAll(pageable);
 
@@ -168,15 +139,10 @@ public class StudentsService {
     }
 
     private Student validateIfStudentExistsAndReturnIfExist(String studentSkId, int tenantId) {
-        StudentValidationImpl studentValidation = new StudentValidationImpl();
+        StudentValidation studentValidation = new StudentValidation();
         return studentValidation.validateIfStudentExistsAndReturnIfExist(studentsRepository, studentSkId, tenantId);
     }
 
-    /**
-     * Método para obter 1 estudante pelo skid e tenant.
-     *
-     * @return Um estudante.
-     */
     public GetStudent getStudentBySkId(String skid, int tenantId) {
         Student student = validateIfStudentExistsAndReturnIfExist(skid, tenantId);
         return new GetStudent(
@@ -191,11 +157,6 @@ public class StudentsService {
         );
     }
 
-    /**
-     * Método para excluir um estudante do banco de dados.
-     *
-     * @param studentId O ID do estudante a ser excluído.
-     */
     public void deleteStudent(String studentId, int tenantId) {
         Student student = validateIfStudentExistsAndReturnIfExist(studentId, tenantId);
         studentsRepository.delete(student);

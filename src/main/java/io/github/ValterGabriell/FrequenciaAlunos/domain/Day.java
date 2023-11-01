@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.days;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;
@@ -103,6 +103,6 @@ public class Day {
     }
 
     public DaysList toDaysList() {
-        return new DaysList(this.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)), this.justified);
+        return new DaysList(this.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)), this.description ,this.justified);
     }
 }

@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.frequency;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.DisciplineController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Discipline;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DisciplineRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;

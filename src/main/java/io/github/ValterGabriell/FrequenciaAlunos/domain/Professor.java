@@ -1,10 +1,8 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.professors;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;

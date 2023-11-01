@@ -1,12 +1,12 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.ExceptionsValues;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidationImpl;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidation;
 
 import java.time.LocalDateTime;
 
-public class InsertStudents extends FieldValidationImpl {
+public class InsertStudents extends FieldValidation {
     private String studentId;
 
     private String firstName;

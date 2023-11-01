@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.days.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;
 
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ResponseDaysThatStudentGoToClass {
     private String studentSkId;
+
     private List<DaysList> dayListThatStudentGoToClasses;
 
     public ResponseDaysThatStudentGoToClass() {
@@ -16,6 +17,7 @@ public class ResponseDaysThatStudentGoToClass {
     public String getStudentSkId() {
         return studentSkId;
     }
+
 
     public void setStudentSkId(String studentSkId) {
         this.studentSkId = studentSkId;

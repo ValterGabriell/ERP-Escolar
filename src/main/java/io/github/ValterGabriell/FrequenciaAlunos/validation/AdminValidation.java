@@ -1,16 +1,25 @@
 package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 
-public interface AdminValidation {
-    Admin validateIfAdminExistsAndReturnIfExist_ByCnpj(
+import java.util.Optional;
+
+public class AdminValidation extends Validation{
+    @Override
+    public Admin validateIfAdminExistsAndReturnIfExistByCnpj(AdminRepository adminRepository, String cnpj, Integer tenant) {
+        Optional<Admin> admin = adminRepository.findByCnpj(cnpj, tenant);
+        return admin.orElse(null);
+    }
+
+    @Override
+    public void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(
             AdminRepository adminRepository,
-            String cnpj,
-            Integer tenant);
-    Admin validateIfAdminExistsAndReturnIfExist_BySkId(
-            AdminRepository adminRepository,
-            String skId,
-            Integer tenant);
-    void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant);
+            int tenant) {
+        boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();
+        if (adminWithTenantPresent){
+            throw new RequestExceptions("Tenant já existente!");
+        }
+    }
 }

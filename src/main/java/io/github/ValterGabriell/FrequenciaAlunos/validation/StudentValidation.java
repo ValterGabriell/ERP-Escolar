@@ -1,13 +1,13 @@
 package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.StudentValidation;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 
 import java.util.Optional;
 
-public class StudentValidationImpl implements StudentValidation {
+public class StudentValidation extends Validation {
     @Override
     public Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentSkId, int tenantId) {
         Optional<Student> student = studentsRepository.findBySkId(studentSkId, tenantId);

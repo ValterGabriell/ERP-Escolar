@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.util.sheet;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 
 import java.time.LocalDate;
 import java.util.List;

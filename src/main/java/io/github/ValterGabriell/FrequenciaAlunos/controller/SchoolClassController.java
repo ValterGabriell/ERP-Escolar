@@ -1,8 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Professor;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.schoolclass.CreateSC;
 import io.github.ValterGabriell.FrequenciaAlunos.service.SchoolClassService;

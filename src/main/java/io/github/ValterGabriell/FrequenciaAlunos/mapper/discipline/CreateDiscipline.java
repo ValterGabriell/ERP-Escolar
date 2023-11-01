@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.discipline;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.discipline.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Discipline;
 
 public class CreateDiscipline {
     private String name;

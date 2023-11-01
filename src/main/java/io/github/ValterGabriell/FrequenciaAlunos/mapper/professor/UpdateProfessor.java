@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.professor;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.SchoolClass;
 
 import java.time.LocalDateTime;
 import java.util.List;

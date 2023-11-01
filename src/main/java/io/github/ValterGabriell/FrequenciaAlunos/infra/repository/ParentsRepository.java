@@ -1,9 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.infra.repository;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 

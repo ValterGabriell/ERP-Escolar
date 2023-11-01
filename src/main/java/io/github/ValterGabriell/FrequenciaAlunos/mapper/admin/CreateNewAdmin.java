@@ -1,13 +1,11 @@
 package io.github.ValterGabriell.FrequenciaAlunos.mapper.admin;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.contacts.Contact;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.mapper.contacs.CreateContact;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CreateNewAdmin {
 

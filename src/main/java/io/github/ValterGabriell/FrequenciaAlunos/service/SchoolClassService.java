@@ -1,10 +1,10 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.SchoolClassController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.admins.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.professors.Professor;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.school_class.SchoolClass;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.students.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Professor;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.PERIOD;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;

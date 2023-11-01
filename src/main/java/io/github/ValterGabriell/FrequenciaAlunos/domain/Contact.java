@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.domain.contacts;
+package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import jakarta.persistence.*;
 

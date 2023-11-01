@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ParentController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.parents.Parent;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Parent;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ParentsRepository;
