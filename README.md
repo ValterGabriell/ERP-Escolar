@@ -54,6 +54,7 @@ Este controlador lida com as operações relacionadas às médias.
 
 - `POST /api/v1/average`: Insere uma nova média.
 - `GET /api/v1/average/{studentSkId}`: Obtém a média de um estudante pelo ID.
+- `PATCH /api/v1/average/{studentSkId}`: Atualiza a média de um estudante pelo ID do estudante.
 
 ## DisciplineController
 
@@ -142,7 +143,6 @@ Este controlador lida com as operações relacionadas às médias.
 1. `GET /api/v1/average/top/{number}`: Obtém as top 'n' médias.
 2. `GET /api/v1/average/bottom/{number}`: Obtém as 'n' médias mais baixas.
 3. `GET /api/v1/average/range/{start}/{end}`: Obtém médias dentro de um intervalo específico.
-4. `PATCH /api/v1/average/update/{studentSkId}`: Atualiza a média de um estudante pelo ID do estudante.
 5. `DELETE /api/v1/average/{studentSkId}`: Exclui a média de um estudante pelo ID do estudante.
 
 ## DisciplineController
