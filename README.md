@@ -21,6 +21,8 @@ A arquitetura utilizada no desenvolvimento da API é a arquitetura em camadas, c
 # Swagger
 - Link para baixar o YAML: https://drive.google.com/file/d/1QUFxwPZsvtsKspFKOxseVA2wQssx4d__/view?usp=sharing
 - Importar esse YAML no site: https://editor.swagger.io/ -> File -> Import File
+- URL BASE API: https://sf-homologation.onrender.com/
+- DOCUMENTAÇÃO AUXILIAR: https://sf-homologation.onrender.com/swagger-ui/index.html 
 
 
 Este documento descreve os controladores da API e seus respectivos métodos.
