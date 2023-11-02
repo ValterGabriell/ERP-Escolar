@@ -1,412 +1,172 @@
-<h1 align="center">Sistema de frequência para o cursinho Logos da UFPA.</h1>
-
-
-## Indíce
-<!--ts-->
-   * [Sobre o projeto](#sobre-o-projeto)
-   * [Endpoints](#endpoints)
-   * [Testes](#testes)
-   * [Creditos](#creditos)
-<!--te-->
-  
-<h1>Sobre o projeto</h1>
-
-Este é um projeto que deve automatizar o sistema de frequência de alunos no cursinho gratuíto da UFPA. Os domínios estão divididos da seguinte maneira: </br>
-<img style="border-radius: 50%;" src="https://github.com/ValterGabriell/FrequenciaAlunos_UFPALogos/assets/63808405/a697be0a-6667-4d42-afed-0813628d9da6"/>
-<br>
-Cada aluno, ao ser criado, cria também uma frequência para ele, sem atribuição por relacionamento, mas como objeto separado, levando o mesmo id do aluno. A escolha por essa abordagem veio para que o dominío de frequência ficasse completamente isolado do domínio de aluno, tendo em vista que
-mesmo que um aluno seja excluído, ainda possamos gerar planilhas que possuam a frequência desse aluno salva lá. O cursinho possui uma rotatividade grande e poderíamos atrapalhar a criação de planilhas antigas caso a frequência fosse excluída também sempre que um aluno é deletado.
-<h1>Endpoints</h1>
-<h3>BASE URL</h3>
-
-```bash
-http://localhost:8080/
-``` 
-<h1>POST</h1>
-
-<h2>Cadastrar estudante</h2>
-
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-  </tr>
-  <tr>
-    <td>/students</td>
-    <td>realizar inserção de um estudante no Database</td>
-  </tr> 
-  </table>
-  
-  <h3>Request esperada</h3></br>
-
-```bash
-{
-	"cpf":"233456789",
-	"username":"name"
-}
-```
-
-<h3>Resposta esperada</h3></br>
-
-```bash
-{
-	"cpf": "233456789",
-	"username": "valter",
-	"frequency": {
-		"id": "233456789"
-	}
-}
-```
-
-
-<h2>Validar frequencia do estudante</h2>
-
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-    
-  </tr>
-  <tr>
-    <td>/frequency</td>
-    <td>realizar a validação de frequencia de um estudante</td>
-    <td>studentId</td>
-  </tr> 
-  </table>
- 
-
-<h3>Resposta esperada</h3></br>
-
-```bash
-{
-	"message": "Frequência para brito válidada! - Dia: 2023-04-21"
-}
-```
-
-<h2>Justificar falta e adicionar o dia na frequencia do estudante</h2>
-
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/frequency</td>
-    <td>realizar a validação de frequencia de um estudante</td>
-    <td>studentId</td>
-    <td>date</td>
-  </tr> 
-  </table>
- 
-
-<h3>Resposta esperada</h3></br>
-
-```bash
-{
-	"message": "Frequência para brito justificada! - Dia: 2023-04-21"
-}
-```
-
-</br>
-
-
-<h1>GET</h1>
-
-
-<h2>Recuperar todos os estudantes</h2>
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-  </tr>
-  <tr>
-    <td>/students/get-all</td>
-    <td>Retorna todos os estudantes</td>
-  </tr>
-</table>
-
-<h3>Resposta esperada</h3></br>
-
-```
-[
-	{
-		"cpf": "42345678912",
-		"username": "silva"
-	},
-	{
-		"cpf": "12345678912",
-		"username": "gabriel"
-	},
-	{
-		"cpf": "32345678912",
-		"username": "gabriel"
-	},
-	{
-		"cpf": "62345678912",
-		"username": "brito"
-	}
-]
-
-```
-
-<h2>Recuperar os dias que o estudante viu aula</h2>
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/frequency</td>
-    <td>Retorna os dias que o estudante viu aula</td>
-    <td>studentId</td>
-  </tr>
-</table>
-
-<h3>Resposta esperada</h3></br>
-
-```
-{
-	"studentId": "62345678912",
-	"daysListThatStudentGoToClass": [
-		{
-			"date": "2023-04-21",
-			"justified": false
-		},
-		{
-			"date": "2023-04-15",
-			"justified": true
-		}
-	]
-}
-
-Quando justified for false, significa que o aluno foi para a aula no dia em questão, quando for true, significa que o aluno faltou, porém a sua falta foi justificada.
-
-```
-
-
-
-<h2>Exportar tabela do excel</h2>
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-  </tr>
-  <tr>
-    <td>/frequency/sheet</td>
-    <td>Baixa a tabela do dia atual</td>
-  </tr>
-</table>
-
-
-<h2>Exportar tabela do excel para dia específico</h2>
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/frequency/sheet</td>
-    <td>Baixa a tabela do dia específico</td>
-    <td>date (AAAA-MM-DD)</td>
-  </tr>
-</table>
-
-
-
-
-
-
-<h2>Gerar QRCode para validação</h2>
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/qrcode/generate</td>
-    <td>Retorna o QRcode que representa o ID e o Nome do estudante</td>
-    <td>studentId</td>
-  </tr>
-</table>
-
-<h3>Resposta esperada</h3></br>
-
-![image](https://user-images.githubusercontent.com/63808405/232524532-3a0ce398-9446-4969-b300-fcfcb28d60e0.png)
-
-
-
-</br>
-
-<h1>PUT</h1>
-
-<h2>Atualizar falta de estudante</h2>
-
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/frequency</td>
-    <td>realizar a atualizacao de uma justificativa no Database</td>
-    <td>studentId</td>
-    <td>date</td>
-  </tr> 
-  </table>
-  
-  <h3>Request esperada</h3></br>
-
-```bash
-{
-	"message": "Justificativa para gabriel atualizada! - Dia: 2023-05-06"
-}
-```
-</br>
-
-
-<h1>PATCH</h1>
-
-<h2>Atualizar estudante</h2>
-
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/students</td>
-    <td>realizar a atualizacao de um estudante no Database</td>
-    <td>studentId</td>
-  </tr> 
-  </table>
-  
-  <h3>Request esperada</h3></br>
-
-```bash
-	Novos dados
-{
-	"cpf": "11111111111",
-	"username": "gabriel"
-}
-```
-</br>
-
-
-
-
-
-<h1>DELETE</h1>
-
-<h2>Deletar estudante</h2>
-
-<table>
-  <tr>
-    <th>Request</th>
-    <th>Response</th>
-    <th>Query</th>
-  </tr>
-  <tr>
-    <td>/students</td>
-    <td>realizar a delecao de um estudante no Database</td>
-    <td>studentId</td>
-  </tr> 
-  </table>
-  
-  <h3>Request esperada</h3></br>
-
-```bash
-no content
-```
-
-
-</br>
-
-
-<h1>Testes</h1>
-
-<h3>O nome de usuário não pode ser nulo</h3></br>
-
-```
-    @Test
-    @DisplayName("A username should be not null and return true when it is")
-    void isUsernameNotNull_ReturnTrue_WhenUsernameIsNotNull() {
-        Assertions.assertTrue(studentUsernameTest.usernameIsNull());
-    }
-    
-```
-
-
-<h3>O nome de usuário precisa ter mais de 2 caracteres</h3></br>
-
-```
-    @Test
-    @DisplayName("A username should have more than 2 characters and return true when it is")
-    void isUsernameBiggerThan2Chars() {
-        Assertions.assertTrue(studentUsernameTest.usernameHasToBeMoreThan2Chars());
-    }
-```
-
-
-
-<h3>O nome de usuário precisa ter apenas letras</h3></br>
-
-```
-   @Test
-    @DisplayName("A username should have only letters and no numbers")
-    void isUsernameOnlyLetters() {
-        Assertions.assertTrue(studentUsernameTest.fieldContainsOnlyLetters("Username"));
-    }
-```
-
-
-<h3>O CPF precisa ter exatamente 11 digitos</h3></br>
-
-```
-    @Test
-    @DisplayName("cpf should have exactly 11 characters and return true when it is")
-    void cpfLenght() {
-        Assertions.assertTrue(studentCpfTest.isFieldHasNumberExcatlyOfChars(studentCpfTest.getCpf(), 11));
-    }
-```
-
-
-<h3>O CPF não pode ser nulo</h3></br>
-
-```
-    @Test
-    @DisplayName("A cpf should be not null and return true when it is")
-    void isCpfNotNull_ReturnTrue_WhenUsernameIsNotNull() {
-        Assertions.assertTrue(studentCpfTest.cpfIsNull());
-    }
-```
-
-<h3>Verificando se o dia já está salvo na frequencia do estudante</h3></br>
-
-```
-    @Test
-    void verifyIfDayAlreadySavedOnFrequencyAndThrowAnErroIfItIs() {
-        List<Days> days = new ArrayList<>();
-        LocalDate date = LocalDate.now();
-        Days day = new Days(date);
-        days.add(day);
-        boolean contains = days.contains(day);
-        Assertions.assertTrue(contains);
-    }
-```
+<h1 align="center">Sistema de Gestão Escolar</h1>
 
 
+# Arquitetura
+A arquitetura utilizada no desenvolvimento da API é a arquitetura em camadas, comum em aplicações Java.
+1. **Camada de Controlador**: Esta é a camada que lida com as solicitações HTTP dos clientes. Os controladores em Spring são geralmente anotados com `@RestController` e contêm métodos mapeados para diferentes endpoints da API.
 
+2. **Camada de Serviço**: Esta camada contém a lógica de negócios da aplicação. Ela é responsável por processar os dados recebidos dos controladores e realizar operações correspondentes.
 
+3. **Camada de Repositório**: Esta é a camada que interage diretamente com o banco de dados. Ela contém métodos para operações CRUD (Criar, Ler, Atualizar, Deletar) e consultas personalizadas.
 
+4. **Camada de Modelo ou Domínio**: Esta camada contém as classes de modelo (também conhecidas como entidades ou POJOs - Plain Old Java Objects) que representam as tabelas do banco de dados.
+
+# Diagrama de Classes
+
+![diagrama](https://github.com/ValterGabriell/FrequencySystem-Backend/assets/63808405/e18bbc42-c892-4a2a-b96b-6c1418f20093)
+
+
+# Documentação da API 
+
+# Swagger
+- Link para baixar o YAML: https://drive.google.com/file/d/1QUFxwPZsvtsKspFKOxseVA2wQssx4d__/view?usp=sharing
+- Importar esse YAML no site: https://editor.swagger.io/ -> File -> Import File
+
+
+Este documento descreve os controladores da API e seus respectivos métodos.
+
+## Índice
+
+1. AdmController
+2. AverageController
+3. DisciplineController
+4. FrequencyController
+5. ParentController
+6. ProfessorController
+7. SchoolClassController
+
+## AdmController
+
+Este controlador lida com as operações relacionadas aos administradores.
+
+- `POST /api/v1/admin`: Insere um novo administrador.
+- `GET /api/v1/admin/{cnpj}`: Obtém um administrador pelo CNPJ.
+- `GET /api/v1/admin`: Obtém todos os administradores.
+- `GET /api/v1/admin/{cnpj}/professors`: Obtém todos os professores por CNPJ.
+- `PATCH /api/v1/admin/update-first-name/{cnpj}`: Atualiza o primeiro nome do usuário.
+- `PATCH /api/v1/admin/update-second-name/{cnpj}`: Atualiza o segundo nome do usuário.
+- `PATCH /api/v1/admin/update-password/{cnpj}`: Atualiza a senha do usuário.
+- `DELETE /api/v1/admin/{cnpj}`: Deleta um administrador pelo CNPJ.
+
+## AverageController
+
+Este controlador lida com as operações relacionadas às médias.
+
+- `POST /api/v1/average`: Insere uma nova média.
+- `GET /api/v1/average/{studentSkId}`: Obtém a média de um estudante pelo ID.
+- `PATCH /api/v1/average/{studentSkId}`: Atualiza a média de um estudante pelo ID do estudante.
+
+## DisciplineController
+
+Este controlador lida com as operações relacionadas às disciplinas.
+
+- `POST /api/v1/discipline/{adminCnpj}`: Insere uma nova disciplina.
+- `GET /api/v1/discipline/{skid}`: Obtém uma disciplina pelo ID.
+- `GET /api/v1/discipline`: Obtém todas as disciplinas.
+- `PUT /api/v1/discipline/update/{skid}`: Atualiza uma disciplina.
+- `DELETE /api/v1/discipline/{skid}`: Deleta uma disciplina pelo ID.
+
+## FrequencyController
+
+Este controlador lida com as operações relacionadas às frequências.
+
+- `POST /api/v1/frequency`: Valida a frequência de um estudante.
+- `POST /api/v1/frequency`: Justifica a ausência de um estudante.
+- `PUT /api/v1/frequency`: Atualiza a ausência de um estudante.
+- `GET /api/v1/frequency`: Obtém a lista de dias que um estudante foi para a aula.
+- `GET /api/v1/frequency/sheet`: Cria uma planilha para o dia atual.
+- `GET /api/v1/frequency/sheet`: Obtém a planilha para um dia específico.
+- `GET /api/v1/frequency/month/{month}`: Obtém a lista de dias que um estudante foi para a aula em um mês específico. Formato do month: [JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER]
+
+## ParentController
+
+Este controlador lida com as operações relacionadas aos pais.
+
+- `POST /api/v1/parent/{adminCnpj}`: Insere um novo pai.
+- `GET /api/v1/parent/{skid}`: Obtém um pai pelo ID.
+- `GET /api/v1/parent`: Obtém todos os pais.
+- `PUT /api/v1/parent/update/{skid}`: Atualiza um pai.
+- `DELETE /api/v1/parent/{skid}`: Deleta um pai pelo ID.
+
+- ## StudentsController
+
+Este controlador lida com as operações relacionadas aos códigos QR.
+
+- `POST /api/v1/students/{adminCnpj}`: Insere um estudante no banco de dados. O corpo da solicitação deve ser um objeto InsertStudents. O caminho inclui o CNPJ do administrador. Os parâmetros da consulta incluem o ID do inquilino e o identificador dos pais.
+- `GET /api/v1/students`: Obtém todos os estudantes do banco de dados. Os parâmetros da consulta incluem o ID do inquilino.
+- `GET /api/v1/students/{skid}`:  Obtém um estudante específico pelo ID do SK. Os parâmetros da consulta incluem o ID do inquilino.
+- `DELETE /api/v1/students`: Exclui um estudante específico pelo ID do estudante. Os parâmetros da consulta incluem o ID do estudante e o ID do inquilino.
+
+
+## ProfessorController
+
+Este controlador lida com as operações relacionadas aos professores.
+
+- `POST /api/v1/professor/{adminCnpj}`: Insere um novo professor.
+- `GET /api/v1/professor/{skid}`: Obtém um professor pelo ID.
+- `PUT /api/v1/professor/update/{skid}`: Atualiza um professor.
+- `DELETE /api/v1/professor/{skid}`: Deleta um professor pelo ID.
+
+## SchoolClassController
+
+Este controlador lida com as operações relacionadas às turmas escolares.
+
+- `POST /api/v1/class/{adminId}`: Cria uma nova turma escolar.
+- `GET /api/v1/class/{skid}`: Obtém uma turma escolar pelo ID.
+- `PATCH /api/v1/class/student/{skid}`: Define um estudante para uma turma escolar.
+- `PATCH /api/v1/class/professor/{skid}`: Define um professor para uma turma escolar.
+- `GET /api/v1/class/students/{skid}`: Obtém todos os estudantes de uma turma escolar.
+- `GET /api/v1/class/professors/{skid}`: Obtém todos os professores de uma turma escolar.
+- `GET /api/v1/class`: Obtém todas as turmas escolares.
+- `DELETE /api/v1/class/{skid}`: Deleta uma turma escolar pelo ID.
+
+- ## QRCodeController
+
+Este controlador lida com as operações relacionadas aos códigos QR.
+
+- `GET /api/v1/qrcode/generate`: Gera um código QR em formato Base64 para um estudante específico.
+- `GET /api/v1/qrcode/image`: Gera um código QR em formato de imagem para um estudante específico.
+
+# A serem implementados
+
+## AdmController
+Este controlador lida com as operações relacionadas aos administradores.
+
+1. `PATCH /api/v1/admin/update-email/{cnpj}`: Atualiza o email do administrador.
+2. `GET /api/v1/admin/count`: Obtém a contagem total de administradores.
+3. `GET /api/v1/admin/recent`: Obtém os administradores recentemente adicionados.
+4. `PATCH /api/v1/admin/reset-password/{cnpj}`: Redefine a senha do administrador.
+
+## AverageController
+Este controlador lida com as operações relacionadas às médias.
+
+1. `GET /api/v1/average/top/{number}`: Obtém as top 'n' médias.
+2. `GET /api/v1/average/bottom/{number}`: Obtém as 'n' médias mais baixas.
+3. `GET /api/v1/average/range/{start}/{end}`: Obtém médias dentro de um intervalo específico.
+5. `DELETE /api/v1/average/{studentSkId}`: Exclui a média de um estudante pelo ID do estudante.
+
+## DisciplineController
+Este controlador lida com as operações relacionadas às disciplinas.
+
+1. `GET /api/v1/discipline/students/{skid}`: Obtém todos os estudantes matriculados em uma disciplina pelo ID da disciplina.
+2. `GET /api/v1/discipline/professors/{skid}`: Obtém todos os professores que lecionam uma disciplina pelo ID da disciplina.
+3. `POST /api/v1/discipline/enroll/{skid}`: Matricula um estudante em uma disciplina pelo ID da disciplina.
+4. `DELETE /api/v1/discipline/unenroll/{skid}`: Desmatricula um estudante de uma disciplina pelo ID da disciplina.
+
+## StudentsController
+Este controlador lida com as operações relacionadas aos estudantes.
+
+1. `PATCH /api/v1/students/update-grade/{skid}`: Atualiza a nota de um estudante.
+
+## ProfessorController
+Este controlador lida com as operações relacionadas aos professores.
+
+1. `GET /api/v1/professor/classes/{skid}`: Obtém todas as turmas que um professor leciona pelo ID do professor.
+
+## SchoolClassController
+Este controlador lida com as operações relacionadas às turmas escolares.
+
+1. `GET /api/v1/class/average/{skid}`: Obtém a média de uma turma escolar pelo ID da turma.
 
 
 
