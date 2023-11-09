@@ -9,8 +9,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.*;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidation;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.Links;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +39,12 @@ public class AdmService {
     private final ContactValidation contactValidation = new ContactValidation();
     private final FieldValidation fieldValidation = new FieldValidation();
 
-    public AdmService(AdminRepository adminRepository, ContactsRepository contactsRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AdmService(AdminRepository adminRepository, ContactsRepository contactsRepository, PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
         this.contactsRepository = contactsRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private boolean returnIfAdminExistsOnDatabase(String cnpj, Integer tenant, Validation validation) {
@@ -55,6 +59,7 @@ public class AdmService {
             throw new RequestExceptions("CNPJ precisa conter apenas numeros");
 
         adminValidation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
+
         newAdmin.getContacts().forEach(contact -> contactValidation
                 .verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(contact.getEmail()));
 
@@ -75,6 +80,8 @@ public class AdmService {
             admin.setTenant(tenant);
             admin.setSkId(GenerateSKId.generateSkId());
             admin.setRoles(roles);
+            String encode = passwordEncoder.encode(admin.getPassword());
+            admin.setPassword(encode);
 
             contactsRepository.saveAll(contacts);
             adminRepository.save(admin);

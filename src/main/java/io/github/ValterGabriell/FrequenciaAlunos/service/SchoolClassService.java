@@ -11,8 +11,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ProfessorRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.SchoolClassesRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.schoolclass.CreateSC;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.schoolclass.CreateSC;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

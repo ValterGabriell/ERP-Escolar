@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.days.DaysList;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.days.DaysList;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

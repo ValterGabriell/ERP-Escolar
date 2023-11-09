@@ -4,7 +4,7 @@ import com.google.zxing.WriterException;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.qrcode.QrCodeMessage;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.qrcode.QrCodeMessage;
 import io.github.ValterGabriell.FrequenciaAlunos.util.QRCode.QRCodeGenerate;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidation;
 import org.springframework.stereotype.Service;

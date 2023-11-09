@@ -9,6 +9,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 
+import java.util.Optional;
+
 public abstract class Validation {
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(
             AdminRepository adminRepository,
@@ -23,6 +25,8 @@ public abstract class Validation {
     public boolean verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(String email) throws RequestExceptions {
         return false;
     }
+
+    public void validateIfAdminExistsByEmail(AdminRepository adminRepository, String email){}
 
     public void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf) {
     }
