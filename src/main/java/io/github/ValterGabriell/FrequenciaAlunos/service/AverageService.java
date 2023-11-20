@@ -5,7 +5,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AverageRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DisciplineRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.average.InsertAverage;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.average.InsertAverage;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

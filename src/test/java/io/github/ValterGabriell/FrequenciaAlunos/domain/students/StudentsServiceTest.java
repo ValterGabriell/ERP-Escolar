@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain.students;
 
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.students.InsertStudents;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

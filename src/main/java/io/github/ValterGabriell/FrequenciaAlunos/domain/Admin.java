@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.GetAdminMapper;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.GetAdminMapper;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -20,9 +20,6 @@ public class Admin extends RepresentationModel<Admin> {
     private String secondName;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private String email;
-
     @Column(nullable = false)
     private String cnpj;
 
@@ -48,14 +45,12 @@ public class Admin extends RepresentationModel<Admin> {
     public Admin(
             String firstName,
             String password,
-            String email,
             String cnpj,
             String secondName,
             List<Contact> contacts
     ) {
         this.firstName = firstName;
         this.password = password;
-        this.email = email;
         this.cnpj = cnpj;
         this.secondName = secondName;
         this.contacts = contacts;
@@ -89,9 +84,6 @@ public class Admin extends RepresentationModel<Admin> {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
     public String getCnpj() {
         return cnpj;
@@ -158,7 +150,6 @@ public class Admin extends RepresentationModel<Admin> {
                 getSkId(),
                 getFirstName(),
                 getSecondName(),
-                getEmail(),
                 getContacts(),
                 getLinks()
         );

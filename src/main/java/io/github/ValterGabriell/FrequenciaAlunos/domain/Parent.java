@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.parents.ParentGet;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.parents.ParentGet;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
