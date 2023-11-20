@@ -2,10 +2,10 @@ package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.JustifyAbscenceDesc;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseDaysThatStudentGoToClass;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.frequency.ResponseValidateFrequency;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.sheets.ResponseSheet;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.JustifyAbscenceDesc;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.ResponseDaysThatStudentGoToClass;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.ResponseValidateFrequency;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.sheets.ResponseSheet;
 import io.github.ValterGabriell.FrequenciaAlunos.service.FrequencyService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 @RestController

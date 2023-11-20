@@ -6,7 +6,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 
 import java.util.Optional;
 
-public class AdminValidation extends Validation{
+public class AdminValidation extends Validation {
     @Override
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(AdminRepository adminRepository, String cnpj, Integer tenant) {
         Optional<Admin> admin = adminRepository.findByCnpj(cnpj, tenant);
@@ -18,7 +18,7 @@ public class AdminValidation extends Validation{
             AdminRepository adminRepository,
             int tenant) {
         boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();
-        if (adminWithTenantPresent){
+        if (adminWithTenantPresent) {
             throw new RequestExceptions("Tenant já existente!");
         }
     }

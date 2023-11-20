@@ -10,9 +10,9 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ParentsRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.students.GetStudent;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.StudentValidation;
 import org.springframework.data.domain.Page;

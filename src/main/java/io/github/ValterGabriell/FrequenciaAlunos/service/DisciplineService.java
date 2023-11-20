@@ -4,8 +4,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.controller.DisciplineController
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Discipline;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DisciplineRepository;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.discipline.CreateDiscipline;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.discipline.CreateDiscipline;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
 import org.springframework.stereotype.Service;
 

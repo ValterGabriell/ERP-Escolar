@@ -1,9 +1,9 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 
+import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.*;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.admin.*;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AdmService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

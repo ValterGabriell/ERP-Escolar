@@ -23,7 +23,7 @@ public class SchoolClass extends RepresentationModel<SchoolClass> {
     @Column(nullable = false)
     private String period;
 
-    @Column(nullable = false)
+    @Column(name = "year_school",nullable = false)
     private int year;
 
     @Column(nullable = false)

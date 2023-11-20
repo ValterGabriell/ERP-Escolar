@@ -1,8 +1,8 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.GetStudent;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.students.InsertStudents;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.students.GetStudent;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

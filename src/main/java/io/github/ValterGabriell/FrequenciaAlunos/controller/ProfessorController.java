@@ -1,10 +1,10 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.PatternResponse;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.CreateProfessor;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.ProfessorGet;
-import io.github.ValterGabriell.FrequenciaAlunos.mapper.professor.UpdateProfessor;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.CreateProfessor;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.UpdateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.service.ProfessorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
