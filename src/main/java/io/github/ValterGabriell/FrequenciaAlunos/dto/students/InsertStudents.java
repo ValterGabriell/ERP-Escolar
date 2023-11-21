@@ -2,22 +2,32 @@ package io.github.ValterGabriell.FrequenciaAlunos.dto.students;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidation;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import static io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues.INVALID_BORN_YEAR;
 
 public class InsertStudents extends FieldValidation {
     private String studentId;
 
+    private int bornYear;
     private String firstName;
     private String secondName;
     private String email;
 
-    public InsertStudents(String cpf, String firstName, String email, String secondName) {
+    public InsertStudents(String cpf, String firstName, String email, String secondName, int bornYear) {
         this.studentId = cpf;
         this.firstName = firstName;
         this.email = email;
         this.secondName = secondName;
+        this.bornYear = bornYear;
+    }
+
+    public int getBornYear() {
+        return bornYear;
     }
 
     public String getSecondName() {
@@ -58,6 +68,14 @@ public class InsertStudents extends FieldValidation {
     }
 
     public Student toModel(Integer tenant) {
-        return new Student(this.studentId, this.getUsername(), this.getEmail(), LocalDateTime.now(), null, tenant);
+        return new Student(this.studentId, this.getUsername(), this.getEmail(), LocalDateTime.now(), null, tenant,bornYear);
+    }
+
+    public boolean checkIfAgeIsMoreThanEighteen(int bornYear) {
+        if (bornYear >LocalDate.now().getYear()) throw new RequestExceptions(
+                INVALID_BORN_YEAR
+        );
+        int age = LocalDate.now().getYear() - bornYear;
+        return age > 18;
     }
 }

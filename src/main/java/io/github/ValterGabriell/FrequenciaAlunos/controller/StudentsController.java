@@ -23,27 +23,27 @@ public class StudentsController {
     public ResponseEntity<PatternResponse<String>> insertStudentsIntoDatabase(
             @RequestBody InsertStudents request,
             @PathVariable String adminCnpj,
-            @RequestParam Integer tenantId,
-            @RequestParam String parentIdentifier) {
-        PatternResponse<String> student = service.insertStudentIntoDatabase(request, adminCnpj, tenantId, parentIdentifier);
+            @RequestParam Integer tenant,
+            @RequestParam(required = false) String parentIdentifier) {
+        PatternResponse<String> student = service.insertStudentIntoDatabase(request, adminCnpj, tenant, parentIdentifier);
         return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
 
-    @GetMapping(params = {"tenantId"})
-    public ResponseEntity<Page<GetStudent>> getAllStudents(Pageable pageable, @RequestParam int tenantId) {
-        Page<GetStudent> allStudentsFromDatabase = service.getAllStudentsFromDatabase(pageable, tenantId);
+    @GetMapping(params = {"tenant"})
+    public ResponseEntity<Page<GetStudent>> getAllStudents(Pageable pageable, @RequestParam int tenant) {
+        Page<GetStudent> allStudentsFromDatabase = service.getAllStudentsFromDatabase(pageable, tenant);
         return new ResponseEntity<>(allStudentsFromDatabase, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{skid}", params = {"tenantId"})
-    public ResponseEntity<GetStudent> getStudentBySkId(@PathVariable String skid, @RequestParam int tenantId) {
-        GetStudent student = service.getStudentBySkId(skid, tenantId);
+    @GetMapping(value = "/{skid}", params = {"tenant"})
+    public ResponseEntity<GetStudent> getStudentBySkId(@PathVariable String skid, @RequestParam int tenant) {
+        GetStudent student = service.getStudentBySkId(skid, tenant);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
-    @DeleteMapping(params = {"studentId", "tenantId"})
-    public ResponseEntity<?> deleteStudent(@RequestParam String studentId, @RequestParam int tenantId) {
-        service.deleteStudent(studentId, tenantId);
+    @DeleteMapping(params = {"studentSkId", "tenant"})
+    public ResponseEntity<?> deleteStudent(@RequestParam String studentSkId, @RequestParam int tenant) {
+        service.deleteStudent(studentSkId, tenant);
         return ResponseEntity.noContent().build();
     }
 }

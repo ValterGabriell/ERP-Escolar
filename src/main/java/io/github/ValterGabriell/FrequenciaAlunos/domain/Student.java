@@ -12,6 +12,9 @@ public class Student extends RepresentationModel<Student> {
     @Column(name = "studentId", nullable = false)
     private String studentId;
 
+    @Column(name = "bornYear", nullable = false)
+    private int bornYear;
+
     @Column(name = "skid", nullable = false)
     private String skid;
     @Column(name = "nome", nullable = false)
@@ -40,13 +43,15 @@ public class Student extends RepresentationModel<Student> {
             String email,
             LocalDateTime startDate,
             LocalDateTime finishedDate,
-            Integer tenant) {
+            Integer tenant,
+            Integer bornYear) {
         this.studentId = studentId;
         this.firstName = firstName;
         this.email = email;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
         this.tenant = tenant;
+        this.bornYear = bornYear;
     }
 
     public LocalDateTime getStartDate() {
@@ -62,6 +67,10 @@ public class Student extends RepresentationModel<Student> {
     }
 
     public Student() {
+    }
+
+    public int getBornYear() {
+        return bornYear;
     }
 
     public String getStudentId() {

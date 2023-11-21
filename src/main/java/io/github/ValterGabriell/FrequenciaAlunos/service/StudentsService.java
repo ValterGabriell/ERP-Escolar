@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,32 +50,37 @@ public class StudentsService {
     }
 
     public PatternResponse<String> insertStudentIntoDatabase(InsertStudents request,
-                                            String adminCnpj,
-                                            Integer tenant,
-                                            String parentIdentifier
+                                                             String adminCnpj,
+                                                             Integer tenant,
+                                                             String parentIdentifier
     ) {
-        Parent parent = parentsRepository.findByIdentifierNumberAndTenant(parentIdentifier, tenant).orElseThrow(() -> {
-            throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
-        });
-
         validateIfStudentFieldsIsOk(request);
-
+        Parent parent;
+        Student student;
         Admin admin =
                 checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(adminCnpj, request.getStudentId(), tenant);
-        Student student;
+
         student = request.toModel(admin.getTenant());
         student.setAdmin(admin.getCnpj());
         student.setSchoolClass(" ");
         student.setSecondName(request.getSecondName());
         student.setSkid(GenerateSKId.generateSkId());
-        parent.getStudents().add(student);
 
         Frequency frequency = new Frequency(student.getTenant());
         frequency.setFrequencyId(student.getStudentId());
         frequency.setDaysList(new ArrayList<>());
         frequency.setSkid(GenerateSKId.generateSkId());
 
-        parentsRepository.save(parent);
+        int age = getStudentAge(request.getBornYear());
+        boolean isMoreThanEighteen = request.checkIfAgeIsMoreThanEighteen(age);
+        if (!isMoreThanEighteen) {
+            parent = parentsRepository.findByIdentifierNumberAndTenant(parentIdentifier, tenant).orElseThrow(() -> {
+                throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
+            });
+            parent.getStudents().add(student);
+            parentsRepository.save(parent);
+        }
+
         frequencyRepository.save(frequency);
         Student studentSaved = studentsRepository.save(student);
 
@@ -85,6 +91,10 @@ public class StudentsService {
                 .getStudentBySkId(studentSaved.getSkid(), 0)).withSelfRel());
 
         return new PatternResponse<>(studentSaved.getSkid(), studentSaved.getLinks());
+    }
+
+    private int getStudentAge(int bornYear) {
+        return LocalDate.now().getYear() - bornYear;
     }
 
     private static void validateIfStudentFieldsIsOk(InsertStudents request) {
@@ -98,12 +108,12 @@ public class StudentsService {
             String cnpj,
             String studentId,
             Integer tenantId) {
-        Admin admin = adminRepository.findByCnpj(cnpj, tenantId)
+        Admin admin = adminRepository.findByCnpjAndTenant(cnpj, tenantId)
                 .orElseThrow(() -> new RequestExceptions("Administrador " + cnpj + " não encontrado!"));
         for (Student student : admin.getStudents()) {
             var currentStudentId = student.getStudentId();
             if (currentStudentId.equals(studentId)) {
-               throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
+                throw new RequestExceptions(STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR);
             }
         }
         return admin;
@@ -157,8 +167,8 @@ public class StudentsService {
         );
     }
 
-    public void deleteStudent(String studentId, int tenantId) {
-        Student student = validateIfStudentExistsAndReturnIfExist(studentId, tenantId);
+    public void deleteStudent(String studentSkId, int tenantId) {
+        Student student = validateIfStudentExistsAndReturnIfExist(studentSkId, tenantId);
         studentsRepository.delete(student);
     }
 }
