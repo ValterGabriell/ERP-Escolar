@@ -72,7 +72,8 @@ public class StudentsService {
         frequency.setSkid(GenerateSKId.generateSkId());
 
         int age = getStudentAge(request.getBornYear());
-        if (age < 18) {
+        boolean isMoreThanEighteen = request.checkIfAgeIsMoreThanEighteen(age);
+        if (!isMoreThanEighteen) {
             parent = parentsRepository.findByIdentifierNumberAndTenant(parentIdentifier, tenant).orElseThrow(() -> {
                 throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
             });
