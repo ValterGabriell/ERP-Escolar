@@ -1,11 +1,17 @@
+# Stage 1: Build
 FROM ubuntu:latest AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk maven && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY . .
+
 RUN apt-get install maven -y
 RUN mvn clean install
 
+
+# Stage 2: Run
 FROM openjdk:17-jdk-slim
 
 EXPOSE 8080
