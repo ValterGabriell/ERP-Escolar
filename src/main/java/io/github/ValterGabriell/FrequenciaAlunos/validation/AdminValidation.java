@@ -9,7 +9,7 @@ import java.util.Optional;
 public class AdminValidation extends Validation {
     @Override
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(AdminRepository adminRepository, String cnpj, Integer tenant) {
-        Optional<Admin> admin = adminRepository.findByCnpj(cnpj, tenant);
+        Optional<Admin> admin = adminRepository.findByCnpjAndTenant(cnpj, tenant);
         return admin.orElse(null);
     }
 
