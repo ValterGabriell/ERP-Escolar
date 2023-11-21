@@ -35,7 +35,7 @@ public class ProfessorService {
 
     public PatternResponse<String> createProfessor(CreateProfessor createProfessor, String adminCnpj, int tenant) {
         Admin admin = adminRepository
-                .findByCnpj(adminCnpj, tenant)
+                .findByCnpjAndTenant(adminCnpj, tenant)
                 .orElseThrow(() -> new RequestExceptions("Administrador não encontrado"));
 
         Professor professor = createProfessor.toProfessor();
