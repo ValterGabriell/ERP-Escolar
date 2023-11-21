@@ -13,8 +13,8 @@ class StudentsServiceTest {
 
     @BeforeEach
     public void setUp() {
-        studentUsernameTest = new InsertStudents("0", "ana", "","ana@gmail.com");
-        studentCpfTest = new InsertStudents("00000000000", "","", "email@.com");
+        studentUsernameTest = new InsertStudents("0", "ana", "","ana@gmail.com", 23);
+        studentCpfTest = new InsertStudents("00000000000", "","", "email@.com",23);
     }
 
     @Test

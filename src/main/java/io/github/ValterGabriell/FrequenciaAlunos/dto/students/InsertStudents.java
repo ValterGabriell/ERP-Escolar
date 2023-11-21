@@ -9,15 +9,21 @@ import java.time.LocalDateTime;
 public class InsertStudents extends FieldValidation {
     private String studentId;
 
+    private int bornYear;
     private String firstName;
     private String secondName;
     private String email;
 
-    public InsertStudents(String cpf, String firstName, String email, String secondName) {
+    public InsertStudents(String cpf, String firstName, String email, String secondName, int bornYear) {
         this.studentId = cpf;
         this.firstName = firstName;
         this.email = email;
         this.secondName = secondName;
+        this.bornYear = bornYear;
+    }
+
+    public int getBornYear() {
+        return bornYear;
     }
 
     public String getSecondName() {
@@ -58,6 +64,6 @@ public class InsertStudents extends FieldValidation {
     }
 
     public Student toModel(Integer tenant) {
-        return new Student(this.studentId, this.getUsername(), this.getEmail(), LocalDateTime.now(), null, tenant);
+        return new Student(this.studentId, this.getUsername(), this.getEmail(), LocalDateTime.now(), null, tenant,bornYear);
     }
 }
