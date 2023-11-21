@@ -15,9 +15,8 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenAPIConfig {
 
-    private final String localUrl = "http://localhost:8080";
     private final String devUrl = "https://sf-homologation.onrender.com";
-    private final String prodUrl = "https://????";
+
 
 
     @Bean
@@ -25,12 +24,6 @@ public class OpenAPIConfig {
         Server devServer = new Server();
         devServer.setUrl(devUrl);
         devServer.setDescription("Server URL in Development environment");
-
-        devServer.setUrl(localUrl);
-        devServer.setDescription("Server URL in Local environment");
-
-        devServer.setUrl(prodUrl);
-        devServer.setDescription("Server URL in Production environment");
 
 
         Contact contact = new Contact();
