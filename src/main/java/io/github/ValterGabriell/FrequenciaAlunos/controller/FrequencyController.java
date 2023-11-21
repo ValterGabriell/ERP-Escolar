@@ -44,7 +44,7 @@ public class FrequencyController {
         return new ResponseEntity<>(responseValidadeFrequency, HttpStatus.OK);
     }
 
-    @PutMapping(params = {"studentSkId", "date", "tenant"})
+    @PatchMapping(params = {"studentSkId", "date", "tenant"})
     public ResponseEntity<ResponseValidateFrequency> updateAbscence(
             @RequestParam String studentSkId, @RequestParam LocalDate date, @RequestParam int tenant) throws RequestExceptions {
         ResponseValidateFrequency responseValidadeFrequency = frequencyService.updateAbscence(date, studentSkId, tenant);

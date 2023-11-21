@@ -15,7 +15,8 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenAPIConfig {
 
-    private final String devUrl = "http://localhost:8080";
+    private final String devUrl = "https://sf-homologation.onrender.com";
+
 
 
     @Bean
@@ -29,7 +30,6 @@ public class OpenAPIConfig {
         contact.setEmail("valtergabrielbs13@gmail.com");
         contact.setName("Valter Gabriel");
         contact.setUrl("https://github.com/ValterGabriell");
-
 
         Info info = new Info()
                 .title("Tutorial Management API")

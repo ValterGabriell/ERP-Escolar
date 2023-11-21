@@ -197,7 +197,7 @@ public class AdmService {
         if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
             throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin =
-                adminRepository.findByCnpj(cnpj, tenant)
+                adminRepository.findByCnpjAndTenant(cnpj, tenant)
                         .orElseThrow(() -> new RequestExceptions("Admin não encontrado"));
 
         Function<Professor, ProfessorGet> professorProfessorGetFunction = (professor) -> new ProfessorGet(

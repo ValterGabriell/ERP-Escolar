@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -20,13 +21,12 @@ public class ProjectSecurityConfig {
                 .configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration corsConfiguration = new CorsConfiguration();
-                        corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
-                        corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
-                        corsConfiguration.setAllowCredentials(true);
-                        corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
-                        corsConfiguration.setMaxAge(3600L);
-                        return corsConfiguration;
+                        CorsConfiguration configuration = new CorsConfiguration();
+                        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+                        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTION"));
+                        configuration.setAllowCredentials(true);
+                        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+                        return configuration;
                     }
                 })
                 .and()
