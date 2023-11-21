@@ -108,7 +108,7 @@ public class StudentsService {
             String cnpj,
             String studentId,
             Integer tenantId) {
-        Admin admin = adminRepository.findByCnpj(cnpj, tenantId)
+        Admin admin = adminRepository.findByCnpjAndTenant(cnpj, tenantId)
                 .orElseThrow(() -> new RequestExceptions("Administrador " + cnpj + " não encontrado!"));
         for (Student student : admin.getStudents()) {
             var currentStudentId = student.getStudentId();
