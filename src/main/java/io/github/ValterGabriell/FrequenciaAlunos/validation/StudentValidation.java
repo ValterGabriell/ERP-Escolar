@@ -10,7 +10,7 @@ import java.util.Optional;
 public class StudentValidation extends Validation {
     @Override
     public Student validateIfStudentExistsAndReturnIfExist(StudentsRepository studentsRepository, String studentSkId, int tenantId) {
-        Optional<Student> student = studentsRepository.findBySkId(studentSkId, tenantId);
+        Optional<Student> student = studentsRepository.findBySkidAndTenant(studentSkId, tenantId);
         if (student.isEmpty()) {
             throw new RequestExceptions(ExceptionsValues.USER_NOT_FOUND + " " + studentSkId);
         }
