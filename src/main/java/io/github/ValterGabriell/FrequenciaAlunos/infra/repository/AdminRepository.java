@@ -15,5 +15,5 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
     Optional<Admin> findBySkidAndTenant(@Param("skId")String skId, @Param("tenant") Integer tenant);
 
     Optional<Admin> findByTenant(int tenantId);
-
+//
 }
