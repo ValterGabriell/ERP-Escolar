@@ -36,13 +36,6 @@ public class AdmController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-
-    @GetMapping()
-    public ResponseEntity<Page<GetAdminMapper>> getAllAdmins(Pageable pageable) {
-        var listAdmins = adminService.getAllAdmins(pageable);
-        return new ResponseEntity<>(listAdmins, HttpStatus.OK);
-    }
-
     @GetMapping(value = {"/{cnpj}/professors"}, params = {"tenant"})
     public ResponseEntity<List<ProfessorGet>> getAllProfessorsByCnpj(
             @PathVariable String cnpj, @RequestParam int tenant) {
