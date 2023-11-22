@@ -18,5 +18,4 @@ public interface AdminRepository extends JpaRepository<Admin, UUID> {
     Optional<Admin> findByCnpj(@Param("cnpj")String cnpj);
 
     Optional<Admin> findByTenant(int tenantId);
-//
 }
