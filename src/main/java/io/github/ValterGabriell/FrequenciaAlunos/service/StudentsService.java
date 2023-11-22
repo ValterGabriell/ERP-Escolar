@@ -120,7 +120,7 @@ public class StudentsService {
     }
 
     public Page<GetStudent> getAllStudentsFromDatabase(Pageable pageable, int tenantId) {
-        Page<Student> allStudents = studentsRepository.findAll(pageable);
+        Page<Student> allStudents = studentsRepository.findAllByTenant(pageable, tenantId);
 
         Predicate<Student> filterByTenant = (student) -> {
             return student.getTenant() == tenantId;
