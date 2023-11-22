@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "tbl_admin")
 public class Admin extends RepresentationModel<Admin> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String adminId;
+    private UUID adminId;
     @Column(nullable = true)
     private String skid;
     @Column(nullable = false)
@@ -56,6 +57,10 @@ public class Admin extends RepresentationModel<Admin> {
         this.contacts = contacts;
     }
 
+    public UUID getAdminId() {
+        return adminId;
+    }
+
     public List<Student> getStudents() {
         return students;
     }
@@ -67,8 +72,8 @@ public class Admin extends RepresentationModel<Admin> {
     public Admin() {
     }
 
-    public String getAdminId() {
-        return adminId;
+    public void setAdminId(UUID adminId) {
+        this.adminId = adminId;
     }
 
     public String getFirstName() {

@@ -2,11 +2,13 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity(name = "tbl_contatos")
 public class Contact  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String contactId;
+    private UUID contactId;
 
     @Column(nullable = false)
     private String phone;
