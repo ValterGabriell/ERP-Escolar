@@ -24,11 +24,6 @@ public class DisciplineService {
 
 
     public PatternResponse<String> insert(CreateDiscipline createDiscipline, int tenant) {
-        //todo: só pode por disciplina pra professor existente
-        //todo: por disciplina por cada local tenant
-        //verificar nome e tenant
-
-
         List<Discipline> disciplines = disciplineRepository.findAll();
         if (!disciplines.isEmpty()) {
             boolean disciplinePresent
