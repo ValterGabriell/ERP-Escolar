@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("/api/v1/average")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AverageController {
 
 
