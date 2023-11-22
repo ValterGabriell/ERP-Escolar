@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Average {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String averageId;
+    private UUID averageId;
     @Column(nullable = false)
     private String studentSkId;
 
@@ -29,7 +29,6 @@ public class Average {
     private Integer tenant;
 
     public Average(String studentSkId, String disciplineSkId, Double average, int evaluation) {
-        this.averageId = UUID.randomUUID().toString();
         this.studentSkId = studentSkId;
         this.disciplineSkId = disciplineSkId;
         this.average = average;
@@ -39,11 +38,11 @@ public class Average {
     public Average() {
     }
 
-    public String getAverageId() {
+    public UUID getAverageId() {
         return averageId;
     }
 
-    public void setAverageId(String averageId) {
+    public void setAverageId(UUID averageId) {
         this.averageId = averageId;
     }
 
@@ -100,7 +99,9 @@ public class Average {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Average average1 = (Average) o;
-        return evaluation == average1.evaluation && Objects.equals(studentSkId, average1.studentSkId) && Objects.equals(disciplineSkId, average1.disciplineSkId) && Objects.equals(average, average1.average) && Objects.equals(tenant, average1.tenant);
+        return evaluation == average1.evaluation && Objects.equals(studentSkId, average1.studentSkId)
+                && Objects.equals(disciplineSkId, average1.disciplineSkId)
+                && Objects.equals(average, average1.average) && Objects.equals(tenant, average1.tenant);
     }
 
     @Override

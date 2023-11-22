@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "tbl_turmas")
 public class SchoolClass extends RepresentationModel<SchoolClass> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String classId;
+    private UUID classId;
 
     @Column(nullable = false)
     private String skid;
@@ -102,7 +103,7 @@ public class SchoolClass extends RepresentationModel<SchoolClass> {
         this.professors = professors;
     }
 
-    public String getClassId() {
+    public UUID getClassId() {
         return classId;
     }
 

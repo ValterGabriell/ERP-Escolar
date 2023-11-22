@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "tbl_pais")
 public class Parent extends RepresentationModel<Parent> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String parentId;
+    private UUID parentId;
 
     @Column(nullable = true)
     private String skid;
@@ -86,10 +87,6 @@ public class Parent extends RepresentationModel<Parent> {
 
     public List<Contact> getContacts() {
         return contacts;
-    }
-
-    public String getParentId() {
-        return parentId;
     }
 
     public void setTenant(Integer tenant) {
