@@ -5,8 +5,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
+@CrossOrigin(origins = "*")
 public class StudentsController {
     private final StudentsService service;
 

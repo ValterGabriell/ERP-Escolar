@@ -15,9 +15,5 @@ public interface StudentsRepository extends JpaRepository<Student, String> {
     Optional<Student> findBySkidAndTenant(@Param("skid") String skid, @Param("tenant") int tenant);
 
     Optional<Student> studentIdAndTenant(@Param("studentId") String studentId, @Param("tenant") int tenant);
-
-
     List<Student> findAllByTenant(int tenant);
-    Page<Student> findAllByTenant(Pageable pageable, int tenant);
-
 }

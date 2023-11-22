@@ -163,6 +163,7 @@ public class AdmService {
         if (!fieldValidation.fieldContainsOnlyNumbers(cnpj))
             throw new RequestExceptions("CNPJ precisa conter apenas numeros");
         Admin admin = adminValidation.validateIfAdminExistsAndReturnIfExistByCnpj(adminRepository, cnpj, tenant);
+
         admin.add(linkTo(methodOn(StudentsController.class)
                 .insertStudentsIntoDatabase(null, admin.getCnpj(), admin.getTenant(), ""))
                 .withRel("Inserir novo estudante"));

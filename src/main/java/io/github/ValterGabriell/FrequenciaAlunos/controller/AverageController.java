@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("/api/v1/average")
+@CrossOrigin(origins = "*")
 public class AverageController {
 
 
