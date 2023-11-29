@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/frequency")
-@CrossOrigin(origins = "http://localhost:3000")
 public class FrequencyController {
     private final FrequencyService frequencyService;
 

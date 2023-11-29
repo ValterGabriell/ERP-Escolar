@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 
 @RestController
 @RequestMapping("/api/v1/qrcode")
-@CrossOrigin(origins = "http://localhost:3000")
 public class QRCodeController {
 
     private final QRCodeService qrCodeService;
