@@ -17,12 +17,8 @@ A arquitetura utilizada no desenvolvimento da API é a arquitetura em camadas, c
 
 
 # Documentação da API 
-
-# Swagger
-- Link para baixar o YAML: https://drive.google.com/file/d/1QUFxwPZsvtsKspFKOxseVA2wQssx4d__/view?usp=sharing
-- Importar esse YAML no site: https://editor.swagger.io/ -> File -> Import File
 - URL BASE API: https://sfsystem.onrender.com
-- DOCUMENTAÇÃO AUXILIAR: URL_BASE/swagger-ui/index.html 
+- DOCUMENTAÇÃO AUXILIAR: https://documenter.getpostman.com/view/30151744/2s9YeAAaHP
 
 
 Este documento descreve os controladores da API e seus respectivos métodos.
@@ -41,7 +37,7 @@ Este documento descreve os controladores da API e seus respectivos métodos.
 
 Este controlador lida com as operações relacionadas aos administradores.
 
-- `POST /api/v1/admin`: Insere um novo administrador.
+- `POST /api/v1/admin/insert`: Insere um novo administrador.
 - `GET /api/v1/admin/{cnpj}`: Obtém um administrador pelo CNPJ.
 - `GET /api/v1/admin`: Obtém todos os administradores.
 - `GET /api/v1/admin/{cnpj}/professors`: Obtém todos os professores por CNPJ.
