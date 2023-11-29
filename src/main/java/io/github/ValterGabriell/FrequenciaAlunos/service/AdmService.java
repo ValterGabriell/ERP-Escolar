@@ -7,7 +7,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.ApiKeyEntity;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Professor;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
-import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ApiKeyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsRepository;

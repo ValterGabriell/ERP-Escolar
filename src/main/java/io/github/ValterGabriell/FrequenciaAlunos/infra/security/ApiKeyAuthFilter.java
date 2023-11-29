@@ -2,6 +2,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.infra.security;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.ApiKeyEntity;
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AdmService;
 import io.github.ValterGabriell.FrequenciaAlunos.service.ApiKeyService;
 import io.github.ValterGabriell.FrequenciaAlunos.util.CheckURL;
@@ -54,7 +55,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             } else {
                 // Reject the request and send an unauthorized error
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.getWriter().write("Unauthorized");
+                response.getWriter().write("Não autorizado!");
             }
         }
 
@@ -62,6 +63,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
 
     private Authentication createAuthentication(ApiKeyEntity apiKeyEntity) {
         Admin admin = admService.getAdminByTenant(Integer.valueOf(apiKeyEntity.getTenant()));
+        if (admin == null) throw new RequestExceptions("Admin não encontrado!");
         String username = admin.getCnpj();
         String password = admin.getPassword();
 

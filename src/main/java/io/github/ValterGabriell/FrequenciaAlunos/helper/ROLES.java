@@ -1,4 +1,4 @@
-package io.github.ValterGabriell.FrequenciaAlunos.helper.roles;
+package io.github.ValterGabriell.FrequenciaAlunos.helper;
 
 public enum ROLES {
 
