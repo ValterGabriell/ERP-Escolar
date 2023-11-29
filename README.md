@@ -23,107 +23,1244 @@ A arquitetura utilizada no desenvolvimento da API é a arquitetura em camadas, c
 
 Este documento descreve os controladores da API e seus respectivos métodos.
 
-## Índice
-
-1. AdmController
-2. AverageController
-3. DisciplineController
-4. FrequencyController
-5. ParentController
-6. ProfessorController
-7. SchoolClassController
-
 ## AdmController
 
 Este controlador lida com as operações relacionadas aos administradores.
 
-- `POST /api/v1/admin/insert`: Insere um novo administrador.
-- `GET /api/v1/admin/{cnpj}`: Obtém um administrador pelo CNPJ.
-- `GET /api/v1/admin`: Obtém todos os administradores.
-- `GET /api/v1/admin/{cnpj}/professors`: Obtém todos os professores por CNPJ.
-- `PATCH /api/v1/admin/update-first-name/{cnpj}`: Atualiza o primeiro nome do usuário.
-- `PATCH /api/v1/admin/update-second-name/{cnpj}`: Atualiza o segundo nome do usuário.
-- `PATCH /api/v1/admin/update-password/{cnpj}`: Atualiza a senha do usuário.
-- `DELETE /api/v1/admin/{cnpj}`: Deleta um administrador pelo CNPJ.
+### `POST /api/v1/admin/insert`
+
+Endpoint para inserir um novo administrador.
+
+**Requisição:**
+```
+{
+  "firstName": "Nome",
+  "secondName": "Sobrenome",
+  "password": "Senha",
+  "cnpj": "12345678901234",
+  "contacts": [
+    {
+      "type": "email",
+      "value": "exemplo@email.com"
+    },
+    {
+      "type": "telefone",
+      "value": "123456789"
+    }
+  ]
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "cnpj": "12345678901234",
+  "skid": "..."
+  "firstName": "Nome",
+  "secondName": "Sobrenome",
+  "links": {...}
+}
+```
+
+### `GET /api/v1/admin/login`
+
+Endpoint para realizar o login do administrador.
+
+**Requisição:**
+```
+{
+  "cnpj": "12345678901234",
+  "password": "Senha"
+}
+```
+
+**Resposta (sucesso):**
+```
+"API_KEY"
+```
+
+### `DELETE /v1/logout`
+
+Endpoint para efetuar o logout do administrador.
+
+**Requisição:**
+```
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+HTTP 204 No Content
+```
+
+### `GET /v1/{cnpj}`
+
+Endpoint para obter informações de um administrador pelo CNPJ.
+
+**Requisição:**
+```
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "cnpj": "12345678901234",
+  "skid": "...",
+  "firstName": "Nome",
+  "secondName": "Sobrenome",
+  "links": {...}
+}
+```
+
+### `GET /v1/{cnpj}/professors`
+
+Endpoint para obter todos os professores associados a um administrador pelo CNPJ.
+
+**Requisição:**
+```
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+[
+  {
+    "professorId": "123",
+    "name": "Professor1",
+    "email": "professor1@email.com"
+  },
+  {
+    "professorId": "456",
+    "name": "Professor2",
+    "email": "professor2@email.com"
+  }
+]
+```
+
+### `PATCH /v1/update-first-name/{cnpj}`
+
+Endpoint para atualizar o primeiro nome de um administrador.
+
+**Requisição:**
+```
+{
+  "firstName": "NovoNome"
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "cnpj": "12345678901234",
+  "skid": "...",
+  "firstName": "NovoNome",
+  "secondName": "Sobrenome",
+  "links": {...}
+}
+```
+
+### `PATCH /v1/update-second-name/{cnpj}`
+
+Endpoint para atualizar o segundo nome de um administrador.
+
+**Requisição:**
+```
+{
+  "secondName": "NovoSobrenome"
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "cnpj": "12345678901234",
+  "skid": "...",
+  "firstName": "Nome",
+  "secondName": "NovoSobrenome",
+  "links": {...}
+}
+```
+
+### `PATCH /v1/update-password/{cnpj}`
+
+Endpoint para atualizar a senha de um administrador.
+
+**Requisição:**
+```
+{
+  "password": "NovaSenha"
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "cnpj": "12345678901234",
+  "skid": "...",
+  "firstName": "Nome",
+  "secondName": "Sobrenome",
+  "links": {...}
+}
+```
+
+### `DELETE /v1/{cnpj}`
+
+Endpoint para excluir um administrador pelo CNPJ.
+
+**Requisição:**
+```
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+HTTP 204 No Content
+```
 
 ## AverageController
 
 Este controlador lida com as operações relacionadas às médias.
 
-- `POST /api/v1/average`: Insere uma nova média.
-- `GET /api/v1/average/{studentSkId}`: Obtém a média de um estudante pelo ID.
-- `PATCH /api/v1/average/{studentSkId}`: Atualiza a média de um estudante pelo ID do estudante.
+### `POST /api/v1/average`
+
+Endpoint para inserir uma nova média.
+
+**Requisição:**
+```
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "disciplineSkId": "ID_DA_DISCIPLINA",
+  "average": 8.5,
+  "evaluation": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+"Média inserida com sucesso."
+```
+
+### `GET /api/v1/average/{studentSkId}`
+
+Endpoint para obter as médias de um estudante.
+
+**Requisição:**
+```
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+[
+  {
+    "studentSkId": "ID_DO_ESTUDANTE",
+    "disciplineSkId": "ID_DA_DISCIPLINA",
+    "average": 8.5,
+    "evaluation": 1
+  },
+  {
+    "studentSkId": "ID_DO_ESTUDANTE",
+    "disciplineSkId": "ID_DA_DISCIPLINA",
+    "average": 7.5,
+    "evaluation": 2
+  }
+]
+```
+
+### `GET /api/v1/average/{studentSkId}/total`
+
+Endpoint para obter a média total de um estudante.
+
+**Requisição:**
+```
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+"7.8"
+```
+
+### `PATCH /api/v1/average/{studentSkId}`
+
+Endpoint para atualizar a média de um estudante.
+
+**Requisição:**
+```
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "disciplineSkId": "ID_DA_DISCIPLINA",
+  "average": 9.0,
+  "evaluation": 3
+}
+```
+
+**Resposta (sucesso):**
+```
+"Média atualizada com sucesso."
+```
+
+Os campos `ID_DO_ESTUDANTE` e `ID_DA_DISCIPLINA` devem ser substituídos pelos identificadores reais do estudante e da disciplina, respectivamente.
 
 ## DisciplineController
 
 Este controlador lida com as operações relacionadas às disciplinas.
 
-- `POST /api/v1/discipline/{adminCnpj}`: Insere uma nova disciplina.
-- `GET /api/v1/discipline/{skid}`: Obtém uma disciplina pelo ID.
-- `GET /api/v1/discipline`: Obtém todas as disciplinas.
-- `PUT /api/v1/discipline/update/{skid}`: Atualiza uma disciplina.
-- `DELETE /api/v1/discipline/{skid}`: Deleta uma disciplina pelo ID.
+### `POST /api/v1/discipline`
+
+Endpoint para inserir uma nova disciplina.
+
+**Requisição:**
+```
+{
+  "name": "Nome da Disciplina",
+  "description": "Descrição da Disciplina",
+  "professorId": "ID_DO_PROFESSOR",
+  "adminId": "ID_DO_ADMINISTRADOR"
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "data": "ID_GERADO_PARA_A_DISCIPLINA"
+}
+```
+
+### `PUT /api/v1/discipline/{skid}`
+
+Endpoint para atualizar uma disciplina existente.
+
+**Requisição:**
+```
+{
+  "name": "Novo Nome da Disciplina",
+  "description": "Nova Descrição da Disciplina",
+  "professorId": "NOVO_ID_DO_PROFESSOR",
+  "adminId": "NOVO_ID_DO_ADMINISTRADOR"
+}
+```
+
+**Resposta (sucesso):**
+```
+"Mudanças aplicadas com sucesso."
+```
+
+### `GET /api/v1/discipline`
+
+Endpoint para obter todas as disciplinas.
+
+**Requisição:**
+```
+{
+  "tenantId": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+[
+  {
+    "skid": "ID_DA_DISCIPLINA",
+    "name": "Nome da Disciplina",
+    "description": "Descrição da Disciplina",
+    "professorId": "ID_DO_PROFESSOR",
+    "adminId": "ID_DO_ADMINISTRADOR"
+  },
+  {
+    "skid": "ID_DA_DISCIPLINA",
+    "name": "Nome da Disciplina",
+    "description": "Descrição da Disciplina",
+    "professorId": "ID_DO_PROFESSOR",
+    "adminId": "ID_DO_ADMINISTRADOR"
+  }
+]
+```
+
+### `GET /api/v1/discipline/{skid}`
+
+Endpoint para obter uma disciplina específica.
+
+**Requisição:**
+```
+{
+  "tenantId": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+{
+  "skid": "ID_DA_DISCIPLINA",
+  "name": "Nome da Disciplina",
+  "description": "Descrição da Disciplina",
+  "professorId": "ID_DO_PROFESSOR",
+  "adminId": "ID_DO_ADMINISTRADOR"
+}
+```
+
+### `DELETE /api/v1/discipline/{skid}`
+
+Endpoint para excluir uma disciplina.
+
+**Requisição:**
+```
+{
+  "tenantId": 1
+}
+```
+
+**Resposta (sucesso):**
+```
+HTTP 204 No Content
+```
+
+Os campos `ID_DO_PROFESSOR`, `ID_DO_ADMINISTRADOR` e `ID_DA_DISCIPLINA` devem ser substituídos pelos identificadores reais do professor, administrador e disciplina, respectivamente.
 
 ## FrequencyController
 
 Este controlador lida com as operações relacionadas às frequências.
+### `POST /api/v1/frequency/validate`
 
-- `POST /api/v1/frequency`: Valida a frequência de um estudante.
-- `POST /api/v1/frequency`: Justifica a ausência de um estudante.
-- `PUT /api/v1/frequency`: Atualiza a ausência de um estudante.
-- `GET /api/v1/frequency`: Obtém a lista de dias que um estudante foi para a aula.
-- `GET /api/v1/frequency/sheet`: Cria uma planilha para o dia atual.
-- `GET /api/v1/frequency/sheet`: Obtém a planilha para um dia específico.
-- `GET /api/v1/frequency/month/{month}`: Obtém a lista de dias que um estudante foi para a aula em um mês específico. Formato do month: [JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER]
+Endpoint para validar a frequência de um estudante.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Frequência validada com sucesso.",
+  "dayListThatStudentGoToClasses": [
+    {
+      "date": "2023-01-01",
+      "attended": true
+    },
+    {
+      "date": "2023-01-02",
+      "attended": false
+    }
+  ]
+}
+```
+
+### `POST /api/v1/frequency/justify`
+
+Endpoint para justificar uma ausência de um estudante.
+
+**Requisição:**
+```json
+{
+  "justifyAbscenceDesc": "Descrição da Justificativa",
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "date": "2023-01-01",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Ausência justificada com sucesso.",
+  "dayListThatStudentGoToClasses": [
+    {
+      "date": "2023-01-01",
+      "attended": false,
+      "justified": true
+    },
+    {
+      "date": "2023-01-02",
+      "attended": false
+    }
+  ]
+}
+```
+
+### `PATCH /api/v1/frequency/update`
+
+Endpoint para atualizar uma ausência de um estudante.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "date": "2023-01-01",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Ausência atualizada com sucesso.",
+  "dayListThatStudentGoToClasses": [
+    {
+      "date": "2023-01-01",
+      "attended": true
+    },
+    {
+      "date": "2023-01-02",
+      "attended": false
+    }
+  ]
+}
+```
+
+### `GET /api/v1/frequency/list`
+
+Endpoint para obter a lista de dias em que um estudante compareceu às aulas.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "dayListThatStudentGoToClasses": [
+    {
+      "date": "2023-01-01",
+      "attended": true
+    },
+    {
+      "date": "2023-01-02",
+      "attended": false
+    }
+  ]
+}
+```
+
+### `GET /api/v1/frequency/sheet`
+
+Endpoint para criar uma folha de frequência para o dia atual.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+Retorna um arquivo Excel como resposta.
+
+### `GET /api/v1/frequency/sheet-by-date`
+
+Endpoint para obter uma folha de frequência para uma data específica.
+
+**Requisição:**
+```json
+{
+  "date": "2023-01-01",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+Retorna um arquivo Excel como resposta.
+[JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER]
+### `GET /api/v1/frequency/month/{month}`
+
+Endpoint para obter os dias em que um estudante assistiu às aulas em um mês específico.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "month": "2023-01",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+[
+  {
+    "date": "2023-01-01",
+    "attended": true
+  },
+  {
+    "date": "2023-01-02",
+    "attended": false
+  }
+]
+```
+
+## ModulesController
+
+### `POST /api/v1/modules/insert`
+
+Endpoint para inserir módulos.
+
+**Requisição:**
+```json
+{
+  "modules": ["PROFESSOR", "STUDENTS", "QRCODE"]
+}
+```
+
+**Resposta (sucesso):**
+```json
+"Módulos adicionados!"
+```
+
+### `GET /api/v1/modules/get`
+
+Endpoint para obter todos os módulos.
+
+**Resposta (sucesso):**
+```json
+[
+  "PROFESSOR",
+  "STUDENTS",
+  "QRCODE"
+]
+```
+
+### `PATCH /api/v1/modules/update`
+
+Endpoint para atualizar módulos.
+
+**Requisição:**
+```json
+{
+  "modules": ["PROFESSOR", "STUDENTS", "QRCODE"]
+}
+```
+
+**Resposta (sucesso):**
+```json
+"Módulos atualizados!"
+```
+
+### `DELETE /api/v1/modules/delete`
+
+Endpoint para deletar todos os módulos.
+
+**Resposta (sucesso):**
+```json
+"Módulos deletados!"
+```
+
+
 
 ## ParentController
 
 Este controlador lida com as operações relacionadas aos pais.
 
-- `POST /api/v1/parent/{adminCnpj}`: Insere um novo pai.
-- `GET /api/v1/parent/{skid}`: Obtém um pai pelo ID.
-- `GET /api/v1/parent`: Obtém todos os pais.
-- `PUT /api/v1/parent/update/{skid}`: Atualiza um pai.
-- `DELETE /api/v1/parent/{skid}`: Deleta um pai pelo ID.
+### `GET /api/v1/parents/all`
 
-- ## StudentsController
+Endpoint para obter todos os pais.
 
-Este controlador lida com as operações relacionadas aos códigos QR.
+**Requisição:**
+```json
+{
+  "tenantId": 1,
+  "page": 1,
+  "size": 10
+}
+```
 
-- `POST /api/v1/students/{adminCnpj}`: Insere um estudante no banco de dados. O corpo da solicitação deve ser um objeto InsertStudents. O caminho inclui o CNPJ do administrador. Os parâmetros da consulta incluem o ID do inquilino e o identificador dos pais.
-- `GET /api/v1/students`: Obtém todos os estudantes do banco de dados. Os parâmetros da consulta incluem o ID do inquilino.
-- `GET /api/v1/students/{skid}`:  Obtém um estudante específico pelo ID do SK. Os parâmetros da consulta incluem o ID do inquilino.
-- `DELETE /api/v1/students`: Exclui um estudante específico pelo ID do estudante. Os parâmetros da consulta incluem o ID do estudante e o ID do inquilino.
+**Resposta (sucesso):**
+```json
+{
+  "content": [
+    {
+      "skid": "ID_DO_PAI_1",
+      "firstName": "Nome do Pai 1",
+      "lastName": "Sobrenome do Pai 1",
+      "identifierNumber": "Número de Identificação 1",
+      "contacts": [
+        {
+          "type": "EMAIL",
+          "value": "pai1@example.com"
+        },
+        {
+          "type": "PHONE",
+          "value": "123456789"
+        }
+      ],
+      "students": [
+        {
+          "studentSkid": "ID_DO_ALUNO_1",
+          "studentFirstName": "Nome do Aluno 1"
+        },
+        {
+          "studentSkid": "ID_DO_ALUNO_2",
+          "studentFirstName": "Nome do Aluno 2"
+        }
+      ],
+      "links": {
+        "self": "URL_DO_PAI_1"
+      }
+    },
+    {
+      "skid": "ID_DO_PAI_2",
+      "firstName": "Nome do Pai 2",
+      "lastName": "Sobrenome do Pai 2",
+      "identifierNumber": "Número de Identificação 2",
+      "contacts": [
+        {
+          "type": "EMAIL",
+          "value": "pai2@example.com"
+        },
+        {
+          "type": "PHONE",
+          "value": "987654321"
+        }
+      ],
+      "students": [
+        {
+          "studentSkid": "ID_DO_ALUNO_3",
+          "studentFirstName": "Nome do Aluno 3"
+        },
+        {
+          "studentSkid": "ID_DO_ALUNO_4",
+          "studentFirstName": "Nome do Aluno 4"
+        }
+      ],
+      "links": {
+        "self": "URL_DO_PAI_2"
+      }
+    }
+  ],
+  "links": {
+    "self": "URL_DA_LISTA_DE_PAIS"
+  }
+}
+```
+
+### `PUT /api/v1/parents/update/{skid}`
+
+Endpoint para atualizar informações de um pai.
+
+**Requisição:**
+```json
+{
+  "firstName": "Novo Nome do Pai",
+  "lastName": "Novo Sobrenome do Pai",
+  "password": "NovaSenha123",
+  "identifierNumber": "NovoNúmeroIdentificação",
+  "contacts": [
+    {
+      "type": "EMAIL",
+      "value": "novopai@example.com"
+    },
+    {
+      "type": "PHONE",
+      "value": "987654321"
+    }
+  ],
+  "students": [
+    {
+      "studentSkid": "ID_DO_ALUNO_1",
+      "studentFirstName": "Novo Nome do Aluno 1"
+    },
+    {
+      "studentSkid": "ID_DO_ALUNO_2",
+      "studentFirstName": "Novo Nome do Aluno 2"
+    }
+  ]
+}
+```
+
+**Resposta (sucesso):**
+```json
+"Informações do pai atualizadas!"
+```
+
+### `DELETE /api/v1/parents/delete/{skid}`
+
+Endpoint para excluir um pai.
+
+**Resposta (sucesso):**
+```json
+"Pai excluído com sucesso!"
+```
+
+Certifique-se de ajustar os valores conforme necessário, substituindo "1" pelo identificador real do inquilino (tenantId), "ID_DO_PAI_1", "ID_DO_PAI_2", "ID_DO_ALUNO_1", "ID_DO_ALUNO_2", "ID_DO_ALUNO_3" e "ID_DO_ALUNO_4" pelos identificadores reais dos pais e alunos.
+
+## StudentsController
+
+### `POST /api/v1/students/{adminCnpj}`
+
+Endpoint para inserir estudantes no banco de dados.
+
+**Requisição:**
+```json
+{
+  "studentId": "ID_DO_ESTUDANTE",
+  "bornYear": 2000,
+  "firstName": "Nome do Estudante",
+  "secondName": "Sobrenome do Estudante",
+  "email": "estudante@example.com"
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Estudante adicionado com sucesso!"
+}
+```
+
+### `GET /api/v1/students/all`
+
+Endpoint para obter todos os estudantes.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+[
+  {
+    "studentIdentifier": "ID_DO_ESTUDANTE_1",
+    "username": "Nome de Usuário 1",
+    "email": "estudante1@example.com",
+    "skid": "ID_DO_ESTUDANTE_1",
+    "startDate": "2022-01-01T12:00:00",
+    "adminId": "ID_DO_ADMIN_1",
+    "schoolClass": "Classe Escolar 1"
+  },
+  {
+    "studentIdentifier": "ID_DO_ESTUDANTE_2",
+    "username": "Nome de Usuário 2",
+    "email": "estudante2@example.com",
+    "skid": "ID_DO_ESTUDANTE_2",
+    "startDate": "2022-01-01T12:00:00",
+    "adminId": "ID_DO_ADMIN_2",
+    "schoolClass": "Classe Escolar 2"
+  }
+]
+```
+
+### `GET /api/v1/students/{skid}`
+
+Endpoint para obter um estudante por ID.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "studentIdentifier": "ID_DO_ESTUDANTE",
+  "username": "Nome de Usuário",
+  "email": "estudante@example.com",
+  "skid": "ID_DO_ESTUDANTE",
+  "startDate": "2022-01-01T12:00:00",
+  "adminId": "ID_DO_ADMIN",
+  "schoolClass": "Classe Escolar"
+}
+```
+
+### `DELETE /api/v1/students/delete`
+
+Endpoint para excluir um estudante.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+"Estudante excluído com sucesso!"
+```
+
+Certifique-se de ajustar os valores conforme necessário, substituindo "1" pelo identificador real do inquilino (tenant) e "ID_DO_ESTUDANTE_1" e "ID_DO_ESTUDANTE_2" pelos identificadores reais dos estudantes.
 
 
 ## ProfessorController
 
-Este controlador lida com as operações relacionadas aos professores.
+### `POST /api/v1/professor/{adminCnpj}`
 
-- `POST /api/v1/professor/{adminCnpj}`: Insere um novo professor.
-- `GET /api/v1/professor/{skid}`: Obtém um professor pelo ID.
-- `PUT /api/v1/professor/update/{skid}`: Atualiza um professor.
-- `DELETE /api/v1/professor/{skid}`: Deleta um professor pelo ID.
+Endpoint para inserir um novo professor.
+
+**Requisição:**
+```json
+{
+  "firstName": "Nome",
+  "lastName": "Sobrenome",
+  "identifierNumber": "NúmeroIdentificador",
+  "password": "Senha",
+  "average": 0.0,
+  "tenantId": 1,
+  "startDate": "2023-01-01T00:00:00",
+  "finishedDate": "2023-12-31T23:59:59",
+  "contacts": [
+    {
+      "type": "EMAIL",
+      "value": "email@example.com"
+    },
+    {
+      "type": "PHONE",
+      "value": "+123456789"
+    }
+  ],
+  "schoolClasses": [
+    {
+      "name": "NomeDaTurma",
+      "secondName": "SegundoNomeDaTurma",
+      "period": "Manhã",
+      "year": 2023,
+      "professorsSkId": ["skid1", "skid2"]
+    }
+  ]
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "skid": "ID_DO_PROFESSOR"
+}
+```
+
+### `GET /api/v1/professor/{skid}`
+
+Endpoint para obter informações de um professor pelo ID.
+
+**Resposta (sucesso):**
+```json
+{
+  "skid": "ID_DO_PROFESSOR",
+  "firstName": "Nome",
+  "lastName": "Sobrenome",
+  "average": 0.0,
+  "identifierNumber": "NúmeroIdentificador",
+  "tenant": 1,
+  "startDate": "2023-01-01T00:00:00",
+  "finishedDate": "2023-12-31T23:59:59",
+  "contacts": [
+    {
+      "type": "EMAIL",
+      "value": "email@example.com"
+    },
+    {
+      "type": "PHONE",
+      "value": "+123456789"
+    }
+  ]
+}
+```
+
+### `GET /api/v1/professor`
+
+Endpoint para obter todos os professores paginados.
+
+**Requisição:**
+- Parâmetros:
+  - `tenantId` (obrigatório): ID do inquilino.
+  - `page` (opcional): Número da página.
+  - `size` (opcional): Tamanho da página.
+
+**Resposta (sucesso):**
+Lista paginada de professores.
+
+### `PUT /api/v1/professor/update/{skid}`
+
+Endpoint para atualizar as informações de um professor.
+
+**Requisição:**
+```json
+{
+  "firstName": "NovoNome",
+  "lastName": "NovoSobrenome",
+  "average": 0.0,
+  "startDate": "2023-01-01T00:00:00",
+  "finishedDate": "2023-12-31T23:59:59",
+  "contacts": [
+    {
+      "type": "EMAIL",
+      "value": "novo_email@example.com"
+    },
+    {
+      "type": "PHONE",
+      "value": "+987654321"
+    }
+  ]
+}
+```
+
+**Resposta (sucesso):**
+Mensagem de confirmação.
+
+### `DELETE /api/v1/professor/{skid}`
+
+Endpoint para excluir um professor pelo ID.
+
+**Resposta (sucesso):**
+Sem conteúdo (No Content).
 
 ## SchoolClassController
 
 Este controlador lida com as operações relacionadas às turmas escolares.
 
-- `POST /api/v1/class/{adminId}`: Cria uma nova turma escolar.
-- `GET /api/v1/class/{skid}`: Obtém uma turma escolar pelo ID.
-- `PATCH /api/v1/class/student/{skid}`: Define um estudante para uma turma escolar.
-- `PATCH /api/v1/class/professor/{skid}`: Define um professor para uma turma escolar.
-- `GET /api/v1/class/students/{skid}`: Obtém todos os estudantes de uma turma escolar.
-- `GET /api/v1/class/professors/{skid}`: Obtém todos os professores de uma turma escolar.
-- `GET /api/v1/class`: Obtém todas as turmas escolares.
-- `DELETE /api/v1/class/{skid}`: Deleta uma turma escolar pelo ID.
+### `POST /api/v1/school-classes/{adminId}`
+
+Endpoint para criar uma nova turma.
+
+**Requisição:**
+```json
+{
+  "name": "Nome da Turma",
+  "secondName": "Segundo Nome da Turma",
+  "period": "Manhã",
+  "year": 2023,
+  "professorsSkId": ["ID_DO_PROFESSOR_1", "ID_DO_PROFESSOR_2"]
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Turma criada com sucesso!"
+}
+```
+
+### `GET /api/v1/school-classes/{skid}`
+
+Endpoint para obter uma turma por ID.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "name": "Nome da Turma",
+  "secondName": "Segundo Nome da Turma",
+  "period": "Manhã",
+  "year": 2023,
+  "professorsSkId": ["ID_DO_PROFESSOR_1", "ID_DO_PROFESSOR_2"]
+}
+```
+
+### `PATCH /api/v1/school-classes/student/{skid}`
+
+Endpoint para adicionar um estudante a uma turma.
+
+**Requisição:**
+```json
+{
+  "tenant": 1,
+  "studentSkId": "ID_DO_ESTUDANTE"
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Estudante adicionado à turma com sucesso!"
+}
+```
+
+### `PATCH /api/v1/school-classes/professor/{skid}`
+
+Endpoint para adicionar um professor a uma turma.
+
+**Requisição:**
+```json
+{
+  "tenant": 1,
+  "professorSkId": "ID_DO_PROFESSOR"
+}
+```
+
+**Resposta (sucesso):**
+```json
+{
+  "message": "Professor adicionado à turma com sucesso!"
+}
+```
+
+### `GET /api/v1/school-classes/students/{skid}`
+
+Endpoint para obter todos os estudantes de uma turma.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+[
+  {
+    "studentIdentifier": "ID_DO_ESTUDANTE_1",
+    "username": "Nome de Usuário 1",
+    "email": "estudante1@example.com",
+    "skid": "ID_DO_ESTUDANTE_1"
+  },
+  {
+    "studentIdentifier": "ID_DO_ESTUDANTE_2",
+    "username": "Nome de Usuário 2",
+    "email": "estudante2@example.com",
+    "skid": "ID_DO_ESTUDANTE_2"
+  }
+]
+```
+
+### `GET /api/v1/school-classes/professors/{skid}`
+
+Endpoint para obter todos os professores de uma turma.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+[
+  {
+    "professorIdentifier": "ID_DO_PROFESSOR_1",
+    "username": "Nome de Usuário 1",
+    "email": "professor1@example.com",
+    "skid": "ID_DO_PROFESSOR_1"
+  },
+  {
+    "professorIdentifier": "ID_DO_PROFESSOR_2",
+    "username": "Nome de Usuário 2",
+    "email": "professor2@example.com",
+    "skid": "ID_DO_PROFESSOR_2"
+  }
+]
+```
+
+### `GET /api/v1/school-classes/all`
+
+Endpoint para obter todas as turmas.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+[
+  {
+    "name": "Nome da Turma 1",
+    "secondName": "Segundo Nome da Turma 1",
+    "period": "Manhã",
+    "year": 2023,
+    "professorsSkId": ["ID_DO_PROFESSOR_1", "ID_DO_PROFESSOR_2"]
+  },
+  {
+    "name": "Nome da Turma 2",
+    "secondName": "Segundo Nome da Turma 2",
+    "period": "Tarde",
+    "year": 2023,
+    "professorsSkId": ["ID_DO_PROFESSOR_3", "ID_DO_PROFESSOR_4"]
+  }
+]
+```
+
+### `DELETE /api/v1/school-classes/{skid}`
+
+Endpoint para excluir uma turma.
+
+**Requisição:**
+```json
+{
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+"Turma excluída com sucesso!"
+```
+
+Certifique-se de ajustar os valores conforme necessário, substituindo "1" pelo identificador real do inquilino (tenant), "ID_DO_PROFESSOR_1", "ID_DO_ESTUDANTE_1", "ID_DO_TURMA_1", etc., pelos identificadores reais dos professores, estudantes e turmas.
+
+
 
 - ## QRCodeController
 
-Este controlador lida com as operações relacionadas aos códigos QR.
+### `GET /api/v1/qrcode/generate`
 
-- `GET /api/v1/qrcode/generate`: Gera um código QR em formato Base64 para um estudante específico.
-- `GET /api/v1/qrcode/image`: Gera um código QR em formato de imagem para um estudante específico.
+Endpoint para gerar um código QR em formato base64.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+```json
+"Base64_do_Código_QR"
+```
+
+### `GET /api/v1/qrcode/image`
+
+Endpoint para gerar e obter um código QR como imagem PNG.
+
+**Requisição:**
+```json
+{
+  "studentSkId": "ID_DO_ESTUDANTE",
+  "tenant": 1
+}
+```
+
+**Resposta (sucesso):**
+Imagem PNG representando o código QR.
+
+Certifique-se de ajustar os valores conforme necessário, substituindo "1" pelo identificador real do inquilino (tenant) e "ID_DO_ESTUDANTE" pelo identificador real do estudante.
+
+
+
+
 
 # A serem implementados
 
