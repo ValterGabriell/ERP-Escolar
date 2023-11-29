@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity(name = "tbl_admin")
 public class Admin extends RepresentationModel<Admin> {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String adminId;
     @Column(nullable = true)
     private String skid;
@@ -52,6 +51,7 @@ public class Admin extends RepresentationModel<Admin> {
             String secondName,
             List<Contact> contacts
     ) {
+        this.adminId = UUID.randomUUID().toString();
         this.firstName = firstName;
         this.password = password;
         this.cnpj = cnpj;
