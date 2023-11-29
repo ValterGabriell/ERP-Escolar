@@ -22,21 +22,11 @@ import java.util.List;
 @RequestMapping
 public class AdmController {
     private final AdmService adminService;
-    private final long SEGUNDO = 1000;
-    private final long MINUTO = SEGUNDO * 60;
-    private final long HORA = MINUTO * 60;
-    private final long DIA = HORA * 24;
-    private final long SEMANA = DIA * 7;
 
     public AdmController(AdmService adminService) {
         this.adminService = adminService;
     }
 
-    @Operation(
-            summary = "Salva um novo admin no banco",
-            description = "Nesse momento um Tenant único deve ser fornecido, caso contrário uma exceção será lançada",
-            security = @SecurityRequirement(name = "none")
-    )
     @PostMapping(value = "/api/v1/admin/insert", params = {"tenant"})
     public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin, @RequestParam Integer tenant) {
         var newAdmin = adminService.createNewAdmin(insertAdmin, tenant);
