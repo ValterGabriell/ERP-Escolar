@@ -18,6 +18,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.Links;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,7 @@ public class AdmService {
         return adminIsPresent != null;
     }
 
+    @Cacheable(value = "adminCache", key = "#tenant")
     public Admin getAdminByTenant(Integer tenant) {
         Optional<Admin> byTenant = adminRepository.findByTenant(tenant);
         if (byTenant.isEmpty()) throw new RequestExceptions("Tenant inválido");

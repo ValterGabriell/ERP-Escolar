@@ -41,7 +41,7 @@ public class ProjectSecurityConfig {
                 .csrf().disable()
                 .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class) // Add our custom filter
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api/v1/admin/insert/**", "/api/v1/admin/login/**").permitAll()
+                        .requestMatchers("/api/v1/admin/insert/**", "/api/v1/admin/login/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

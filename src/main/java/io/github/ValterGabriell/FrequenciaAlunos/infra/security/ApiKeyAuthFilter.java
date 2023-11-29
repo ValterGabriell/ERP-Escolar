@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -35,7 +36,10 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (CheckURL.checkURL(request)) {
+        List<String> allowedUrls = Arrays.asList("/api/v1/admin/insert", "/api/v1/admin/login", "/swagger-ui");
+        String requestUrl = request.getServletPath();
+
+        if (allowedUrls.stream().anyMatch(requestUrl::startsWith)) {
             filterChain.doFilter(request, response);
         } else {
             // Get the API key and secret from request headers
