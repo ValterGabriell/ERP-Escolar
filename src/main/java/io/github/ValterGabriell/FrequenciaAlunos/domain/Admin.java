@@ -1,5 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.GetAdminMapper;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class Admin extends RepresentationModel<Admin> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID adminId;
+    private String adminId;
     @Column(nullable = true)
     private String skid;
     @Column(nullable = false)
@@ -29,16 +30,17 @@ public class Admin extends RepresentationModel<Admin> {
     @Column(nullable = false)
     private List<ROLES> roles;
 
+    @JsonIgnore
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
-
+    @JsonIgnore
     @OneToMany(targetEntity = SchoolClass.class, cascade = CascadeType.ALL)
     private List<SchoolClass> schoolClasses;
-
+    @JsonIgnore
     @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
     @Column(nullable = false)
     private List<Contact> contacts;
-
+    @JsonIgnore
     @OneToMany(targetEntity = Professor.class, cascade = CascadeType.ALL)
     private List<Professor> professors;
 
@@ -57,7 +59,7 @@ public class Admin extends RepresentationModel<Admin> {
         this.contacts = contacts;
     }
 
-    public UUID getAdminId() {
+    public String getAdminId() {
         return adminId;
     }
 
@@ -70,10 +72,6 @@ public class Admin extends RepresentationModel<Admin> {
     }
 
     public Admin() {
-    }
-
-    public void setAdminId(UUID adminId) {
-        this.adminId = adminId;
     }
 
     public String getFirstName() {
@@ -155,7 +153,6 @@ public class Admin extends RepresentationModel<Admin> {
                 getSkId(),
                 getFirstName(),
                 getSecondName(),
-                getContacts(),
                 getLinks()
         );
     }

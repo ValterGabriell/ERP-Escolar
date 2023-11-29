@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("/api/v1/class")
-@CrossOrigin(origins ="http://localhost:3000")
 public class SchoolClassController {
     private final SchoolClassService schoolClassService;
 

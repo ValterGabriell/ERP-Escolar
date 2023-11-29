@@ -47,3 +47,35 @@ public class SystemFrequencyUsernamePasswordAuthenticationProvider implements Au
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
 }
+
+
+package io.github.ValterGabriell.FrequenciaAlunos.infra.security;
+
+import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.util.CheckURL;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+public class PermissionFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (CheckURL.checkURL(request)) {
+            filterChain.doFilter(request, response);
+        } else {
+            if (authentication != null) {
+                filterChain.doFilter(request, response);
+            } else {
+                throw new RequestExceptions("Não permitido!");
+            }
+        }
+    }
+}

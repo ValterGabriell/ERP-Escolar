@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-public interface AdminRepository extends JpaRepository<Admin, UUID> {
+public interface AdminRepository extends JpaRepository<Admin, String> {
 
     Optional<Admin> findByCnpjAndTenant(@Param("cnpj")String cnpj, @Param("tenant") Integer tenant);
 
@@ -18,4 +18,6 @@ public interface AdminRepository extends JpaRepository<Admin, UUID> {
     Optional<Admin> findByCnpj(@Param("cnpj")String cnpj);
 
     Optional<Admin> findByTenant(int tenantId);
+
+    Optional<Admin> findByCnpjAndPasswordAndTenant(String cnpj, String password, Integer tenant);
 }
