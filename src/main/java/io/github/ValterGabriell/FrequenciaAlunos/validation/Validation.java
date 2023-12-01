@@ -18,21 +18,11 @@ public abstract class Validation {
             Integer tenant) {
         return null;
     }
-
-    public void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant) {
-    }
-
     public boolean verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(String email) throws RequestExceptions {
         return false;
     }
 
-    public void validateIfAdminExistsByEmail(AdminRepository adminRepository, String email){}
-
-    public void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf) {
-    }
-
-    public void checkIfAdminCnpjIsCorrect(String cnpj) {
-    }
+    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant){return false;}
 
     public boolean fieldContainsOnlyLetters(String field) {
         return false;

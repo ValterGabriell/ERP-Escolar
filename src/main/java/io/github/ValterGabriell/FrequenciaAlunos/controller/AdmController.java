@@ -27,18 +27,18 @@ public class AdmController {
         this.adminService = adminService;
     }
 
-    @PostMapping(value = "/api/v1/admin/insert", params = {"tenant"})
-    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin, @RequestParam Integer tenant) {
-        var newAdmin = adminService.createNewAdmin(insertAdmin, tenant);
+    @PostMapping(value = "/api/v1/admin/insert")
+    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin) {
+        var newAdmin = adminService.createNewAdmin(insertAdmin);
         return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }
 
     @GetMapping(value = {"/api/v1/admin/login"}, params = {"tenant"})
-    public ResponseEntity<String> loginUser(
+    public ResponseEntity<LoginResponse> loginUser(
             @RequestBody LoginDTO loginDTO,
             @RequestParam Integer tenant) {
-        String apiKey = adminService.loginAdmin(loginDTO, tenant);
-        return new ResponseEntity<>(apiKey, HttpStatus.OK);
+        var loginResponse = adminService.loginAdmin(loginDTO, tenant);
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/v1/logout"}, params = {"tenant"})

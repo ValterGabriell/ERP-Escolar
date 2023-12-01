@@ -2,10 +2,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.AdmController;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.StudentsController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.ApiKeyEntity;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Professor;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.*;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
@@ -14,6 +11,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ContactsReposi
 import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
+import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateString;
+import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateTenant;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidation;
@@ -25,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -68,41 +64,66 @@ public class AdmService {
     }
 
     @Transactional
-    public String createNewAdmin(CreateNewAdmin newAdmin, Integer tenant) {
-        if (!fieldValidation.fieldContainsOnlyNumbers(newAdmin.getCnpj()))
-            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
-
-        adminValidation.checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(adminRepository, tenant);
+    public String createNewAdmin(CreateNewAdmin newAdmin) {
+        validatingFieldsToCreateNewAdmin(newAdmin);
+        var tenant = generateTenant();
 
         newAdmin.getContacts().forEach(contact -> contactValidation
                 .verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(contact.getEmail()));
 
-        boolean adminExists =
+        var adminExists =
                 returnTrueIfAdminExistsOnDatabase(newAdmin.getCnpj(), tenant, adminValidation);
 
         if (adminExists) {
             throw new RequestExceptions("Cadastro com CNPJ encontrado!");
         } else {
             Admin admin = newAdmin.toAdmin();
-
-            List<Contact> contacts = setAdminIdAndTenantToContacts(tenant, admin);
+            var contacts = setAdminIdAndTenantToContacts(tenant, admin);
             List<ROLES> roles = new ArrayList<>();
             roles.add(ROLES.ADMIN);
-
             admin.setTenant(tenant);
             admin.setSkId(GenerateSKId.generateSkId());
             admin.setRoles(roles);
-            String encode = passwordEncoder.encode(admin.getPassword());
+            var encode = passwordEncoder.encode(admin.getPassword());
             admin.setPassword(encode);
+
+            var modules = new ModulesEntity(tenant.toString(), newAdmin.getModules());
 
             contactsRepository.saveAll(contacts);
             adminRepository.save(admin);
+            moduleService.insertModules(modules);
+
 
             admin.add(linkTo(methodOn(AdmController.class)
                     .getAdminByCnpj(admin.getSkId(), 0)).withSelfRel());
 
-            return "CNPJ: " + admin.getCnpj();
+            return "CNPJ: " + admin.getCnpj() + " TENANT: " + tenant;
         }
+    }
+
+    private Integer generateTenant() {
+        var tenant = GenerateTenant.generateTenant();
+        boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();
+        if (adminWithTenantPresent) {
+            return generateTenant();
+        }
+        return tenant;
+    }
+
+    private void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin) {
+        String COMPLEMENT = " não pode estar vazio ou nulo!";
+        fieldValidation.validateIfIsNotEmpty(newAdmin.getCnpj(), "CNPJ" + COMPLEMENT);
+        fieldValidation.validateIfIsNotEmpty(newAdmin.getFirstName(), "First Name" + COMPLEMENT);
+        fieldValidation.validateIfIsNotEmpty(newAdmin.getSecondName(), "Second Name" + COMPLEMENT);
+
+        if (!fieldValidation.fieldContainsOnlyNumbers(newAdmin.getCnpj()))
+            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
+
+        if (newAdmin.getModules().isEmpty())
+            throw new RequestExceptions("Lista de módulos precisa ser fornecida");
+
+        if (newAdmin.getContacts().isEmpty())
+            throw new RequestExceptions("Contatos precisam ser fornecidos");
     }
 
     private static List<Contact> setAdminIdAndTenantToContacts(Integer tenant, Admin admin) {
@@ -200,7 +221,7 @@ public class AdmService {
         return admin.getProfessors().stream().map(professorProfessorGetFunction).toList();
     }
 
-    public String loginAdmin(LoginDTO loginDTO, Integer tenant) {
+    public LoginResponse loginAdmin(LoginDTO loginDTO, Integer tenant) {
         boolean existsOnDatabase = returnTrueIfAdminExistsOnDatabase(loginDTO.getCnpj(), tenant, adminValidation);
         if (!existsOnDatabase) throw new RequestExceptions("Admin não encontrado");
         Optional<Admin> admin = adminRepository.findByCnpjAndTenant(loginDTO.getCnpj(), tenant);
@@ -209,17 +230,20 @@ public class AdmService {
             throw new RequestExceptions("Senha inválida");
 
         Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant.toString());
-        String key = "";
+
         ApiKeyEntity apiKeyEntity;
-        if (apiKey.isEmpty()){
+        if (apiKey.isEmpty()) {
             apiKeyEntity = new ApiKeyEntity(UUID.randomUUID().toString(), tenant.toString(), LocalDate.now());
-        }else{
+        } else {
             apiKeyEntity = apiKey.get();
             apiKeyEntity.setApiKey(UUID.randomUUID().toString());
             apiKeyEntity.setExpireDate(LocalDate.now());
         }
-        key = apiKeyRepository.save(apiKeyEntity).getApiKey();
-        return "API_KEY: " + key;
+
+        ApiKeyEntity keyEntity = apiKeyRepository.save(apiKeyEntity);
+        ModulesEntity modules = moduleService.getModules(tenant);
+
+        return new LoginResponse(keyEntity.getApiKey(), modules);
     }
 
     public void logoutUser(Integer tenant) {

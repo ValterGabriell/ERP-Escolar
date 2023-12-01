@@ -14,12 +14,7 @@ public class AdminValidation extends Validation {
     }
 
     @Override
-    public void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(
-            AdminRepository adminRepository,
-            int tenant) {
-        boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();
-        if (adminWithTenantPresent) {
-            throw new RequestExceptions("Tenant já existente!");
-        }
+    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant) {
+        return adminRepository.findByCnpjAndTenant(cnpj, tenant).isPresent();
     }
 }
