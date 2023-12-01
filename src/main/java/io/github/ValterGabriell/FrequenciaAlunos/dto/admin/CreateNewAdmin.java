@@ -3,37 +3,38 @@ package io.github.ValterGabriell.FrequenciaAlunos.dto.admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.contacs.CreateContact;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.MODULE;
 
 import java.util.List;
 import java.util.function.Function;
 
 public class CreateNewAdmin {
 
-    @NotBlank(message = "O campo first name não pode estar vazio")
     private String firstName;
-    @NotBlank(message = "O campo second name não pode estar vazio")
     private String secondName;
-    @NotBlank(message = "O campo password não pode estar vazio")
     private String password;
-    @NotBlank(message = "O campo CNPJ não pode estar vazio")
     private String cnpj;
-    @NotNull(message = "A lista de contatos precisa ser preenchida")
     private List<CreateContact> contacts;
+    private List<MODULE> modules;
 
     public CreateNewAdmin(
             String firstName,
             String password,
             String cnpj,
             String secondName,
-            List<CreateContact> contacts
+            List<CreateContact> contacts,
+            List<MODULE> modules
     ) {
         this.firstName = firstName;
         this.password = password;
         this.cnpj = cnpj;
         this.secondName = secondName;
         this.contacts = contacts;
+        this.modules = modules;
+    }
+
+    public List<MODULE> getModules() {
+        return modules;
     }
 
     public String getCnpj() {
@@ -61,5 +62,16 @@ public class CreateNewAdmin {
         );
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
 }

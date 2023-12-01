@@ -17,4 +17,13 @@ class FieldValidationTest {
         boolean onlyNumbers = fieldValidation.fieldContainsOnlyNumbers("12345");
         Assertions.assertThat(onlyNumbers).isTrue();
     }
+
+    @Test
+    @DisplayName(value = "it should return true when field is not empty")
+    void validateIfIsNotEmpty() {
+        FieldValidation fieldValidation = new FieldValidation();
+        boolean onlyNumbers = fieldValidation.validateIfIsNotEmpty("", "Deve estar completo");
+        Assertions.assertThat(onlyNumbers).isTrue();
+    }
+
 }

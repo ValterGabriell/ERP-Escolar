@@ -4,6 +4,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.CreateNewAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
@@ -18,21 +19,13 @@ public abstract class Validation {
             Integer tenant) {
         return null;
     }
-
-    public void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant) {
-    }
-
     public boolean verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(String email) throws RequestExceptions {
         return false;
     }
 
-    public void validateIfAdminExistsByEmail(AdminRepository adminRepository, String email){}
+    public void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin){}
 
-    public void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf) {
-    }
-
-    public void checkIfAdminCnpjIsCorrect(String cnpj) {
-    }
+    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant){return false;}
 
     public boolean fieldContainsOnlyLetters(String field) {
         return false;

@@ -7,6 +7,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ModuleReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ModuleService {
@@ -16,8 +17,8 @@ public class ModuleService {
         this.moduleRepository = moduleRepository;
     }
 
-    private boolean moduleClientExists(String client) {
-        return moduleRepository.findByTenant(client).isPresent();
+    private Optional<ModulesEntity> moduleClientExists(String client) {
+        return moduleRepository.findByTenant(client);
     }
 
     public void insertModules(ModulesDTO modulesDTO, Integer client) {
@@ -25,14 +26,19 @@ public class ModuleService {
         moduleRepository.save(modulesEntity);
     }
 
-    public List<ModulesEntity> getModules(Integer client) {
-        if (!moduleClientExists(client.toString()))
+    public void insertModules(ModulesEntity modulesEntity) {
+        moduleRepository.save(modulesEntity);
+    }
+
+    public ModulesEntity getModules(Integer client) {
+        var modulesEntity = moduleClientExists(client.toString());
+        if (!modulesEntity.isPresent())
             throw new RequestExceptions("Módulos do tenant especificado não encontrado!");
-        return moduleRepository.findAllByTenant(client.toString());
+        return modulesEntity.get();
     }
 
     public void updateModules(ModulesDTO modulesDTO, Integer client) {
-        if (!moduleClientExists(client.toString()))
+        if (!moduleClientExists(client.toString()).isPresent())
             throw new RequestExceptions("Módulos do tenant especificado não encontrado!");
         ModulesEntity modulesEntity = moduleRepository.findByTenant(client.toString()).get();
         modulesEntity.setModules(modulesDTO.getModules());
@@ -40,7 +46,7 @@ public class ModuleService {
     }
 
     public void deleteModules(Integer client) {
-        if (!moduleClientExists(client.toString()))
+        if (!moduleClientExists(client.toString()).isPresent())
             throw new RequestExceptions("Módulos do tenant especificado não encontrado!");
         ModulesEntity modulesEntity = moduleRepository.findByTenant(client.toString()).get();
         moduleRepository.delete(modulesEntity);

@@ -28,8 +28,8 @@ public class ModuleController {
     }
 
     @GetMapping(value = "get", params = {"tenant"})
-    public ResponseEntity<List<ModulesEntity>> getModules(@RequestParam Integer tenant) {
-        List<ModulesEntity> modules = moduleService.getModules(tenant);
+    public ResponseEntity<ModulesEntity> getModules(@RequestParam Integer tenant) {
+        ModulesEntity modules = moduleService.getModules(tenant);
         return ResponseEntity.ok().body(modules);
     }
 

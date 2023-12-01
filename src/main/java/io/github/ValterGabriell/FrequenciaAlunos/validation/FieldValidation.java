@@ -27,8 +27,8 @@ public class FieldValidation extends Validation {
 
     @Override
     public boolean validateIfIsNotEmpty(String field, String exceptionMessage) throws RequestExceptions {
-        boolean isFieldNotNull = !field.isEmpty() || field.isBlank();
-        if (!isFieldNotNull) {
+        boolean isFieldNull = field.isEmpty() || field.isBlank();
+        if (isFieldNull) {
             throw new RequestExceptions(exceptionMessage);
         }
         return true;
