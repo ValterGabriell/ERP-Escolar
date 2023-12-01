@@ -65,7 +65,7 @@ public class AdmService {
 
     @Transactional
     public String createNewAdmin(CreateNewAdmin newAdmin) {
-        validatingFieldsToCreateNewAdmin(newAdmin);
+        fieldValidation.validatingFieldsToCreateNewAdmin(newAdmin);
         var tenant = generateTenant();
 
         newAdmin.getContacts().forEach(contact -> contactValidation
@@ -108,22 +108,6 @@ public class AdmService {
             return generateTenant();
         }
         return tenant;
-    }
-
-    private void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin) {
-        String COMPLEMENT = " não pode estar vazio ou nulo!";
-        fieldValidation.validateIfIsNotEmpty(newAdmin.getCnpj(), "CNPJ" + COMPLEMENT);
-        fieldValidation.validateIfIsNotEmpty(newAdmin.getFirstName(), "First Name" + COMPLEMENT);
-        fieldValidation.validateIfIsNotEmpty(newAdmin.getSecondName(), "Second Name" + COMPLEMENT);
-
-        if (!fieldValidation.fieldContainsOnlyNumbers(newAdmin.getCnpj()))
-            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
-
-        if (newAdmin.getModules().isEmpty())
-            throw new RequestExceptions("Lista de módulos precisa ser fornecida");
-
-        if (newAdmin.getContacts().isEmpty())
-            throw new RequestExceptions("Contatos precisam ser fornecidos");
     }
 
     private static List<Contact> setAdminIdAndTenantToContacts(Integer tenant, Admin admin) {

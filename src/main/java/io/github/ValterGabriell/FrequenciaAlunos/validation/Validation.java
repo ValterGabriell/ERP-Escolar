@@ -4,6 +4,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.CreateNewAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
@@ -21,6 +22,8 @@ public abstract class Validation {
     public boolean verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(String email) throws RequestExceptions {
         return false;
     }
+
+    public void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin){}
 
     public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant){return false;}
 
