@@ -18,21 +18,4 @@ public class AdminValidation extends Validation {
     public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant) {
         return adminRepository.findByCnpjAndTenant(cnpj, tenant).isPresent();
     }
-
-    @Override
-    public void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin) {
-        String COMPLEMENT = " não pode estar vazio ou nulo!";
-        validateIfIsNotEmpty(newAdmin.getCnpj(), "CNPJ" + COMPLEMENT);
-        validateIfIsNotEmpty(newAdmin.getFirstName(), "First Name" + COMPLEMENT);
-        validateIfIsNotEmpty(newAdmin.getSecondName(), "Second Name" + COMPLEMENT);
-
-        if (!fieldContainsOnlyNumbers(newAdmin.getCnpj()))
-            throw new RequestExceptions("CNPJ precisa conter apenas numeros");
-
-        if (newAdmin.getModules().isEmpty())
-            throw new RequestExceptions("Lista de módulos precisa ser fornecida");
-
-        if (newAdmin.getContacts().isEmpty())
-            throw new RequestExceptions("Contatos precisam ser fornecidos");
-    }
 }
