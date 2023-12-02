@@ -10,8 +10,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepositor
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
 
-import java.util.Optional;
-
 public abstract class Validation {
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(
             AdminRepository adminRepository,
@@ -19,13 +17,20 @@ public abstract class Validation {
             Integer tenant) {
         return null;
     }
+
     public boolean verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(String email) throws RequestExceptions {
         return false;
     }
 
-    public void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin){}
+    public void checkIfCnpjAlreadyExistAndThrowAnErrorIfItIs(AdminRepository adminRepository, String cnpj) throws RequestExceptions {
+    }
 
-    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant){return false;}
+    public void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin) {
+    }
+
+    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant) {
+        return false;
+    }
 
     public boolean fieldContainsOnlyLetters(String field) {
         return false;
@@ -54,7 +59,10 @@ public abstract class Validation {
         return null;
     }
 
-    public void verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant){};
+    public void verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant) {
+    }
+
+    ;
 
     protected boolean validateMonth(String month) {
         return false;

@@ -33,11 +33,10 @@ public class AdmController {
         return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = {"/api/v1/admin/login"}, params = {"tenant"})
+    @PostMapping(value = {"/api/v1/admin/login"})
     public ResponseEntity<LoginResponse> loginUser(
-            @RequestBody LoginDTO loginDTO,
-            @RequestParam Integer tenant) {
-        var loginResponse = adminService.loginAdmin(loginDTO, tenant);
+            @RequestBody LoginDTO loginDTO) {
+        var loginResponse = adminService.loginAdmin(loginDTO);
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
