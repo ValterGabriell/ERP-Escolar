@@ -1,8 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
-import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.CreateNewAdmin;
-import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 
 import java.util.Optional;

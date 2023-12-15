@@ -241,7 +241,7 @@ public class AdmService {
         ApiKeyEntity keyEntity = apiKeyRepository.save(apiKeyEntity);
         ModulesEntity modules = moduleService.getModules(tenant);
 
-        return new LoginResponse(keyEntity.getApiKey(), modules);
+        return new LoginResponse(keyEntity.getApiKey(), modules.getModules(), tenant);
     }
 
     public void logoutUser(Integer tenant) {

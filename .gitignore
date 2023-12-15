@@ -33,5 +33,5 @@ build/
 .vscode/
 
 /src/main/java/io/github/ValterGabriell/O QUE FAZER
-src/main/resources/application.properties
+/src/main/resources/application.properties
 
