@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface SchoolClassesRepository extends JpaRepository<SchoolClass, String> {
+public interface SchoolClassesRepository extends JpaRepository<SchoolClass, UUID> {
     Optional<SchoolClass> findByNameAndPeriodAndTenant(String name, String period, int tenant);
 
     Optional<SchoolClass> findBySkidAndTenant(String skid, int tenant);

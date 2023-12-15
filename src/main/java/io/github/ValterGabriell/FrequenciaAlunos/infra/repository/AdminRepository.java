@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 public interface AdminRepository extends JpaRepository<Admin, String> {
@@ -14,6 +15,9 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
 
     Optional<Admin> findBySkidAndTenant(@Param("skId")String skId, @Param("tenant") Integer tenant);
 
+    Optional<Admin> findByCnpj(@Param("cnpj")String cnpj);
+
     Optional<Admin> findByTenant(int tenantId);
-//
+
+    Optional<Admin> findByCnpjAndPasswordAndTenant(String cnpj, String password, Integer tenant);
 }

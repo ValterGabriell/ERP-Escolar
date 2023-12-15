@@ -1,16 +1,17 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
-import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.GetAdminMapper;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "tbl_admin")
 public class Admin extends RepresentationModel<Admin> {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String adminId;
     @Column(nullable = true)
     private String skid;
@@ -28,16 +29,17 @@ public class Admin extends RepresentationModel<Admin> {
     @Column(nullable = false)
     private List<ROLES> roles;
 
+    @JsonIgnore
     @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
     private List<Student> students;
-
+    @JsonIgnore
     @OneToMany(targetEntity = SchoolClass.class, cascade = CascadeType.ALL)
     private List<SchoolClass> schoolClasses;
-
+    @JsonIgnore
     @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
     @Column(nullable = false)
     private List<Contact> contacts;
-
+    @JsonIgnore
     @OneToMany(targetEntity = Professor.class, cascade = CascadeType.ALL)
     private List<Professor> professors;
 
@@ -49,11 +51,16 @@ public class Admin extends RepresentationModel<Admin> {
             String secondName,
             List<Contact> contacts
     ) {
+        this.adminId = UUID.randomUUID().toString();
         this.firstName = firstName;
         this.password = password;
         this.cnpj = cnpj;
         this.secondName = secondName;
         this.contacts = contacts;
+    }
+
+    public String getAdminId() {
+        return adminId;
     }
 
     public List<Student> getStudents() {
@@ -65,10 +72,6 @@ public class Admin extends RepresentationModel<Admin> {
     }
 
     public Admin() {
-    }
-
-    public String getAdminId() {
-        return adminId;
     }
 
     public String getFirstName() {
@@ -150,7 +153,6 @@ public class Admin extends RepresentationModel<Admin> {
                 getSkId(),
                 getFirstName(),
                 getSecondName(),
-                getContacts(),
                 getLinks()
         );
     }

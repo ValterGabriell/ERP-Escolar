@@ -1,14 +1,15 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.students.GetStudent;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.students.InsertStudents;
 import io.github.ValterGabriell.FrequenciaAlunos.service.StudentsService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -30,8 +31,8 @@ public class StudentsController {
     }
 
     @GetMapping(params = {"tenant"})
-    public ResponseEntity<Page<GetStudent>> getAllStudents(Pageable pageable, @RequestParam int tenant) {
-        Page<GetStudent> allStudentsFromDatabase = service.getAllStudentsFromDatabase(pageable, tenant);
+    public ResponseEntity<List<Student>> getAllStudents(@RequestParam int tenant) {
+        List<Student> allStudentsFromDatabase = service.getAllStudentsFromDatabase(tenant);
         return new ResponseEntity<>(allStudentsFromDatabase, HttpStatus.OK);
     }
 

@@ -10,7 +10,6 @@ public class GetAdminMapper {
     private String skid;
     private String firstName;
     private String secondName;
-    private List<Contact> contacts;
     private Links links;
 
     public void setLinks(Links links) {
@@ -22,12 +21,11 @@ public class GetAdminMapper {
             String skid,
             String firstName,
             String secondName,
-          List<Contact> contacts, Links links) {
+          Links links) {
         this.cnpj = cnpj;
         this.skid = skid;
         this.firstName = firstName;
         this.secondName = secondName;
-        this.contacts = contacts;
         this.links = links;
     }
 
@@ -47,10 +45,6 @@ public class GetAdminMapper {
         return secondName;
     }
 
-
-    public List<Contact> getContacts() {
-        return contacts;
-    }
 
 
     public Links getLinks() {

@@ -15,9 +15,7 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenAPIConfig {
 
-    private final String devUrl = "https://sf-homologation.onrender.com";
-
-
+    private final String devUrl = "https://sfsystem.onrender.com";
 
     @Bean
     public OpenAPI myOpenAPI() {

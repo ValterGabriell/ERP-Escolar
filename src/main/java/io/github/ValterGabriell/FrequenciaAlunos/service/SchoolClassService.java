@@ -66,7 +66,7 @@ public class SchoolClassService {
         List<Professor> professors = new ArrayList<>(professorsBySkId);
 
         Admin admin = adminRepository
-                .findByCnpj(adminCnpj, tenant)
+                .findByCnpjAndTenant(adminCnpj, tenant)
                 .orElseThrow(() -> new RequestExceptions("Administrador não encontrado"));
 
         sc.setProfessors(professors);
@@ -135,7 +135,7 @@ public class SchoolClassService {
                 tenant
         ).orElseThrow(() -> new RequestExceptions("Sala não cadastrada!"));
 
-        Student student = studentsRepository.findBySkId(studentSkId, tenant)
+        Student student = studentsRepository.findBySkidAndTenant(studentSkId, tenant)
                 .orElseThrow(() -> new RequestExceptions("Estudante não encontrado"));
 
         if (student.getSchoolClass().length() > 2)

@@ -119,33 +119,9 @@ public class StudentsService {
         return admin;
     }
 
-    public Page<GetStudent> getAllStudentsFromDatabase(Pageable pageable, int tenantId) {
-        Page<Student> allStudents = studentsRepository.findAll(pageable);
-
-        Predicate<Student> filterByTenant = (student) -> {
-            return student.getTenant() == tenantId;
-        };
-
-        Function<Student, GetStudent> mapToGetStudent = (student) -> {
-            return new GetStudent(
-                    student.getStudentId(),
-                    student.getFirstName(),
-                    student.getEmail(),
-                    student.getStartDate(),
-                    student.getAdmin(),
-                    student.getLinks(),
-                    student.getSkid(),
-                    student.getSchoolClass());
-        };
-
-        List<GetStudent> studentsFilteredByTenantId =
-                allStudents.stream()
-                        .filter(filterByTenant)
-                        .map(mapToGetStudent).collect(Collectors.toList());
-
-        Collections.sort(studentsFilteredByTenantId);
-        Page<GetStudent> page = new PageImpl<>(studentsFilteredByTenantId);
-        return page;
+    public List<Student> getAllStudentsFromDatabase(int tenantId) {
+        List<Student> allStudents = studentsRepository.findAllByTenant(tenantId);
+        return allStudents;
     }
 
     private Student validateIfStudentExistsAndReturnIfExist(String studentSkId, int tenantId) {

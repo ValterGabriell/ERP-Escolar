@@ -3,7 +3,7 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.controller.ProfessorController;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Professor;
-import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.ProfessorRepository;
@@ -35,7 +35,7 @@ public class ProfessorService {
 
     public PatternResponse<String> createProfessor(CreateProfessor createProfessor, String adminCnpj, int tenant) {
         Admin admin = adminRepository
-                .findByCnpj(adminCnpj, tenant)
+                .findByCnpjAndTenant(adminCnpj, tenant)
                 .orElseThrow(() -> new RequestExceptions("Administrador não encontrado"));
 
         Professor professor = createProfessor.toProfessor();

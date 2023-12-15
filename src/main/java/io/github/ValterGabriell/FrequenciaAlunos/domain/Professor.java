@@ -2,19 +2,20 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.ValterGabriell.FrequenciaAlunos.helper.roles.ROLES;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.ROLES;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "tbl_professores")
 public class Professor extends RepresentationModel<Professor> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String professorId;
+    private UUID professorId;
 
     @Column(nullable = false)
     private String skid;
@@ -66,7 +67,7 @@ public class Professor extends RepresentationModel<Professor> {
     public Professor() {
     }
 
-    public void setProfessorId(String id) {
+    public void setProfessorId(UUID id) {
         this.professorId = id;
     }
 
@@ -106,7 +107,7 @@ public class Professor extends RepresentationModel<Professor> {
         this.schoolClasses = schoolClasses;
     }
 
-    public String getProfessorId() {
+    public UUID getProfessorId() {
         return professorId;
     }
 

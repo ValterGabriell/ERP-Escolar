@@ -3,11 +3,13 @@ package io.github.ValterGabriell.FrequenciaAlunos.domain;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.UUID;
+
 @Entity(name = "tbl_disciplina")
 public class Discipline extends RepresentationModel<Discipline> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String disciplineId;
+    private UUID disciplineId;
 
     @Column(nullable = false)
     private String skid;
@@ -37,11 +39,11 @@ public class Discipline extends RepresentationModel<Discipline> {
     public Discipline() {
     }
 
-    public String getDisciplineId() {
+    public UUID getDisciplineId() {
         return disciplineId;
     }
 
-    public void setDisciplineId(String id) {
+    public void setDisciplineId(UUID id) {
         this.disciplineId = id;
     }
 

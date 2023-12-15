@@ -4,12 +4,11 @@ import io.github.ValterGabriell.FrequenciaAlunos.domain.Admin;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.CreateNewAdmin;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.AdminRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
-
-import java.util.Optional;
 
 public abstract class Validation {
     public Admin validateIfAdminExistsAndReturnIfExistByCnpj(
@@ -19,19 +18,18 @@ public abstract class Validation {
         return null;
     }
 
-    public void checkIfAdminTenantIdAlreadyExistsAndThrowAnExceptionIfItIs(AdminRepository adminRepository, int tenant) {
-    }
-
     public boolean verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(String email) throws RequestExceptions {
         return false;
     }
 
-    public void validateIfAdminExistsByEmail(AdminRepository adminRepository, String email){}
-
-    public void checkIfStudentCpfAreCorrectAndThrowExceptionIfItIs(String cpf) {
+    public void checkIfCnpjAlreadyExistAndThrowAnErrorIfItIs(AdminRepository adminRepository, String cnpj) throws RequestExceptions {
     }
 
-    public void checkIfAdminCnpjIsCorrect(String cnpj) {
+    public void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin) {
+    }
+
+    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant) {
+        return false;
     }
 
     public boolean fieldContainsOnlyLetters(String field) {
@@ -61,7 +59,10 @@ public abstract class Validation {
         return null;
     }
 
-    public void verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant){};
+    public void verifyIfFrequencyExists(FrequencyRepository frequencyRepository, String studentSkId, int tenant) {
+    }
+
+    ;
 
     protected boolean validateMonth(String month) {
         return false;

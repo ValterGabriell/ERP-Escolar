@@ -45,7 +45,7 @@ public class AverageService {
 
     private Optional<Average> getByStudentSkIdAndDisciplineSkIdAndAverageAndEvaluationAndTenant(InsertAverage insertAverage,
                                                                                                 int tenant) {
-        boolean studentPresent = studentsRepository.findBySkId(insertAverage.getStudentSkId(), tenant).isPresent();
+        boolean studentPresent = studentsRepository.findBySkidAndTenant(insertAverage.getStudentSkId(), tenant).isPresent();
         boolean disciplinePresent = disciplineRepository
                 .findDisciplineBySkidAndTenant(insertAverage.getDisciplineSkId(), tenant).isPresent();
 
@@ -60,14 +60,14 @@ public class AverageService {
     }
 
     public List<Average> getAverageByStudent(String studentSkId, int tenant) {
-        boolean studentPresent = studentsRepository.findBySkId(studentSkId, tenant).isPresent();
+        boolean studentPresent = studentsRepository.findBySkidAndTenant(studentSkId, tenant).isPresent();
         if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
 
         return averageRepository.findAllByStudentSkIdAndTenant(studentSkId, tenant);
     }
 
     public String totalAverageByStudent(String studentSkId, int tenant) {
-        boolean studentPresent = studentsRepository.findBySkId(studentSkId, tenant).isPresent();
+        boolean studentPresent = studentsRepository.findBySkidAndTenant(studentSkId, tenant).isPresent();
         if (!studentPresent) throw new RequestExceptions("Estudante não encontrado!");
 
         List<Average> allByStudentSkIdAndTenant = averageRepository.findAllByStudentSkIdAndTenant(studentSkId, tenant);
