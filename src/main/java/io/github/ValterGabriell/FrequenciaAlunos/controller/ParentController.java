@@ -22,7 +22,7 @@ public class ParentController {
         this.parentsService = parentsService;
     }
 
-    @PostMapping(value = "{adminCnpj}", params = {"tenantId"})
+    @PostMapping(value = "{adminCnpj}", params = {"tenant"})
     public ResponseEntity<PatternResponse<String>> insert(
             @RequestBody CreateParent createParent,
             @RequestParam Integer tenantId,
@@ -31,7 +31,7 @@ public class ParentController {
         return new ResponseEntity<>(parent, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = {"/{skid}"}, params = {"tenantId"})
+    @GetMapping(value = {"/{skid}"}, params = {"tenant"})
     public ResponseEntity<ParentGet> getBySkId(
             @PathVariable String skid,
             @RequestParam Integer tenantId) {
@@ -46,7 +46,7 @@ public class ParentController {
         return new ResponseEntity<>(listAdmins, HttpStatus.OK);
     }
 
-    @PutMapping(value = "update/{skid}", params = {"tenantId", "adminCnpj"})
+    @PutMapping(value = "update/{skid}", params = {"tenant", "adminCnpj"})
     public ResponseEntity<String> updateParent(
             @PathVariable String skid,
             @RequestBody UpdateParent updateParent,
@@ -56,7 +56,7 @@ public class ParentController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{skid}", params = {"tenantId"})
+    @DeleteMapping(value = "/{skid}", params = {"tenant"})
     public ResponseEntity<?> deleteBySkId(@PathVariable String skid, @RequestParam Integer tenantId) {
         parentsService.deleteParentBySkId(tenantId, skid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

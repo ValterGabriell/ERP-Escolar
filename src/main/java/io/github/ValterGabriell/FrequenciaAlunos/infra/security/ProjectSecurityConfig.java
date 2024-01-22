@@ -30,7 +30,10 @@ public class ProjectSecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
-                        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000"));
+                        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000",
+                                                                       "http://localhost:3000/",
+                                                                       "https://localhost:3000/",
+                                                                       "https://localhost:3000"));
                         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTION"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
