@@ -145,6 +145,10 @@ public class StudentsService {
 
     public void deleteStudent(String studentSkId, int tenantId) {
         Student student = validateIfStudentExistsAndReturnIfExist(studentSkId, tenantId);
+        Admin admin =
+                checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(student.getAdmin(), studentSkId, tenantId);
+        admin.getStudents().remove(student);
+        adminRepository.save(admin);
         studentsRepository.delete(student);
     }
 }
