@@ -235,7 +235,7 @@ public class AdmService {
         } else {
             apiKeyEntity = apiKey.get();
             apiKeyEntity.setApiKey(UUID.randomUUID().toString());
-            apiKeyEntity.setExpireDate(LocalDate.now());
+            apiKeyEntity.setExpireDate(LocalDate.now().plusDays(1));
         }
 
         ApiKeyEntity keyEntity = apiKeyRepository.save(apiKeyEntity);
