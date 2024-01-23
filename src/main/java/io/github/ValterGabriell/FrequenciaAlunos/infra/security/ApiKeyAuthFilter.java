@@ -47,7 +47,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             String requestApiKey = request.getHeader("X-API-KEY");
             String tenant = request.getParameter("tenant");
             // Validate the key and secret
-            ApiKeyEntity apiKey = apiKeyService.getApiKey(tenant);
+            ApiKeyEntity apiKey = apiKeyService.getApiKey(Integer.valueOf(tenant));
             if (apiKey.getApiKey().equals(requestApiKey)) {
                 Authentication authentication = createAuthentication(apiKey);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

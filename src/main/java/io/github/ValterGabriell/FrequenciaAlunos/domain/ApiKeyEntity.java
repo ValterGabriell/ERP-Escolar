@@ -11,10 +11,10 @@ public class ApiKeyEntity {
     @Id
     private String id;
     private String apiKey;
-    private String tenant;
+    private Integer tenant;
     private LocalDate expireDate;
 
-    public ApiKeyEntity(String apiKey, String tenant, LocalDate expireDate) {
+    public ApiKeyEntity(String apiKey, Integer tenant, LocalDate expireDate) {
         this.id = UUID.randomUUID().toString();
         this.apiKey = apiKey;
         this.tenant = tenant;
@@ -28,7 +28,7 @@ public class ApiKeyEntity {
         this.apiKey = apiKey;
     }
 
-    public void setTenant(String client) {
+    public void setTenant(Integer client) {
         this.tenant = client;
     }
 
@@ -40,7 +40,7 @@ public class ApiKeyEntity {
         return expireDate;
     }
 
-    public String getTenant() {
+    public Integer getTenant() {
         return tenant;
     }
 
