@@ -34,7 +34,7 @@ public class ProjectSecurityConfig {
                                                                        "http://localhost:3000/",
                                                                        "https://localhost:3000/",
                                                                        "https://localhost:3000",
-                                                                       "https://4alltests.com.br"));
+                                                                       "https://extendsclass.com"));
                         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTION"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type","X-API-KEY"));
