@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity,String> {
-    Optional<ApiKeyEntity> findByTenant(String tenant);
+    Optional<ApiKeyEntity> findByTenant(Integer tenant);
 }

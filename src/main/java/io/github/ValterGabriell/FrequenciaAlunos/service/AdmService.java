@@ -227,11 +227,11 @@ public class AdmService {
             throw new RequestExceptions("Senha inválida");
 
         Integer tenant = admin.get().getTenant();
-        Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant.toString());
+        Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant);
 
         ApiKeyEntity apiKeyEntity;
         if (apiKey.isEmpty()) {
-            apiKeyEntity = new ApiKeyEntity(UUID.randomUUID().toString(), tenant.toString(), LocalDate.now());
+            apiKeyEntity = new ApiKeyEntity(UUID.randomUUID().toString(), tenant, LocalDate.now());
         } else {
             apiKeyEntity = apiKey.get();
             apiKeyEntity.setApiKey(UUID.randomUUID().toString());
@@ -245,7 +245,7 @@ public class AdmService {
     }
 
     public void logoutUser(Integer tenant) {
-        Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant.toString());
+        Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant);
         if (apiKey.isEmpty()) throw new RequestExceptions("Admin não encontrado");
         apiKeyRepository.delete(apiKey.get());
     }

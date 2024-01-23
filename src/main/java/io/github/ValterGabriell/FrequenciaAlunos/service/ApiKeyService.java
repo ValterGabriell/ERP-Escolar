@@ -15,7 +15,7 @@ public class ApiKeyService {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    public ApiKeyEntity getApiKey(String client) {
+    public ApiKeyEntity getApiKey(Integer client) {
         Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(client);
         if (apiKey.isEmpty()) throw new RequestExceptions("Admin não encontrado - API KEY");
         return apiKey.get();
