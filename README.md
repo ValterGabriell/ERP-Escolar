@@ -18,7 +18,7 @@ A arquitetura utilizada no desenvolvimento da API é a arquitetura em camadas, c
 
 # Documentação da API 
 - URL BASE API: https://sfsystem.onrender.com
-- DOCUMENTAÇÃO AUXILIAR: https://documenter.getpostman.com/view/30151744/2s9YeAAaHP
+- DOCUMENTAÇÃO AUXILIAR: https://documenter.getpostman.com/view/30151744/2s9YeAAaHP#90cdcd6f-e9c7-4938-a6af-25630560399f
 
 
 Este documento descreve os controladores da API e seus respectivos métodos.
