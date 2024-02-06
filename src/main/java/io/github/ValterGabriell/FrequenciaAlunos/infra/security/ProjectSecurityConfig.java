@@ -37,7 +37,7 @@ public class ProjectSecurityConfig {
                                                                        "https://extendsclass.com"));
                         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTION"));
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type","X-API-KEY"));
+                        configuration.setAllowedHeaders(Arrays.asList("Origin","Access-Control-Allow-Origin","Authorization", "Cache-Control", "Content-Type","X-API-KEY"));
                         return configuration;
                     }
                 })
