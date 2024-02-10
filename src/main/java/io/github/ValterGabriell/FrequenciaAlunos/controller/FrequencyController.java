@@ -84,5 +84,4 @@ public class FrequencyController {
                 .getDaysThatStudentsWatchedSchoolClassesInASpecificMonth(studentSkId, month, tenant);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
-
 }

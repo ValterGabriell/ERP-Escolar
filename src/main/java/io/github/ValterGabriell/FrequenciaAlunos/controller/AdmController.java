@@ -47,6 +47,11 @@ public class AdmController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping(value = {"/v1/validate-api-key"}, params = {"tenant"})
+    public boolean isApiKeyAdminValid(@RequestParam Integer tenant) {
+        return adminService.isApiKeyAdminValid(tenant);
+    }
+
     @GetMapping(value = {"/v1/{cnpj}"}, params = {"tenant"})
     public ResponseEntity<GetAdminMapper> getAdminByCnpj(
             @PathVariable String cnpj,

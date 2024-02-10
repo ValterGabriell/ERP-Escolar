@@ -235,7 +235,7 @@ public class AdmService {
         } else {
             apiKeyEntity = apiKey.get();
             apiKeyEntity.setApiKey(UUID.randomUUID().toString());
-            apiKeyEntity.setExpireDate(LocalDate.now().plusDays(1));
+            apiKeyEntity.setExpireDate(LocalDate.now().plusDays(8));
         }
 
         ApiKeyEntity keyEntity = apiKeyRepository.save(apiKeyEntity);
@@ -248,5 +248,12 @@ public class AdmService {
         Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant);
         if (apiKey.isEmpty()) throw new RequestExceptions("Admin não encontrado");
         apiKeyRepository.delete(apiKey.get());
+    }
+
+    public boolean isApiKeyAdminValid(Integer tenant) {
+        Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant);
+        if (apiKey.isEmpty()) throw new RequestExceptions("Admin não encontrado");
+        LocalDate expireDate = apiKey.get().getExpireDate();
+        return LocalDate.now().isBefore(expireDate);
     }
 }
