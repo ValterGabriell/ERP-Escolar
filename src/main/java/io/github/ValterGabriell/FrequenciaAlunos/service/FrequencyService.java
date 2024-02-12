@@ -3,7 +3,9 @@ package io.github.ValterGabriell.FrequenciaAlunos.service;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Frequency;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.FrequencyByDayDTO;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.HandleDate;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DaysRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.FrequencyRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.StudentsRepository;
@@ -103,26 +105,28 @@ public class FrequencyService extends FrequencyValidation {
         return responseSheet;
     }
 
-    /**
-     * create sheet for specified date
-     *
-     * @param date that represent date to create sheet
-     * @return sheet download
-     */
-    public ResponseSheet returnSheetForSpecifyDay(LocalDate date, int tenant) {
-        SheetManipulation sheetManipulation = new SheetManipulation();
-        ResponseSheet responseSheet = new ResponseSheet();
-        List<Student> students = studentsRepository
+    public FrequencyByDayDTO returnListOfDayOfFrequency(LocalDate date, int tenant) {
+        List<Student> studentsNotJustified = studentsRepository
                 .findAllByTenant(tenant)
                 .stream()
                 .filter(student -> frequencyRepository.findById(student.getStudentId())
                         .get().getDaysList().stream()
-                        .anyMatch(_day -> _day.getDate().equals(date)))
+                        .anyMatch(_day -> _day.getDate().equals(date) && !_day.isJustified()))
                 .collect(Collectors.toList());
-        responseSheet.setSheetName("Planilha do dia " +
-                date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + ".xls");
-        responseSheet.setSheetByteArray(sheetManipulation.createSheet(students, date));
-        return responseSheet;
+
+        List<Student> studentsJustified = studentsRepository
+                .findAllByTenant(tenant)
+                .stream()
+                .filter(student -> frequencyRepository.findById(student.getStudentId())
+                        .get().getDaysList().stream()
+                        .anyMatch(_day -> _day.getDate().equals(date) && _day.isJustified()))
+                .toList();
+
+        return new FrequencyByDayDTO(
+                studentsNotJustified,
+                studentsJustified,
+                HandleDate.getDateFormat(date)
+        );
     }
 
     public ResponseValidateFrequency justifyAbsence(JustifyAbscenceDesc justifyAbscenceDesc

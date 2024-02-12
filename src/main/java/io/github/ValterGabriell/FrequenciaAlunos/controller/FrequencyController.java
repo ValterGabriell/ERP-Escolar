@@ -1,6 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Day;
+import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.FrequencyByDayDTO;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.JustifyAbscenceDesc;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.frequency.ResponseDaysThatStudentGoToClass;
@@ -58,22 +59,11 @@ public class FrequencyController {
         return new ResponseEntity<>(listOfDaysByFrequencyId, HttpStatus.OK);
     }
 
-    @GetMapping(value = "sheet", params = "tenant")
-    public ResponseEntity<?> createSheet(@RequestParam int tenant) {
-        ResponseSheet responseSheet = frequencyService.createSheetForCurrentDay(tenant);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .body(responseSheet.getSheetByteArray());
-    }
-
-    @GetMapping(value = "sheet", params = {"date", "tenant"})
-    public ResponseEntity<?> getSheetForSpecifyDay(@RequestParam LocalDate date, @RequestParam int tenant) {
-        ResponseSheet responseSheet = frequencyService.returnSheetForSpecifyDay(date, tenant);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=" + responseSheet.getSheetName())
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .body(responseSheet.getSheetByteArray());
+    @GetMapping(value = "list-of-day", params = {"date", "tenant"})
+    public ResponseEntity<FrequencyByDayDTO> returnListOfDayOfFrequency(@RequestParam LocalDate date,
+                                                                        @RequestParam int tenant) {
+        FrequencyByDayDTO frequency = frequencyService.returnListOfDayOfFrequency(date, tenant);
+        return new ResponseEntity<>(frequency, HttpStatus.OK);
     }
 
     @GetMapping(value = "/month/{month}")
