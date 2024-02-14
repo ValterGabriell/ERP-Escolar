@@ -71,16 +71,6 @@ public class StudentsService {
         frequency.setDaysList(new ArrayList<>());
         frequency.setSkid(GenerateSKId.generateSkId());
 
-        int age = getStudentAge(request.getBornYear());
-        boolean isMoreThanEighteen = request.checkIfAgeIsMoreThanEighteen(age);
-        if (!isMoreThanEighteen) {
-            parent = parentsRepository.findByIdentifierNumberAndTenant(parentIdentifier, tenant).orElseThrow(() -> {
-                throw new RequestExceptions("Genitor não encontrado! -> " + parentIdentifier);
-            });
-            parent.getStudents().add(student);
-            parentsRepository.save(parent);
-        }
-
         frequencyRepository.save(frequency);
         Student studentSaved = studentsRepository.save(student);
 
