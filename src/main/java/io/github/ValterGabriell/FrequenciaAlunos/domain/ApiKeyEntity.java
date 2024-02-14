@@ -18,7 +18,7 @@ public class ApiKeyEntity {
         this.id = UUID.randomUUID().toString();
         this.apiKey = apiKey;
         this.tenant = tenant;
-        this.expireDate = expireDate.plusDays(14);
+        this.expireDate = expireDate.plusDays(8);
     }
 
     public ApiKeyEntity() {

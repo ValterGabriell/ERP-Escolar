@@ -15,7 +15,6 @@ import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateTenant;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.AdminValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.ContactValidation;
 import io.github.ValterGabriell.FrequenciaAlunos.validation.FieldValidation;
-import io.github.ValterGabriell.FrequenciaAlunos.validation.Validation;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.Links;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -227,21 +226,29 @@ public class AdmService {
             throw new RequestExceptions("Senha inválida");
 
         Integer tenant = admin.get().getTenant();
-        Optional<ApiKeyEntity> apiKey = apiKeyRepository.findByTenant(tenant);
-
-        ApiKeyEntity apiKeyEntity;
-        if (apiKey.isEmpty()) {
-            apiKeyEntity = new ApiKeyEntity(UUID.randomUUID().toString(), tenant, LocalDate.now());
-        } else {
-            apiKeyEntity = apiKey.get();
-            apiKeyEntity.setApiKey(UUID.randomUUID().toString());
-            apiKeyEntity.setExpireDate(LocalDate.now().plusDays(8));
-        }
-
-        ApiKeyEntity keyEntity = apiKeyRepository.save(apiKeyEntity);
+        Optional<ApiKeyEntity> apiKeyEntityFromDatabase = apiKeyRepository.findByTenant(tenant);
         ModulesEntity modules = moduleService.getModules(tenant);
 
-        return new LoginResponse(keyEntity.getApiKey(), modules.getModules(), tenant);
+        ApiKeyEntity keyEntity;
+        boolean apiKeyIsValid = isApiKeyAdminValid(tenant);
+        if (apiKeyEntityFromDatabase.isPresent()) {
+
+            if (!apiKeyIsValid) {
+                apiKeyRepository.delete(apiKeyEntityFromDatabase.get());
+                keyEntity = generateNewApiKey(tenant);
+                return new LoginResponse(keyEntity.getApiKey(), modules.getModules(), tenant);
+            }
+
+            return new LoginResponse(apiKeyEntityFromDatabase.get().getApiKey(), modules.getModules(), tenant);
+        } else {
+            keyEntity = generateNewApiKey(tenant);
+            return new LoginResponse(keyEntity.getApiKey(), modules.getModules(), tenant);
+        }
+    }
+
+    private ApiKeyEntity generateNewApiKey(Integer tenant) {
+        ApiKeyEntity apiKeyEntity = new ApiKeyEntity(UUID.randomUUID().toString(), tenant, LocalDate.now());
+        return apiKeyRepository.save(apiKeyEntity);
     }
 
     public void logoutUser(Integer tenant) {
