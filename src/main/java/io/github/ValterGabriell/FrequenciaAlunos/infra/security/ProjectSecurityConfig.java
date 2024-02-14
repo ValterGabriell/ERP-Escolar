@@ -34,7 +34,8 @@ public class ProjectSecurityConfig {
                                                                        "http://localhost:3000/",
                                                                        "https://localhost:3000/",
                                                                        "https://localhost:3000",
-                                                                       "https://extendsclass.com"));
+                                                                       "https://logos-ufpa.vercel.app/",
+                                                                       "https://logos-ufpa.vercel.app"));
                         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTION"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("Origin","Access-Control-Allow-Origin","Authorization", "Cache-Control", "Content-Type","X-API-KEY"));
