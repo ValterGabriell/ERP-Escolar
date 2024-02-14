@@ -148,7 +148,7 @@ public class StudentsService {
         Admin admin =
                 checkIfStudentAlreadyInsertedToAdminAndReturnsAdminIfIsNot(student.getAdmin(), studentSkId, tenantId);
         admin.getStudents().remove(student);
-        adminRepository.save(admin);
         studentsRepository.delete(student);
+        adminRepository.save(admin);
     }
 }

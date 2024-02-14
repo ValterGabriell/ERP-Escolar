@@ -40,7 +40,7 @@ public class QRCodeService {
      */
     public String returnQrCodeAsBase64(String studentSkId, int tenantId) throws WriterException, RequestExceptions {
         Student student = validateIfStudentExistsAndReturnIfExist(studentSkId, tenantId);
-        QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getStudentId());
+        QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getSkid());
         BufferedImage bufferedImage = QRCodeGenerate.generateQRCodeImage(qrm, 400, 400);
         String imageAsBase64;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -55,7 +55,7 @@ public class QRCodeService {
 
     public BufferedImage returnQrCodeImage(String studentSkId, int tenant) throws WriterException, RequestExceptions {
         Student student = validateIfStudentExistsAndReturnIfExist(studentSkId, tenant);
-        QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getStudentId());
+        QrCodeMessage qrm = new QrCodeMessage(student.getFirstName(), student.getSkid());
         return QRCodeGenerate.generateQRCodeImage(qrm, 400, 400);
     }
 
