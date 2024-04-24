@@ -8,7 +8,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.helper.MODULE;
 import java.util.List;
 import java.util.function.Function;
 
-public class CreateNewAdmin {
+public class DtoCreateNewAdmin {
 
     private String firstName;
     private String secondName;
@@ -17,7 +17,7 @@ public class CreateNewAdmin {
     private List<CreateContact> contacts;
     private List<MODULE> modules;
 
-    public CreateNewAdmin(
+    public DtoCreateNewAdmin(
             String firstName,
             String password,
             String cnpj,
@@ -73,5 +73,7 @@ public class CreateNewAdmin {
     public String getPassword() {
         return password;
     }
+
+
 
 }

@@ -64,7 +64,7 @@ public class AdmService {
         if (admin.isPresent()) throw new RequestExceptions("CNPJ já cadastrado no sistema!");
     }
 
-    private void validatingFieldsToCreateNewAdmin(CreateNewAdmin newAdmin) {
+    private void validatingFieldsToCreateNewAdmin(DtoCreateNewAdmin newAdmin) {
         String COMPLEMENT = " não pode estar vazio ou nulo!";
         fieldValidation.validateIfIsNotEmpty(newAdmin.getCnpj(), "CNPJ" + COMPLEMENT);
         fieldValidation.validateIfIsNotEmpty(newAdmin.getFirstName(), "First Name" + COMPLEMENT);
@@ -81,14 +81,18 @@ public class AdmService {
     }
 
     @Transactional
-    public String createNewAdmin(CreateNewAdmin newAdmin) {
+    public String createNewAdmin(DtoCreateNewAdmin newAdmin) {
         validatingFieldsToCreateNewAdmin(newAdmin);
         checkIfCnpjAlreadyExistAndThrowAnErrorIfItIs(adminRepository, newAdmin.getCnpj());
 
         var tenant = generateTenant();
+
+
         newAdmin.getContacts().forEach(contact -> contactValidation
                 .verifyIfEmailIsCorrectAndThrowAnErrorIfIsNot(contact.getEmail()));
 
+
+        //CONTINUAR DAQUI
         Admin admin = newAdmin.toAdmin();
         var contacts = setAdminIdAndTenantToContacts(tenant, admin);
         List<ROLES> roles = new ArrayList<>();
@@ -112,6 +116,10 @@ public class AdmService {
         return "CNPJ: " + admin.getCnpj() + " TENANT: " + tenant;
     }
 
+    /**
+     * Cria o tenant, verifica se o tenant ja existe na base e, caso exista, recria o tenant
+     * @return tenant
+     */
     private Integer generateTenant() {
         var tenant = GenerateTenant.generateTenant();
         boolean adminWithTenantPresent = adminRepository.findByTenant(tenant).isPresent();

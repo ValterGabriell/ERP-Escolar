@@ -2,9 +2,9 @@ package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.ExceptionsValues;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import org.springframework.stereotype.Service;
 
-import java.time.Month;
-
+@Service
 public class FieldValidation extends Validation {
     @Override
     public boolean fieldContainsOnlyLetters(String field) {

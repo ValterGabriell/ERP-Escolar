@@ -1,7 +1,9 @@
 package io.github.ValterGabriell.FrequenciaAlunos.validation;
 
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ContactValidation extends Validation {
 
     @Override

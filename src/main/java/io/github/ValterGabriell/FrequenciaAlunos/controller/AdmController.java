@@ -5,15 +5,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AdmService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +21,7 @@ public class AdmController {
     }
 
     @PostMapping(value = "/api/v1/admin/insert")
-    public ResponseEntity<String> insertAdmin(@RequestBody CreateNewAdmin insertAdmin) {
+    public ResponseEntity<String> insertAdmin(@RequestBody DtoCreateNewAdmin insertAdmin) {
         var newAdmin = adminService.createNewAdmin(insertAdmin);
         return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
     }

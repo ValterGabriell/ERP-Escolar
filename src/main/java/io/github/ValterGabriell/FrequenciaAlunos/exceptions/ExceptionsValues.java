@@ -13,7 +13,6 @@ public class ExceptionsValues {
     public static final String USER_NOT_FOUND = "Estudante não encontrado!";
     public static final String STUDENT_ALREADY_VALIDATED = "Frequência para o dia já validada!";
     public static final String STUDENT_ALREADY_SAVED = "Estudante já cadastrado!";
-
     public static final String DAY_NOT_FOUND = "Dia nao encontrado na frequencia do aluno";
     public static final String FREQUENCY_NOT_FOUND = "Frequencia nao encontrada";
     public static final String STUDENT_ALREADY_SAVED_TO_ADMINISTRATOR = "Estudante já cadastrado para esse administrador!";
