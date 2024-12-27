@@ -5,15 +5,8 @@ import io.github.ValterGabriell.FrequenciaAlunos.dto.admin.*;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.service.AdmService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,12 +33,6 @@ public class AdmController {
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/v1/logout"}, params = {"tenant"})
-    public ResponseEntity<String> logoutUser(
-            @RequestParam Integer tenant) {
-        adminService.logoutUser(tenant);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
     @GetMapping(value = {"/v1/{cnpj}"}, params = {"tenant"})
     public ResponseEntity<GetAdminMapper> getAdminByCnpj(

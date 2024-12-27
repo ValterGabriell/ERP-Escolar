@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.util.sheet;
 
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Turma;
 import io.github.ValterGabriell.FrequenciaAlunos.helper.HandleDate;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Student;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -40,20 +40,20 @@ public class SheetManipulation implements SheetManipulationContract {
     /**
      * fill the sheet with students data
      *
-     * @param students    current student to insert on sheet
+     * @param turmas    current student to insert on sheet
      * @param sheetAlunos sheet
      */
-    private static void createFieldOfColumns(List<Student> students, HSSFSheet sheetAlunos) {
+    private static void createFieldOfColumns(List<Turma> turmas, HSSFSheet sheetAlunos) {
         int rownumber = 1;
         int columnnumber = 0;
-        for (Student student : students) {
+        for (Turma turma : turmas) {
             Row _row = sheetAlunos.createRow(rownumber++);
 
             Cell cellCpf = _row.createCell(columnnumber++);
-            cellCpf.setCellValue(student.getStudentId());
+            cellCpf.setCellValue(turma.getTurmaId());
 
             Cell cellName = _row.createCell(columnnumber++);
-            cellName.setCellValue(student.getFirstName());
+            cellName.setCellValue(turma.getFirstName());
 
             Cell cellDate = _row.createCell(columnnumber++);
             cellDate.setCellValue(LocalDate.now().toString());
@@ -83,19 +83,19 @@ public class SheetManipulation implements SheetManipulationContract {
 
 
     @Override
-    public byte[] createSheet(List<Student> students) {
+    public byte[] createSheet(List<Turma> turmas) {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheetAlunos = workbook.createSheet(HandleDate.getDateFormat() + " - PRESENÇA");
         createHeadersOfColumns(sheetAlunos);
-        createFieldOfColumns(students, sheetAlunos);
+        createFieldOfColumns(turmas, sheetAlunos);
         return returnSheetByteArrayToDownloadIt(workbook);
     }
     @Override
-    public byte[] createSheet(List<Student> students, LocalDate localDate) {
+    public byte[] createSheet(List<Turma> turmas, LocalDate localDate) {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheetAlunos = workbook.createSheet(HandleDate.getDateFormat(localDate) + " - PRESENÇA");
         createHeadersOfColumns(sheetAlunos);
-        createFieldOfColumns(students, sheetAlunos);
+        createFieldOfColumns(turmas, sheetAlunos);
         return returnSheetByteArrayToDownloadIt(workbook);
     }
 

@@ -37,7 +37,7 @@ public class Professor extends RepresentationModel<Professor> {
 
     @ManyToMany(mappedBy = "professors")
     @JsonIgnore
-    private List<SchoolClass> schoolClasses;
+    private List<Salas> salas;
 
     @Column(nullable = false)
     private int tenant;
@@ -53,8 +53,6 @@ public class Professor extends RepresentationModel<Professor> {
     @Column(name = "finishedDate", nullable = true)
     private LocalDateTime finishedDate;
 
-    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
-    private List<Contact> contacts;
 
     public String getIdentifierNumber() {
         return identifierNumber;
@@ -99,12 +97,9 @@ public class Professor extends RepresentationModel<Professor> {
         this.finishedDate = finishedDate;
     }
 
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
 
-    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
-        this.schoolClasses = schoolClasses;
+    public void setSchoolClasses(List<Salas> salas) {
+        this.salas = salas;
     }
 
     public UUID getProfessorId() {
@@ -140,12 +135,9 @@ public class Professor extends RepresentationModel<Professor> {
         return finishedDate;
     }
 
-    public List<Contact> getContacts() {
-        return contacts;
-    }
 
-    public List<SchoolClass> getSchoolClasses() {
-        return schoolClasses;
+    public List<Salas> getSchoolClasses() {
+        return salas;
     }
 
     public String getAdminId() {
@@ -182,7 +174,6 @@ public class Professor extends RepresentationModel<Professor> {
         professor.setTenant(this.tenant);
         professor.setStartDate(this.startDate);
         professor.setFinishedDate(this.finishedDate);
-        professor.setContacts(this.contacts);
         return professor;
     }
 }

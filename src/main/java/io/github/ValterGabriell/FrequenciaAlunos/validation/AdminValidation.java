@@ -12,8 +12,4 @@ public class AdminValidation extends Validation {
         return admin.orElse(null);
     }
 
-    @Override
-    public boolean validateIfAdminHasAlreadyTenant(AdminRepository adminRepository, String cnpj, int tenant) {
-        return adminRepository.findByCnpjAndTenant(cnpj, tenant).isPresent();
-    }
 }

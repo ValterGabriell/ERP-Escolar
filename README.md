@@ -319,7 +319,7 @@ Os campos `ID_DO_ESTUDANTE` e `ID_DA_DISCIPLINA` devem ser substituídos pelos i
 
 Este controlador lida com as operações relacionadas às disciplinas.
 
-### `POST /api/v1/discipline`
+### `POST /api/v1/disciplina`
 
 Endpoint para inserir uma nova disciplina.
 
@@ -340,7 +340,7 @@ Endpoint para inserir uma nova disciplina.
 }
 ```
 
-### `PUT /api/v1/discipline/{skid}`
+### `PUT /api/v1/disciplina/{skid}`
 
 Endpoint para atualizar uma disciplina existente.
 
@@ -359,7 +359,7 @@ Endpoint para atualizar uma disciplina existente.
 "Mudanças aplicadas com sucesso."
 ```
 
-### `GET /api/v1/discipline`
+### `GET /api/v1/disciplina`
 
 Endpoint para obter todas as disciplinas.
 
@@ -390,7 +390,7 @@ Endpoint para obter todas as disciplinas.
 ]
 ```
 
-### `GET /api/v1/discipline/{skid}`
+### `GET /api/v1/disciplina/{skid}`
 
 Endpoint para obter uma disciplina específica.
 
@@ -412,7 +412,7 @@ Endpoint para obter uma disciplina específica.
 }
 ```
 
-### `DELETE /api/v1/discipline/{skid}`
+### `DELETE /api/v1/disciplina/{skid}`
 
 Endpoint para excluir uma disciplina.
 
@@ -433,7 +433,7 @@ Os campos `ID_DO_PROFESSOR`, `ID_DO_ADMINISTRADOR` e `ID_DA_DISCIPLINA` devem se
 ## FrequencyController
 
 Este controlador lida com as operações relacionadas às frequências.
-### `POST /api/v1/frequency/validate`
+### `POST /api/v1/frequencia/validate`
 
 Endpoint para validar a frequência de um estudante.
 
@@ -462,7 +462,7 @@ Endpoint para validar a frequência de um estudante.
 }
 ```
 
-### `POST /api/v1/frequency/justify`
+### `POST /api/v1/frequencia/justify`
 
 Endpoint para justificar uma ausência de um estudante.
 
@@ -494,7 +494,7 @@ Endpoint para justificar uma ausência de um estudante.
 }
 ```
 
-### `PATCH /api/v1/frequency/update`
+### `PATCH /api/v1/frequencia/update`
 
 Endpoint para atualizar uma ausência de um estudante.
 
@@ -524,7 +524,7 @@ Endpoint para atualizar uma ausência de um estudante.
 }
 ```
 
-### `GET /api/v1/frequency/list`
+### `GET /api/v1/frequencia/list`
 
 Endpoint para obter a lista de dias em que um estudante compareceu às aulas.
 
@@ -552,7 +552,7 @@ Endpoint para obter a lista de dias em que um estudante compareceu às aulas.
 }
 ```
 
-### `GET /api/v1/frequency/sheet`
+### `GET /api/v1/frequencia/sheet`
 
 Endpoint para criar uma folha de frequência para o dia atual.
 
@@ -566,7 +566,7 @@ Endpoint para criar uma folha de frequência para o dia atual.
 **Resposta (sucesso):**
 Retorna um arquivo Excel como resposta.
 
-### `GET /api/v1/frequency/sheet-by-date`
+### `GET /api/v1/frequencia/sheet-by-date`
 
 Endpoint para obter uma folha de frequência para uma data específica.
 
@@ -581,7 +581,7 @@ Endpoint para obter uma folha de frequência para uma data específica.
 **Resposta (sucesso):**
 Retorna um arquivo Excel como resposta.
 [JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER]
-### `GET /api/v1/frequency/month/{month}`
+### `GET /api/v1/frequencia/month/{month}`
 
 Endpoint para obter os dias em que um estudante assistiu às aulas em um mês específico.
 
@@ -702,7 +702,7 @@ Endpoint para obter todos os pais.
           "value": "123456789"
         }
       ],
-      "students": [
+      "turmas": [
         {
           "studentSkid": "ID_DO_ALUNO_1",
           "studentFirstName": "Nome do Aluno 1"
@@ -731,7 +731,7 @@ Endpoint para obter todos os pais.
           "value": "987654321"
         }
       ],
-      "students": [
+      "turmas": [
         {
           "studentSkid": "ID_DO_ALUNO_3",
           "studentFirstName": "Nome do Aluno 3"
@@ -773,7 +773,7 @@ Endpoint para atualizar informações de um pai.
       "value": "987654321"
     }
   ],
-  "students": [
+  "turmas": [
     {
       "studentSkid": "ID_DO_ALUNO_1",
       "studentFirstName": "Novo Nome do Aluno 1"
@@ -804,7 +804,7 @@ Certifique-se de ajustar os valores conforme necessário, substituindo "1" pelo 
 
 ## StudentsController
 
-### `POST /api/v1/students/{adminCnpj}`
+### `POST /api/v1/turmas/{adminCnpj}`
 
 Endpoint para inserir estudantes no banco de dados.
 
@@ -826,7 +826,7 @@ Endpoint para inserir estudantes no banco de dados.
 }
 ```
 
-### `GET /api/v1/students/all`
+### `GET /api/v1/turmas/all`
 
 Endpoint para obter todos os estudantes.
 
@@ -847,7 +847,7 @@ Endpoint para obter todos os estudantes.
     "skid": "ID_DO_ESTUDANTE_1",
     "startDate": "2022-01-01T12:00:00",
     "adminId": "ID_DO_ADMIN_1",
-    "schoolClass": "Classe Escolar 1"
+    "salas": "Classe Escolar 1"
   },
   {
     "studentIdentifier": "ID_DO_ESTUDANTE_2",
@@ -856,12 +856,12 @@ Endpoint para obter todos os estudantes.
     "skid": "ID_DO_ESTUDANTE_2",
     "startDate": "2022-01-01T12:00:00",
     "adminId": "ID_DO_ADMIN_2",
-    "schoolClass": "Classe Escolar 2"
+    "salas": "Classe Escolar 2"
   }
 ]
 ```
 
-### `GET /api/v1/students/{skid}`
+### `GET /api/v1/turmas/{skid}`
 
 Endpoint para obter um estudante por ID.
 
@@ -881,11 +881,11 @@ Endpoint para obter um estudante por ID.
   "skid": "ID_DO_ESTUDANTE",
   "startDate": "2022-01-01T12:00:00",
   "adminId": "ID_DO_ADMIN",
-  "schoolClass": "Classe Escolar"
+  "salas": "Classe Escolar"
 }
 ```
 
-### `DELETE /api/v1/students/delete`
+### `DELETE /api/v1/turmas/delete`
 
 Endpoint para excluir um estudante.
 
@@ -932,7 +932,7 @@ Endpoint para inserir um novo professor.
       "value": "+123456789"
     }
   ],
-  "schoolClasses": [
+  "salas": [
     {
       "name": "NomeDaTurma",
       "secondName": "SegundoNomeDaTurma",
@@ -1075,7 +1075,7 @@ Endpoint para obter uma turma por ID.
 }
 ```
 
-### `PATCH /api/v1/school-classes/student/{skid}`
+### `PATCH /api/v1/school-classes/turma/{skid}`
 
 Endpoint para adicionar um estudante a uma turma.
 
@@ -1113,7 +1113,7 @@ Endpoint para adicionar um professor a uma turma.
 }
 ```
 
-### `GET /api/v1/school-classes/students/{skid}`
+### `GET /api/v1/school-classes/turmas/{skid}`
 
 Endpoint para obter todos os estudantes de uma turma.
 
@@ -1283,15 +1283,15 @@ Este controlador lida com as operações relacionadas às médias.
 ## DisciplineController
 Este controlador lida com as operações relacionadas às disciplinas.
 
-1. `GET /api/v1/discipline/students/{skid}`: Obtém todos os estudantes matriculados em uma disciplina pelo ID da disciplina.
-2. `GET /api/v1/discipline/professors/{skid}`: Obtém todos os professores que lecionam uma disciplina pelo ID da disciplina.
-3. `POST /api/v1/discipline/enroll/{skid}`: Matricula um estudante em uma disciplina pelo ID da disciplina.
-4. `DELETE /api/v1/discipline/unenroll/{skid}`: Desmatricula um estudante de uma disciplina pelo ID da disciplina.
+1. `GET /api/v1/disciplina/turmas/{skid}`: Obtém todos os estudantes matriculados em uma disciplina pelo ID da disciplina.
+2. `GET /api/v1/disciplina/professors/{skid}`: Obtém todos os professores que lecionam uma disciplina pelo ID da disciplina.
+3. `POST /api/v1/disciplina/enroll/{skid}`: Matricula um estudante em uma disciplina pelo ID da disciplina.
+4. `DELETE /api/v1/disciplina/unenroll/{skid}`: Desmatricula um estudante de uma disciplina pelo ID da disciplina.
 
 ## StudentsController
 Este controlador lida com as operações relacionadas aos estudantes.
 
-1. `PATCH /api/v1/students/update-grade/{skid}`: Atualiza a nota de um estudante.
+1. `PATCH /api/v1/turmas/update-grade/{skid}`: Atualiza a nota de um estudante.
 
 ## ProfessorController
 Este controlador lida com as operações relacionadas aos professores.

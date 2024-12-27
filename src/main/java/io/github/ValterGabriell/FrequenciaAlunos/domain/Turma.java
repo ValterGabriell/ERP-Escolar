@@ -6,79 +6,64 @@ import org.springframework.hateoas.RepresentationModel;
 import java.time.LocalDateTime;
 
 @Entity(name = "tbl_estudantes")
-public class Student extends RepresentationModel<Student> {
+public class Turma extends RepresentationModel<Turma> {
 
     @Id
-    @Column(name = "studentId", nullable = false)
-    private String studentId;
-
-    @Column(name = "bornYear", nullable = false)
-    private int bornYear;
+    @Column(name = "turmaId", nullable = false)
+    private String turmaId;
 
     @Column(name = "skid", nullable = false)
     private String skid;
     @Column(name = "nome", nullable = false)
     private String firstName;
 
-    @Column(name = "sobrenome", nullable = false)
-    private String secondName;
     @Column(name = "email", nullable = false)
     private String email;
+
+
+    @Column(name = "representante", nullable = false)
+    private String representante;
+
     @Column(name = "startDate", nullable = false)
     private LocalDateTime startDate;
+
     @Column(name = "finishedDate", nullable = true)
     private LocalDateTime finishedDate;
 
     @Column(name = "tenant", nullable = false)
     private Integer tenant;
-    @Column(name = "admin_cnpj", nullable = false)
-    private String admin;
 
-    @Column(name = "school_class", nullable = false)
-    private String schoolClass;
 
-    public Student(
-            String studentId,
+    public Turma(
+            String turmaId,
             String firstName,
             String email,
             LocalDateTime startDate,
             LocalDateTime finishedDate,
-            Integer tenant,
-            Integer bornYear) {
-        this.studentId = studentId;
+            Integer tenant) {
+        this.turmaId = turmaId;
         this.firstName = firstName;
         this.email = email;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
         this.tenant = tenant;
-        this.bornYear = bornYear;
     }
 
     public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setAdmin(String admin) {
-        this.admin = admin;
+
+    public Turma() {
     }
 
-    public String getAdmin() {
-        return admin;
+
+    public String getTurmaId() {
+        return turmaId;
     }
 
-    public Student() {
-    }
-
-    public int getBornYear() {
-        return bornYear;
-    }
-
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String id) {
-        this.studentId = id;
+    public void setTurmaId(String id) {
+        this.turmaId = id;
     }
 
     public String getFirstName() {
@@ -118,21 +103,6 @@ public class Student extends RepresentationModel<Student> {
         this.tenant = tenant;
     }
 
-    public String getSchoolClass() {
-        return schoolClass;
-    }
-
-    public void setSchoolClass(String schoolClass) {
-        this.schoolClass = schoolClass;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
 
     public String getSkid() {
         return skid;

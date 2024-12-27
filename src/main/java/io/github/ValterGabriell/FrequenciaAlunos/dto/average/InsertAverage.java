@@ -1,7 +1,5 @@
 package io.github.ValterGabriell.FrequenciaAlunos.dto.average;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Average;
-
 public class InsertAverage {
     private String studentSkId;
     private String disciplineSkId;
@@ -30,9 +28,5 @@ public class InsertAverage {
 
     public int getEvaluation() {
         return evaluation;
-    }
-
-    public Average toAverage() {
-        return new Average(this.studentSkId, this.disciplineSkId, this.average, this.evaluation);
     }
 }

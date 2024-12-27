@@ -1,6 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.controller;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Disciplina;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.discipline.CreateDiscipline;
 import io.github.ValterGabriell.FrequenciaAlunos.service.DisciplineService;
@@ -27,23 +27,23 @@ public class DisciplineController {
     }
 
     @PutMapping(value = "/{skid}", params = {"tenantId"})
-    public ResponseEntity<String> update(@RequestBody Discipline discipline, @PathVariable String skid, @RequestParam("tenantId") int tenant) {
-        String skidRet = disciplineService.update(discipline, skid, tenant);
+    public ResponseEntity<String> update(@RequestBody Disciplina disciplina, @PathVariable String skid, @RequestParam("tenantId") int tenant) {
+        String skidRet = disciplineService.update(disciplina, skid, tenant);
         return new ResponseEntity<>(skidRet, HttpStatus.OK);
     }
 
 
     @GetMapping(params = {"tenantId"})
-    public ResponseEntity<List<Discipline>> getAll(@RequestParam("tenantId") int tenant) {
-        List<Discipline> lista = disciplineService.getAll(tenant);
+    public ResponseEntity<List<Disciplina>> getAll(@RequestParam("tenantId") int tenant) {
+        List<Disciplina> lista = disciplineService.getAll(tenant);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
 
     @GetMapping(value = "/{skid}", params = {"tenantId"})
-    public ResponseEntity<Discipline> getById(@PathVariable("skid") String skid, @RequestParam("tenantId") int tenant) {
-        Discipline discipline = disciplineService.getById(skid, tenant);
-        return new ResponseEntity<>(discipline, HttpStatus.OK);
+    public ResponseEntity<Disciplina> getById(@PathVariable("skid") String skid, @RequestParam("tenantId") int tenant) {
+        Disciplina disciplina = disciplineService.getById(skid, tenant);
+        return new ResponseEntity<>(disciplina, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "{skid}", params = "tenandId")

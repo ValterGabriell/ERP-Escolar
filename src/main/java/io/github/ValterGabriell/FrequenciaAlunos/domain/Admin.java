@@ -30,15 +30,12 @@ public class Admin extends RepresentationModel<Admin> {
     private List<ROLES> roles;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
-    private List<Student> students;
+    @OneToMany(targetEntity = Turma.class, cascade = CascadeType.ALL)
+    private List<Turma> turmas;
     @JsonIgnore
-    @OneToMany(targetEntity = SchoolClass.class, cascade = CascadeType.ALL)
-    private List<SchoolClass> schoolClasses;
-    @JsonIgnore
-    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
-    @Column(nullable = false)
-    private List<Contact> contacts;
+    @OneToMany(targetEntity = Salas.class, cascade = CascadeType.ALL)
+    private List<Salas> salas;
+
     @JsonIgnore
     @OneToMany(targetEntity = Professor.class, cascade = CascadeType.ALL)
     private List<Professor> professors;
@@ -48,27 +45,25 @@ public class Admin extends RepresentationModel<Admin> {
             String firstName,
             String password,
             String cnpj,
-            String secondName,
-            List<Contact> contacts
+            String secondName
     ) {
         this.adminId = UUID.randomUUID().toString();
         this.firstName = firstName;
         this.password = password;
         this.cnpj = cnpj;
         this.secondName = secondName;
-        this.contacts = contacts;
     }
 
     public String getAdminId() {
         return adminId;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public List<Turma> getStudents() {
+        return turmas;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setStudents(List<Turma> turmas) {
+        this.turmas = turmas;
     }
 
     public Admin() {
@@ -118,17 +113,12 @@ public class Admin extends RepresentationModel<Admin> {
     }
 
 
-    public List<Contact> getContacts() {
-        return contacts;
-    }
-
-
     public String getPassword() {
         return password;
     }
 
-    public List<SchoolClass> getSchoolClasses() {
-        return schoolClasses;
+    public List<Salas> getSchoolClasses() {
+        return salas;
     }
 
     public List<Professor> getProfessors() {

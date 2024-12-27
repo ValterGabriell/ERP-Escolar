@@ -10,5 +10,4 @@ import java.util.UUID;
 
 public interface ProfessorRepository extends JpaRepository<Professor, UUID> {
     Optional<Professor> findBySkidAndTenant(String skid, int tenant);
-    List<Professor> findAllBySkidInAndTenant(List<String> skid, int tenant);
 }

@@ -1,7 +1,5 @@
 package io.github.ValterGabriell.FrequenciaAlunos.dto.professor;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,14 +18,12 @@ public class ProfessorGet {
 
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
-    private List<Contact> contacts;
 
     public ProfessorGet() {
     }
 
     public ProfessorGet(String skid, String firstName, String lastName, Double average, String identifierNumber,
-                        int tenant, LocalDateTime startDate, LocalDateTime finishedDate,
-                        List<Contact> contacts) {
+                        int tenant, LocalDateTime startDate, LocalDateTime finishedDate) {
         this.skid = skid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,7 +32,6 @@ public class ProfessorGet {
         this.tenant = tenant;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
-        this.contacts = contacts;
     }
 
     public String getSkid() {
@@ -96,13 +91,6 @@ public class ProfessorGet {
         this.finishedDate = finishedDate;
     }
 
-    public List<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
 
 
 

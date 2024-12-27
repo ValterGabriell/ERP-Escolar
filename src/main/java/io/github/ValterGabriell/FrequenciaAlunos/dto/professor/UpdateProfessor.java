@@ -1,7 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.dto.professor;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.SchoolClass;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Salas;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,22 +14,20 @@ public class UpdateProfessor {
 
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
-    private List<Contact> contacts;
-    private List<SchoolClass> schoolClasses;
+    private List<Salas> salas;
 
     public UpdateProfessor() {
     }
 
     public UpdateProfessor(String firstName, String lastName, Double average,
-                           LocalDateTime startDate, LocalDateTime finishedDate, List<Contact> contacts,
-                           List<SchoolClass> schoolClasses) {
+                           LocalDateTime startDate, LocalDateTime finishedDate,
+                           List<Salas> salas) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.average = average;
         this.startDate = startDate;
         this.finishedDate = finishedDate;
-        this.contacts = contacts;
-        this.schoolClasses = schoolClasses;
+        this.salas = salas;
     }
 
     public String getFirstName() {
@@ -73,20 +70,13 @@ public class UpdateProfessor {
         this.finishedDate = finishedDate;
     }
 
-    public List<Contact> getContacts() {
-        return contacts;
+
+    public List<Salas> getSchoolClasses() {
+        return salas;
     }
 
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
-    public List<SchoolClass> getSchoolClasses() {
-        return schoolClasses;
-    }
-
-    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
-        this.schoolClasses = schoolClasses;
+    public void setSchoolClasses(List<Salas> salas) {
+        this.salas = salas;
     }
 
 }

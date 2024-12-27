@@ -1,12 +1,16 @@
 package io.github.ValterGabriell.FrequenciaAlunos.domain;
 
+import io.github.ValterGabriell.FrequenciaAlunos.helper.PERIOD;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "tbl_disciplina")
-public class Discipline extends RepresentationModel<Discipline> {
+public class Disciplina extends RepresentationModel<Disciplina> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID disciplineId;
@@ -24,27 +28,48 @@ public class Discipline extends RepresentationModel<Discipline> {
     private int tenant;
 
     @Column(nullable = false)
-    private String adminId;
+    private String salaId;
 
     @Column(nullable = false)
     private String professorId;
 
-    public Discipline(String name, String description, String professorId,String adminId) {
+    @Column(nullable = false)
+    private LocalDate dataInicio;
+
+    @Column(nullable = false)
+    private LocalDate dataFim;
+    @ElementCollection
+    @Column(nullable = false)
+    private List<PERIOD> dias;
+
+    @Column(nullable = false)
+    private LocalTime horaInicio;
+
+    @Column(nullable = false)
+    private LocalTime horaFim;
+    public Disciplina
+            (String name, String description,
+             String professorId, String salaId,LocalDate dataInicio,LocalDate dataFim, List<PERIOD> dias,
+             LocalTime horaInicio,LocalTime horaFim ) {
         this.name = name;
         this.description = description;
         this.professorId = professorId;
-        this.adminId = adminId;
+        this.salaId = salaId;
+        this.dataFim = dataFim;
+        this.dataInicio = dataInicio;
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+        this.dias = dias;
     }
 
-    public Discipline() {
-    }
 
+    // Getters e Setters
     public UUID getDisciplineId() {
         return disciplineId;
     }
 
-    public void setDisciplineId(UUID id) {
-        this.disciplineId = id;
+    public void setDisciplineId(UUID disciplineId) {
+        this.disciplineId = disciplineId;
     }
 
     public String getSkid() {
@@ -87,11 +112,11 @@ public class Discipline extends RepresentationModel<Discipline> {
         this.professorId = professorId;
     }
 
-    public String getAdminId() {
-        return adminId;
+    public String getSalaId() {
+        return salaId;
     }
 
-    public void setAdminId(String adminId) {
-        this.adminId = adminId;
+    public void setSalaId(String salaId) {
+        this.salaId = salaId;
     }
 }

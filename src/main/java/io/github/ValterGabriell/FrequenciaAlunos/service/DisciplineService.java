@@ -1,7 +1,7 @@
 package io.github.ValterGabriell.FrequenciaAlunos.service;
 
 import io.github.ValterGabriell.FrequenciaAlunos.controller.DisciplineController;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Disciplina;
 import io.github.ValterGabriell.FrequenciaAlunos.exceptions.RequestExceptions;
 import io.github.ValterGabriell.FrequenciaAlunos.infra.repository.DisciplineRepository;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.PatternResponse;
@@ -24,8 +24,8 @@ public class DisciplineService {
 
 
     public PatternResponse<String> insert(CreateDiscipline createDiscipline, int tenant) {
-        List<Discipline> disciplines = disciplineRepository.findAll();
-        if (!disciplines.isEmpty()) {
+        List<Disciplina> disciplinas = disciplineRepository.findAll();
+        if (!disciplinas.isEmpty()) {
             boolean disciplinePresent
                     = disciplineRepository.findDisciplineByNameAndTenant(createDiscipline.getName(), tenant).isPresent();
             if (disciplinePresent) {
@@ -33,10 +33,10 @@ public class DisciplineService {
             }
         }
 
-        Discipline discipline = createDiscipline.toDiscipline();
-        discipline.setTenant(tenant);
-        discipline.setSkid(GenerateSKId.generateSkId());
-        Discipline saved = disciplineRepository.save(discipline);
+        Disciplina disciplina = createDiscipline.toDiscipline();
+        disciplina.setTenant(tenant);
+        disciplina.setSkid(GenerateSKId.generateSkId());
+        Disciplina saved = disciplineRepository.save(disciplina);
         saved.add(linkTo(methodOn(DisciplineController.class).getById(saved.getSkid(), tenant)).withSelfRel());
 
         return new PatternResponse<>(
@@ -46,40 +46,40 @@ public class DisciplineService {
     }
 
 
-    public String update(Discipline discipline, String skid, int tenant) {
-        Discipline disciplinePresent
+    public String update(Disciplina disciplina, String skid, int tenant) {
+        Disciplina disciplinaPresent
                 = disciplineRepository.findDisciplineBySkidAndTenant(skid, tenant).orElseThrow(() ->
                 new RequestExceptions("Disciplina não encontrada"));
 
-        disciplinePresent.setName(discipline.getName());
-        disciplinePresent.setDescription(discipline.getDescription());
-        disciplinePresent.setProfessorId(discipline.getProfessorId());
+        disciplinaPresent.setName(disciplina.getName());
+        disciplinaPresent.setDescription(disciplina.getDescription());
+        disciplinaPresent.setProfessorId(disciplina.getProfessorId());
 
-        disciplinePresent.setAdminId(disciplinePresent.getAdminId());
-        disciplinePresent.setSkid(disciplinePresent.getSkid());
-        disciplinePresent.setTenant(disciplinePresent.getTenant());
-        disciplinePresent.setDisciplineId(disciplinePresent.getDisciplineId());
+        disciplinaPresent.setSalaId(disciplinaPresent.getSalaId());
+        disciplinaPresent.setSkid(disciplinaPresent.getSkid());
+        disciplinaPresent.setTenant(disciplinaPresent.getTenant());
+        disciplinaPresent.setDisciplineId(disciplinaPresent.getDisciplineId());
 
-        Discipline saved = disciplineRepository.save(disciplinePresent);
+        Disciplina saved = disciplineRepository.save(disciplinaPresent);
         return "SKID: " + saved.getSkid();
     }
 
 
-    public List<Discipline> getAll(int tenant) {
+    public List<Disciplina> getAll(int tenant) {
         return disciplineRepository.getAllByTenant(tenant);
     }
 
 
-    public Discipline getById(String skid, int tenant) {
+    public Disciplina getById(String skid, int tenant) {
         return disciplineRepository.findDisciplineBySkidAndTenant(skid, tenant).orElseThrow(() ->
                 new RequestExceptions("Disciplina não encontrada"));
     }
 
 
     public void delete(String skid, int tenant) {
-        Discipline disciplinePresent
+        Disciplina disciplinaPresent
                 = disciplineRepository.findDisciplineBySkidAndTenant(skid, tenant).orElseThrow(() ->
                 new RequestExceptions("Disciplina não encontrada"));
-        disciplineRepository.delete(disciplinePresent);
+        disciplineRepository.delete(disciplinaPresent);
     }
 }

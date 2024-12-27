@@ -1,9 +1,6 @@
 package io.github.ValterGabriell.FrequenciaAlunos.dto.admin;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
 import org.springframework.hateoas.Links;
-
-import java.util.List;
 
 public class GetAdminMapper {
     private String cnpj;

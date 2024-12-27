@@ -12,6 +12,7 @@ import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.CreateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.ProfessorGet;
 import io.github.ValterGabriell.FrequenciaAlunos.dto.professor.UpdateProfessor;
 import io.github.ValterGabriell.FrequenciaAlunos.util.GenerateSKId;
+import io.github.ValterGabriell.FrequenciaAlunos.util.PasswordEncoder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +28,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ProfessorService {
     private final ProfessorRepository professorRepository;
     private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ProfessorService(ProfessorRepository professorRepository, AdminRepository adminRepository) {
+    public ProfessorService(ProfessorRepository professorRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         this.professorRepository = professorRepository;
         this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public PatternResponse<String> createProfessor(CreateProfessor createProfessor, String adminCnpj, int tenant) {
@@ -42,17 +45,15 @@ public class ProfessorService {
         professor.setTenant(tenant);
         professor.setSkid(GenerateSKId.generateSkId());
 
-        professor.getContacts().forEach(contacts -> {
-            contacts.setTenant(tenant);
-            contacts.setUserId(professor.getSkid());
-        });
-
         List<ROLES> roles = new ArrayList<>();
         roles.add(ROLES.PROFESSOR);
         professor.setRoles(roles);
         professor.setAdminId(adminCnpj);
         Professor professorSaved = professorRepository.save(professor);
         admin.getProfessors().add(professorSaved);
+
+        var encode = passwordEncoder.encode(professor.getPassword());
+        professor.setPassword(encode);
         adminRepository.save(admin);
 
         professorSaved
@@ -71,19 +72,15 @@ public class ProfessorService {
         Professor professor = professorRepository.findBySkidAndTenant(skid, tenant).orElseThrow(() -> {
             throw new RequestExceptions("Professor não encontrado! -> " + skid);
         });
-        professor.setContacts(updateProfessor.getContacts());
+
         professor.setFirstName(updateProfessor.getFirstName());
         professor.setLastName(updateProfessor.getLastName());
         professor.setAverage(updateProfessor.getAverage());
         professor.setSchoolClasses(updateProfessor.getSchoolClasses());
-        professor.setContacts(updateProfessor.getContacts());
+
         professor.setFinishedDate(updateProfessor.getFinishedDate());
         professor.setStartDate(updateProfessor.getStartDate());
 
-        professor.getContacts().forEach(contacts -> {
-            contacts.setTenant(tenant);
-            contacts.setUserId(professor.getSkid());
-        });
 
         Professor professorUpdated = professorRepository.save(professor);
 

@@ -1,18 +1,36 @@
 package io.github.ValterGabriell.FrequenciaAlunos.dto.discipline;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Discipline;
+import io.github.ValterGabriell.FrequenciaAlunos.domain.Disciplina;
+import io.github.ValterGabriell.FrequenciaAlunos.helper.PERIOD;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 public class CreateDiscipline {
     private String name;
     private String description;
     private String professorId;
-    private String adminId;
+    private String salaId;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
+    private List<PERIOD> dias;
+    private LocalTime horaInicio;
+    private LocalTime horaFim;
 
-    public CreateDiscipline(String name, String description, String professorId, String adminId) {
+    public CreateDiscipline(String name, String description, String professorId, String salaId,LocalDate dataInicio,LocalDate dataFim, List<PERIOD> dias,
+                            LocalTime horaInicio,LocalTime horaFim) {
         this.name = name;
         this.description = description;
         this.professorId = professorId;
-        this.adminId = adminId;
+        this.salaId = salaId;
+        this.dataFim = dataFim;
+        this.dataInicio = dataInicio;
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+        this.dias = dias;
     }
 
     public String getName() {
@@ -39,22 +57,28 @@ public class CreateDiscipline {
         this.professorId = professorId;
     }
 
-    public String getAdminId() {
-        return adminId;
+    public String getSalaId() {
+        return salaId;
     }
 
-    public void setAdminId(String adminId) {
-        this.adminId = adminId;
+    public void setSalaId(String salaId) {
+        this.salaId = salaId;
     }
 
 
 
-    public Discipline toDiscipline() {
-        return new Discipline(
+    public Disciplina toDiscipline() {
+        return new Disciplina(
                 this.name,
                 this.description,
                 this.professorId,
-                this.adminId
+                this.salaId,
+                this.dataInicio,
+                this.dataInicio,
+                this.dias,
+                this.horaInicio,
+                this.horaFim
+
         );
     }
 }

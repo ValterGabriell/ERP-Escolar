@@ -1,11 +1,9 @@
 package io.github.ValterGabriell.FrequenciaAlunos.dto.professor;
 
-import io.github.ValterGabriell.FrequenciaAlunos.domain.Contact;
 import io.github.ValterGabriell.FrequenciaAlunos.domain.Professor;
-import io.github.ValterGabriell.FrequenciaAlunos.domain.SchoolClass;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.ArrayList;
 
 public class CreateProfessor {
 
@@ -23,8 +21,7 @@ public class CreateProfessor {
 
     private LocalDateTime startDate;
     private LocalDateTime finishedDate;
-    private List<Contact> contacts;
-    private List<SchoolClass> schoolClasses;
+
 
     public CreateProfessor() {
     }
@@ -78,17 +75,6 @@ public class CreateProfessor {
         this.finishedDate = finishedDate;
     }
 
-    public List<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
-    public List<SchoolClass> getSchoolClasses() {
-        return schoolClasses;
-    }
 
     public String getIdentifierNumber() {
         return identifierNumber;
@@ -106,9 +92,7 @@ public class CreateProfessor {
         return password;
     }
 
-    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
-        this.schoolClasses = schoolClasses;
-    }
+
     public Professor toProfessor() {
         Professor professor = new Professor();
         professor.setFirstName(this.firstName);
@@ -118,8 +102,8 @@ public class CreateProfessor {
         professor.setTenant(this.tenant);
         professor.setStartDate(this.startDate);
         professor.setFinishedDate(this.finishedDate);
-        professor.setContacts(this.contacts);
-        professor.setSchoolClasses(this.schoolClasses);
+
+        professor.setSchoolClasses(new ArrayList<>());
         professor.setPassword(this.password);
         return professor;
     }
